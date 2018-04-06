@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.vip.dao.VipUserLevelDao">
+    
+	<sql id="vipUserLevelColumns">
+		a.id AS "id",
+		a.level_name AS "levelName",
+		a.discount AS "discount",
+		a.remark AS "remark",
+		a.is_discount AS "isDiscount",
+		a.list_no AS "listNo",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="vipUserLevelJoins">
+	</sql>
+    
+	<select id="get" resultType="VipUserLevel">
+		SELECT 
+			<include refid="vipUserLevelColumns"/>
+		FROM vip_user_level a
+		<include refid="vipUserLevelJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="VipUserLevel">
+		SELECT 
+			<include refid="vipUserLevelColumns"/>
+		FROM vip_user_level a
+		<include refid="vipUserLevelJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="levelName != null and levelName != ''">
+				AND a.level_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{levelName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{levelName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{levelName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="VipUserLevel">
+		SELECT 
+			<include refid="vipUserLevelColumns"/>
+		FROM vip_user_level a
+		<include refid="vipUserLevelJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO vip_user_level(
+			id,
+			level_name,
+			discount,
+			remark,
+			is_discount,
+			list_no,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{levelName},
+			#{discount},
+			#{remark},
+			#{isDiscount},
+			#{listNo},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE vip_user_level SET 	
+			level_name = #{levelName},
+			discount = #{discount},
+			remark = #{remark},
+			is_discount = #{isDiscount},
+			list_no = #{listNo},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE vip_user_level SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

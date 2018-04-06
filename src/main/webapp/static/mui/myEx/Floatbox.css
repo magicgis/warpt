@@ -1,0 +1,72 @@
+.mui-floatbox {
+	position: relative;
+	display: inline-block;
+	overflow: hidden;
+	width: 120px;
+	height: 35px;
+	padding: 0 40px;
+	vertical-align: top;
+	vertical-align: middle;
+	border: solid 1px #bbb;
+	border-radius: 3px;
+	background-color: #efeff4
+}
+
+.mui-floatbox [class*=btn-floatbox],.mui-floatbox [class*=floatbox-btn] {
+	font-size: 18px;
+	font-weight: 400;
+	line-height: 100%;
+	position: absolute;
+	top: 0;
+	overflow: hidden;
+	width: 40px;
+	height: 100%;
+	padding: 0;
+	color: #555;
+	border: none;
+	border-radius: 0;
+	background-color: #f9f9f9
+}
+
+.mui-floatbox [class*=btn-floatbox]:active,.mui-floatbox [class*=floatbox-btn]:active
+	{
+	background-color: #ccc
+}
+
+.mui-floatbox [class*=btn-floatbox][disabled],.mui-floatbox [class*=floatbox-btn][disabled]
+	{
+	color: silver
+}
+
+.mui-floatbox .mui-btn-floatbox-plus,.mui-floatbox .mui-floatbox-btn-plus {
+	right: 0;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px
+}
+
+.mui-floatbox .mui-btn-floatbox-minus,.mui-floatbox .mui-floatbox-btn-minus {
+	left: 0;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px
+}
+
+.mui-floatbox .mui-input-floatbox,.mui-floatbox .mui-floatbox-input {
+	display: inline-block;
+	overflow: hidden;
+	width: 100% !important;
+	height: 100%;
+	margin: 0;
+	padding: 0 3px !important;
+	text-align: center;
+	text-overflow: ellipsis;
+	word-break: normal;
+	border: none !important;
+	border-right: solid 1px #ccc !important;
+	border-left: solid 1px #ccc !important;
+	border-radius: 0 !important
+}
+
+.mui-input-row .mui-floatbox {
+	float: right;
+	margin: 2px 8px
+}

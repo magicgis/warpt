@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.vip.dao.VipProjectCostDao">
+    
+	<sql id="vipProjectCostColumns">
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a.vip_id AS "vipId",
+		a.vip_phone AS "vipPhone",
+		a.vip_name AS "vipName",
+		a.project_id AS "projectId",
+		a.project_name AS "projectName",
+		a.cost_num AS "costNum",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="vipProjectCostJoins">
+		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+	</sql>
+    
+	<select id="get" resultType="VipProjectCost">
+		SELECT 
+			<include refid="vipProjectCostColumns"/>
+		FROM vip_project_cost a
+		<include refid="vipProjectCostJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="VipProjectCost">
+		SELECT 
+			<include refid="vipProjectCostColumns"/>
+		FROM vip_project_cost a
+		<include refid="vipProjectCostJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="vipPhone != null and vipPhone != ''">
+				AND a.vip_phone = #{vipPhone}
+			</if>
+			<if test="vipName != null and vipName != ''">
+				AND a.vip_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{vipName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{vipName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{vipName},'%')</if>
+			</if>
+			<if test="projectName != null and projectName != ''">
+				AND a.project_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{projectName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{projectName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{projectName},'%')</if>
+			</if>
+			<if test="vipId != null and vipId != ''">
+				AND a.vip_id = #{vipId}
+			</if>			
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
+			</if>			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="VipProjectCost">
+		SELECT 
+			<include refid="vipProjectCostColumns"/>
+		FROM vip_project_cost a
+		<include refid="vipProjectCostJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO vip_project_cost(
+			id,
+			office_id,
+			vip_id,
+			vip_phone,
+			vip_name,
+			project_id,
+			project_name,
+			cost_num,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{officeId},
+			#{vipId},
+			#{vipPhone},
+			#{vipName},
+			#{projectId},
+			#{projectName},
+			#{costNum},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE vip_project_cost SET 	
+			office_id = #{officeId},
+			vip_id = #{vipId},
+			vip_phone = #{vipPhone},
+			vip_name = #{vipName},
+			project_id = #{projectId},
+			project_name = #{projectName},
+			cost_num = #{costNum},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE vip_project_cost SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

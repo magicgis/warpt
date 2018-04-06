@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.vip.dao.VipUserCostDao">
+    
+	<sql id="vipUserCostColumns">
+		a.id AS "id",
+		a.vip_id AS "vipId",
+		a.office_id AS "officeId",
+		a.vip_phone AS "vipPhone",
+		a.vip_name AS "vipName",
+		a.cost_moeny AS "costMoeny",
+		a.cost_score AS "costScore",
+		a.cost_time AS "costTime",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="vipUserCostJoins">
+	</sql>
+    
+	<select id="get" resultType="VipUserCost">
+		SELECT 
+			<include refid="vipUserCostColumns"/>
+		FROM vip_user_cost a
+		<include refid="vipUserCostJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="VipUserCost">
+		SELECT 
+			<include refid="vipUserCostColumns"/>
+		FROM vip_user_cost a
+		<include refid="vipUserCostJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="vipId != null and vipId != ''">
+				AND a.vip_id = #{vipId}
+			</if>			
+			<if test="vipPhone != null and vipPhone != ''">
+				AND a.vip_phone = #{vipPhone}
+			</if>
+			<if test="vipName != null and vipName != ''">
+				AND a.vip_name = #{vipName}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
+			</if>			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="VipUserCost">
+		SELECT 
+			<include refid="vipUserCostColumns"/>
+		FROM vip_user_cost a
+		<include refid="vipUserCostJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO vip_user_cost(
+			id,
+			vip_id,
+			office_id,
+			vip_phone,
+			vip_name,
+			cost_moeny,
+			cost_score,
+			cost_time,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{vipId},
+			#{officeId},
+			#{vipPhone},
+			#{vipName},
+			#{costMoeny},
+			#{costScore},
+			#{costTime},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE vip_user_cost SET 	
+			vip_id = #{vipId},
+			office_id = #{officeId},
+			vip_phone = #{vipPhone},
+			vip_name = #{vipName},
+			cost_moeny = #{costMoeny},
+			cost_score = #{costScore},
+			cost_time = #{costTime},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE vip_user_cost SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.vip.dao.VipUserWalletDao">
+    
+	<sql id="vipUserWalletColumns">
+		a.id AS "id",
+		a.vip_id AS "vipId",
+		a.office_id AS "officeId",
+		a.vip_name AS "vipName",
+		a.vip_phone AS "vipPhone",
+		a.all_moeny AS "allMoeny",
+		a.rest_moeny AS "restMoeny",
+		a.use_moeny AS "useMoeny",
+		a.all_score AS "allScore",
+		a.rest_score AS "restScore",
+		a.use_score AS "useScore",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="vipUserWalletJoins">
+	</sql>
+    
+	<select id="get" resultType="VipUserWallet">
+		SELECT 
+			<include refid="vipUserWalletColumns"/>
+		FROM vip_user_wallet a
+		<include refid="vipUserWalletJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="VipUserWallet">
+		SELECT 
+			<include refid="vipUserWalletColumns"/>
+		FROM vip_user_wallet a
+		<include refid="vipUserWalletJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="vipId != null and vipId != ''">
+				AND a.vip_id = #{vipId}
+			</if>			
+			<if test="vipName != null and vipName != ''">
+				AND a.vip_name = #{vipName}
+			</if>
+			<if test="vipPhone != null and vipPhone != ''">
+				AND a.vip_phone = #{vipPhone}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
+			</if>			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="VipUserWallet">
+		SELECT 
+			<include refid="vipUserWalletColumns"/>
+		FROM vip_user_wallet a
+		<include refid="vipUserWalletJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO vip_user_wallet(
+			id,
+			vip_id,
+			office_id,
+			vip_name,
+			vip_phone,
+			all_moeny,
+			rest_moeny,
+			use_moeny,
+			all_score,
+			rest_score,
+			use_score,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{vipId},
+			#{officeId},
+			#{vipName},
+			#{vipPhone},
+			#{allMoeny},
+			#{restMoeny},
+			#{useMoeny},
+			#{allScore},
+			#{restScore},
+			#{useScore},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE vip_user_wallet SET 	
+			vip_id = #{vipId},
+			office_id = #{officeId},
+			vip_name = #{vipName},
+			vip_phone = #{vipPhone},
+			all_moeny = #{allMoeny},
+			rest_moeny = #{restMoeny},
+			use_moeny = #{useMoeny},
+			all_score = #{allScore},
+			rest_score = #{restScore},
+			use_score = #{useScore},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE vip_user_wallet SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
