@@ -3,7 +3,7 @@ package com.war.wechat.base;
 
 
 /**
- * 枚举工具类1
+ * 枚举工具类
  * @author xudw
  *
  */
