@@ -3,8 +3,8 @@ package com.war.wechat.base;
 
 
 /**
- * 枚举工具类
- * @author xudw
+ * 枚举工具类 
+ * @author 
  *
  */
 public class EnumModel {
