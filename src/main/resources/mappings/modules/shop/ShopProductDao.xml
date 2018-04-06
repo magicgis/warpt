@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopProductDao">
+    
+	<sql id="shopProductColumns">
+		a.id AS "id",
+		a.shop_id AS "shopId",
+		a.office_id AS "office_id",
+		a.product_type_id AS "productTypeId",
+		a.product_type_name AS "productTypeName",
+		a.product_name AS "productName",
+		a.product_no AS "productNo",
+		a.buy_price AS "buyPrice",
+		a.warn_stock AS "warnStock",
+		a.unit AS "unit",
+		a.spec AS "spec",
+		a.list_no AS "listNo",
+		a.remark AS "remark",
+		a.one_url AS "oneUrl",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="shopProductJoins">
+	</sql>
+    
+	<select id="get" resultType="ShopProduct">
+		SELECT 
+			<include refid="shopProductColumns"/>
+		FROM shop_product a
+		<include refid="shopProductJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopProduct">
+		SELECT 
+			<include refid="shopProductColumns"/>
+		FROM shop_product a
+		<include refid="shopProductJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="productTypeId != null and productTypeId != ''">
+				AND a.product_type_id = #{productTypeId}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND a.product_name LIKE
+					<if test="dbName == 'oracle'"> '%'||#{productName}||'%'</if>
+					<if test="dbName == 'mssql'">AND a.product_name LIKE '%'+#{productName}+'%'</if>
+					<if test="dbName == 'mysql'"> concat('%',#{productName},'%') </if>
+			</if>
+			<if test="pingyinStr != null and pingyinStr != ''">
+				AND to_pinyin(a.product_name) like #{pingyinStr}
+			</if>
+			
+			<if test="productNo != null and productNo != ''">
+				AND a.product_no = #{productNo}
+			</if>
+			<if test="buyPrice != null and buyPrice != ''">
+				AND a.buy_price = #{buyPrice}
+			</if>
+			<if test="unit != null and unit != ''">
+				AND a.unit = #{unit}
+			</if>
+			<if test="spec != null and spec != ''">
+				AND a.spec = #{spec}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShopProduct">
+		SELECT 
+			<include refid="shopProductColumns"/>
+		FROM shop_product a
+		<include refid="shopProductJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_product(
+			id,
+			shop_id,
+			office_id,
+			product_type_id,
+			product_type_name,
+			product_name,
+			product_no,
+			buy_price,
+			warn_stock,
+			unit,
+			spec,
+			list_no,
+			remark,
+			one_url,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{shopId},
+			#{office_id},
+			#{productTypeId},
+			#{productTypeName},
+			#{productName},
+			#{productNo},
+			#{buyPrice},
+			#{warnStock},
+			#{unit},
+			#{spec},
+			#{listNo},
+			#{remark},
+			#{oneUrl},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_product SET 	
+			shop_id = #{shopId},
+			office_id = #{office_id},
+			product_type_id = #{productTypeId},
+			product_type_name = #{productTypeName},
+			product_name = #{productName},
+			product_no = #{productNo},
+			buy_price = #{buyPrice},
+			warn_stock = #{warnStock},
+			unit = #{unit},
+			spec = #{spec},
+			list_no = #{listNo},
+			remark = #{remark},
+			one_url = #{oneUrl},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_product SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

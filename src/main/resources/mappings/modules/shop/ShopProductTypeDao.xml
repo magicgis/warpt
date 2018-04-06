@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopProductTypeDao">
+    
+	<sql id="shopProductTypeColumns">
+		a.id AS "id",
+		a.shop_id AS "shopId",
+		a.office_id AS "office.id",
+		a.app_type AS "appType",
+		a.name AS "name",
+		a.parent_id AS "parent.id",
+		a.parent_name AS "parentName",
+		a.parent_ids AS "parentIds",
+		a.level_no AS "levelNo",
+		a.sort AS "sort",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		o3.name AS "office.name"
+	</sql>
+	
+	<sql id="shopProductTypeJoins">
+		LEFT JOIN sys_office o3 ON o3.id = a.office_id
+	</sql>
+    
+	<select id="get" resultType="ShopProductType">
+		SELECT 
+			<include refid="shopProductTypeColumns"/>
+		FROM shop_product_type a
+		<include refid="shopProductTypeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopProductType">
+		SELECT 
+			<include refid="shopProductTypeColumns"/>
+		FROM shop_product_type a
+		<include refid="shopProductTypeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+			<if test="parentIds != null and parentIds != ''">
+				AND a.parent_ids LIKE 
+					<if test="dbName == 'oracle'">'%'||#{parentIds}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{parentIds}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{parentIds},'%')</if>
+			</if>
+			<if test="office != null and office.id != null and office.id != ''">
+				AND a.office_id = #{office.id}
+			</if>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findAllList" resultType="ShopProductType">
+		SELECT 
+			<include refid="shopProductTypeColumns"/>
+		FROM shop_product_type a
+		<include refid="shopProductTypeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findByParentIdsLike" resultType="ShopProductType">
+		SELECT
+			a.id,
+			a.parent_id AS "parent.id",
+			a.parent_ids
+		FROM shop_product_type a
+		<include refid="shopProductTypeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.parent_ids LIKE #{parentIds}
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_product_type(
+			id,
+			shop_id,
+			office_id,
+			app_type,
+			name,
+			parent_id,
+			parent_name,
+			parent_ids,
+			level_no,
+			sort,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{shopId},
+			#{office.id},
+			#{appType},
+			#{name},
+			#{parent.id},
+			#{parentName},
+			#{parentIds},
+			#{levelNo},
+			#{sort},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_product_type SET 	
+			shop_id = #{shopId},
+			office_id = #{office.id},
+			app_type = #{appType},
+			name = #{name},
+			parent_id = #{parent.id},
+			parent_name = #{parentName},
+			parent_ids = #{parentIds},
+			level_no = #{levelNo},
+			sort = #{sort},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateParentIds">
+		UPDATE shop_product_type SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_product_type SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<if test="dbName == 'oracle'">WHERE id = #{id} OR parent_ids LIKE '%,'||#{id}||',%'</if>
+		<if test="dbName == 'mssql'">WHERE id = #{id} OR parent_ids LIKE '%,'+#{id}+',%'</if>
+		<if test="dbName == 'mysql'">WHERE id = #{id} OR parent_ids LIKE concat('%,',#{id},',%')</if>
+	</update>
+	
+</mapper>

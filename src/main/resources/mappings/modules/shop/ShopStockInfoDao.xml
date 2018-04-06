@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopStockInfoDao">
+    
+	<sql id="shopStockInfoColumns">
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a.stock_name AS "stockName",
+		a.stock_address AS "stockAddress",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="shopStockInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="ShopStockInfo">
+		SELECT 
+			<include refid="shopStockInfoColumns"/>
+		FROM shop_stock_info a
+		<include refid="shopStockInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopStockInfo">
+		SELECT 
+			<include refid="shopStockInfoColumns"/>
+		FROM shop_stock_info a
+		<include refid="shopStockInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="stockName != null and stockName != ''">
+				AND a.stock_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{stockName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{stockName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{stockName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShopStockInfo">
+		SELECT 
+			<include refid="shopStockInfoColumns"/>
+		FROM shop_stock_info a
+		<include refid="shopStockInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_stock_info(
+			id,
+			office_id,
+			stock_name,
+			stock_address,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{officeId},
+			#{stockName},
+			#{stockAddress},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_stock_info SET 	
+			office_id = #{officeId},
+			stock_name = #{stockName},
+			stock_address = #{stockAddress},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_stock_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
