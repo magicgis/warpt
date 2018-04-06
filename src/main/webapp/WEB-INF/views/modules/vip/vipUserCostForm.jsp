@@ -38,6 +38,7 @@
 			<div class="controls">
 				<sys:treeselect id="vip" name="vipId" value="${vipUserCost.vipId}" labelName="vipName" labelValue="${vipUserCost.vipName}"
 					title="选择会员" url="/vip/vipUserBase/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
+					<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">

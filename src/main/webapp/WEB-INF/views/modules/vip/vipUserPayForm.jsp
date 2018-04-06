@@ -38,6 +38,7 @@
 			<div class="controls">
 				<sys:treeselect id="vip" name="vipId" value="${vipUserPay.vipId}" labelName="vipName" labelValue="${vipUserPay.vipName}"
 					title="选择会员" url="/vip/vipUserBase/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 <!-- 		<div class="control-group"> -->
@@ -49,13 +50,14 @@
 		<div class="control-group">
 			<label class="control-label">充值金额：</label>
 			<div class="controls">
-				<form:input path="payMoeny" htmlEscape="false" class="input-xlarge "/>
+				<form:input path="payMoeny" htmlEscape="false" class="required  number"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">获得积分：</label>
 			<div class="controls">
-				<form:input path="getScore" htmlEscape="false" class="input-xlarge "/>
+				<form:input path="getScore" htmlEscape="false" class="number"/>
 			</div>
 		</div>
 		<!-- <div class="control-group">

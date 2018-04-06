@@ -37,12 +37,14 @@
 			<label class="control-label">会员名称：</label>
 			<div class="controls">
 				<form:input path="vipName" htmlEscape="false" maxlength="20" class="required"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">会员手机：</label>
 			<div class="controls">
 				<form:input path="vipPhone" htmlEscape="false" maxlength="20" class="required"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">

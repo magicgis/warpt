@@ -74,6 +74,7 @@
 			<div class="controls">
 				<sys:treeselect id="productType" name="productTypeId" value="${shopProduct.productTypeId}" labelName="productTypeName" labelValue="${shopProduct.productTypeName}"
 					title="选择商品类型" url="/shop/shopProductType/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
