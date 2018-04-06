@@ -80,18 +80,21 @@
 			<label class="control-label">商品名称：</label>
 			<div class="controls">
 				<form:input path="productName" htmlEscape="false" maxlength="200" class="required"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">货号(条码)：</label>
 			<div class="controls">
 				<form:input path="productNo" htmlEscape="false" maxlength="500" class="required" />
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">采购价：</label>
 			<div class="controls">
 				<form:input path="buyPrice" htmlEscape="false" class="required  number"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
@@ -152,13 +155,13 @@
 								<input id="shopProductPriceList{{idx}}_delFlag" name="shopProductPriceList[{{idx}}].delFlag" type="hidden" value="0"/>
 							</td>
 							<td>
-								<input id="shopProductPriceList{{idx}}_levelName" name="shopProductPriceList[{{idx}}].levelName" type="text" value="{{row.levelName}}" maxlength="64" class="input-small required"/>
+								<input id="shopProductPriceList{{idx}}_levelName" name="shopProductPriceList[{{idx}}].levelName" type="text" value="{{row.levelName}}" maxlength="64" class="input-small required"/><span class="help-inline"><font color="red">*</font> </span>
 							</td>
 							<td>
 								<input id="shopProductPriceList{{idx}}_discount" name="shopProductPriceList[{{idx}}].discount" type="text" value="{{row.discount}}" maxlength="200" class="input-small "/>
 							</td>
 							<td>
-								<input id="shopProductPriceList{{idx}}_discountPrice" name="shopProductPriceList[{{idx}}].discountPrice" type="text" value="{{row.discountPrice}}" class="input-small required number"/>
+								<input id="shopProductPriceList{{idx}}_discountPrice" name="shopProductPriceList[{{idx}}].discountPrice" type="text" value="{{row.discountPrice}}" class="input-small required number"/><span class="help-inline"><font color="red">*</font> </span>
 							</td>
 							<td>
 								<input id="shopProductPriceList{{idx}}_listNo" name="shopProductPriceList[{{idx}}].listNo" type="text" value="{{row.listNo}}" maxlength="11" class="input-small  digits"/>
