@@ -18,6 +18,7 @@ public class ShopStockInfo extends DataEntity<ShopStockInfo> {
 	private String officeId;		// 部门ID
 	private String stockName;		// 仓库名称
 	private String stockAddress;		// 仓库地址
+	private Integer sort;
 	
 	public ShopStockInfo() {
 		super();
@@ -54,5 +55,14 @@ public class ShopStockInfo extends DataEntity<ShopStockInfo> {
 	public void setStockAddress(String stockAddress) {
 		this.stockAddress = stockAddress;
 	}
+
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+	
 	
 }

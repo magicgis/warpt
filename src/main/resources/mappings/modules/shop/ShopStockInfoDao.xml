@@ -7,6 +7,7 @@
 		a.office_id AS "officeId",
 		a.stock_name AS "stockName",
 		a.stock_address AS "stockAddress",
+		a.sort AS "sort",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -45,7 +46,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.sort
 			</otherwise>
 		</choose>
 	</select>
@@ -63,7 +64,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.sort
 			</otherwise>
 		</choose>
 	</select>
@@ -74,6 +75,7 @@
 			office_id,
 			stock_name,
 			stock_address,
+			sort,
 			create_by,
 			create_date,
 			update_by,
@@ -85,6 +87,7 @@
 			#{officeId},
 			#{stockName},
 			#{stockAddress},
+			#{sort},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
@@ -99,6 +102,7 @@
 			office_id = #{officeId},
 			stock_name = #{stockName},
 			stock_address = #{stockAddress},
+			sort = #{sort},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks}
