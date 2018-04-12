@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopPurchaseOrderDao">
+    
+	<sql id="shopPurchaseOrderColumns">
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a.stock_id AS "stockId",
+		a.stock_name AS "stockName",
+		a.order_no AS "orderNo",
+		a.order_sum AS "orderSum",
+		a.freight_money AS "freightMoney",
+		a.busin_data AS "businData",
+		a.state AS "state",
+		a.order_name AS "orderName",
+		a.order_id AS "orderId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="shopPurchaseOrderJoins">
+	</sql>
+    
+	<select id="get" resultType="ShopPurchaseOrder">
+		SELECT 
+			<include refid="shopPurchaseOrderColumns"/>
+		FROM shop_purchase_order a
+		<include refid="shopPurchaseOrderJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopPurchaseOrder">
+		SELECT 
+			<include refid="shopPurchaseOrderColumns"/>
+		FROM shop_purchase_order a
+		<include refid="shopPurchaseOrderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="stockName != null and stockName != ''">
+				AND a.stock_name = #{stockName}
+			</if>
+			<if test="orderNo != null and orderNo != ''">
+				AND a.order_no = #{orderNo}
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND a.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShopPurchaseOrder">
+		SELECT 
+			<include refid="shopPurchaseOrderColumns"/>
+		FROM shop_purchase_order a
+		<include refid="shopPurchaseOrderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_purchase_order(
+			id,
+			office_id,
+			stock_id,
+			stock_name,
+			order_no,
+			order_sum,
+			freight_money,
+			busin_data,
+			state,
+			order_name,
+			order_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{officeId},
+			#{stockId},
+			#{stockName},
+			#{orderNo},
+			#{orderSum},
+			#{freightMoney},
+			#{businData},
+			#{state},
+			#{orderName},
+			#{orderId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_purchase_order SET 	
+			office_id = #{officeId},
+			stock_id = #{stockId},
+			stock_name = #{stockName},
+			order_no = #{orderNo},
+			order_sum = #{orderSum},
+			freight_money = #{freightMoney},
+			busin_data = #{businData},
+			state = #{state},
+			order_name = #{orderName},
+			order_id = #{orderId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_purchase_order SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

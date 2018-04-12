@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopPurchaseOrderItemDao">
+    
+	<sql id="shopPurchaseOrderItemColumns">
+		a.id AS "id",
+		a.order_id AS "orderId",
+		a.product_id AS "productId",
+		a.product_name AS "productName",
+		a.product_no AS "productNo",
+		a.purchase_num AS "purchaseNum",
+		a.order_money AS "orderMoney",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="shopPurchaseOrderItemJoins">
+		LEFT JOIN shop_purchase_order b ON b.id = a.order_id
+	</sql>
+    
+	<select id="get" resultType="ShopPurchaseOrderItem">
+		SELECT 
+			<include refid="shopPurchaseOrderItemColumns"/>
+		FROM shop_purchase_order_item a
+		<include refid="shopPurchaseOrderItemJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopPurchaseOrderItem">
+		SELECT 
+			<include refid="shopPurchaseOrderItemColumns"/>
+		FROM shop_purchase_order_item a
+		<include refid="shopPurchaseOrderItemJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderId != null and orderId != ''">
+				AND a.order_id = #{orderId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShopPurchaseOrderItem">
+		SELECT 
+			<include refid="shopPurchaseOrderItemColumns"/>
+		FROM shop_purchase_order_item a
+		<include refid="shopPurchaseOrderItemJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_purchase_order_item(
+			id,
+			order_id,
+			product_id,
+			product_name,
+			product_no,
+			purchase_num,
+			order_money,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{orderId},
+			#{productId},
+			#{productName},
+			#{productNo},
+			#{purchaseNum},
+			#{orderMoney},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_purchase_order_item SET 	
+			order_id = #{orderId},
+			product_id = #{productId},
+			product_name = #{productName},
+			product_no = #{productNo},
+			purchase_num = #{purchaseNum},
+			order_money = #{orderMoney},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_purchase_order_item SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE order_id = #{orderId}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>
