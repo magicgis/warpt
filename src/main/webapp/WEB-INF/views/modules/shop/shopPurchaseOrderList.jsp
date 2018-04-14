@@ -14,12 +14,30 @@
 			$("#searchForm").submit();
         	return false;
         }
+		
+		function showAddOrder(){
+        	top.layer.ready(function(){ 
+				var index =	top.layer.open({
+				    type: 2,
+				    title: '采购单',
+				    maxmin: false,
+				    resize : false, //是否允许拉伸
+				    //area: ['600px', '450px'],
+				    content: ctx + '/shop/shopPurchaseOrder/form',
+					success : function(layero, index) {
+					},
+					end : function() {
+					}
+				});
+				top.layer.full(index);
+			});
+		}
 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/shop/shopPurchaseOrder/">商品采购单列表</a></li>
-		<shiro:hasPermission name="shop:shopPurchaseOrder:edit"><li><a href="${ctx}/shop/shopPurchaseOrder/form">商品采购单添加</a></li></shiro:hasPermission>
+<%-- 		<shiro:hasPermission name="shop:shopPurchaseOrder:edit"><li><a href="${ctx}/shop/shopPurchaseOrder/form">商品采购单添加</a></li></shiro:hasPermission> --%>
 	</ul>
 	<form:form id="searchForm" modelAttribute="shopPurchaseOrder" action="${ctx}/shop/shopPurchaseOrder/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
@@ -33,7 +51,11 @@
 				<form:input path="businData" htmlEscape="false" maxlength="19" class="input-medium"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-			<li class="clearfix"></li>
+			<li class="clearfix" style="float: right;">
+			<shiro:hasPermission name="shop:shopPurchaseOrder:edit">
+				<input class="btn btn-primary" type="button" value="新增采购单" onclick="showAddOrder()"/>
+			</shiro:hasPermission>
+			</li>
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>

@@ -12,9 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
 import com.thinkgem.jeesite.modules.shop.entity.ShopPurchaseOrder;
 import com.thinkgem.jeesite.modules.shop.dao.ShopPurchaseOrderDao;
 import com.thinkgem.jeesite.modules.shop.entity.ShopPurchaseOrderItem;
+import com.thinkgem.jeesite.modules.shop.entity.ShopPurchaseSupplier;
+import com.thinkgem.jeesite.modules.shop.entity.ShopStockInfo;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.shop.dao.ShopPurchaseOrderItemDao;
 
 /**
@@ -28,12 +32,56 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 
 	@Autowired
 	private ShopPurchaseOrderItemDao shopPurchaseOrderItemDao;
+	@Autowired
+	private ShopPurchaseSupplierService shopPurchaseSupplierService;
+	@Autowired
+	private ShopStockInfoService shopStockInfoService;
+	@Autowired
+	private ShopProductService shopProductService;
 	
 	public ShopPurchaseOrder get(String id) {
 		ShopPurchaseOrder shopPurchaseOrder = super.get(id);
 		shopPurchaseOrder.setShopPurchaseOrderItemList(shopPurchaseOrderItemDao.findList(new ShopPurchaseOrderItem(shopPurchaseOrder)));
 		return shopPurchaseOrder;
 	}
+	
+	public ShopPurchaseOrder getEdit(String id) {
+		ShopPurchaseOrder shopPurchaseOrder = null;
+		//仓库
+		ShopStockInfo parm = new ShopStockInfo();
+		parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+		List<ShopStockInfo> stockList = shopStockInfoService.findList(parm);
+		//供应商
+		ShopPurchaseSupplier parm2 = new ShopPurchaseSupplier();
+		parm2.setOfficeId(UserUtils.getUser().getOffice().getId());
+		List<ShopPurchaseSupplier> supplierList = shopPurchaseSupplierService.findList(parm2);
+		//商品
+		ShopProduct parm3 = new ShopProduct();
+		parm3.setOffice_id(UserUtils.getUser().getOffice().getId());
+		List<ShopProduct> productList = shopProductService.findList(parm3);
+		//获取对象
+		if(!StringUtils.isEmpty(id)) {
+			shopPurchaseOrder = get(id);
+		}else {
+			shopPurchaseOrder = new ShopPurchaseOrder();
+			//新增初始化=========
+			//默认第一个仓库
+			ShopStockInfo shopStockInfo = stockList.get(0);
+			shopPurchaseOrder.setStockId(shopStockInfo.getId());
+			shopPurchaseOrder.setStockName(shopStockInfo.getStockName());
+			//默认第一个供应商
+			ShopPurchaseSupplier shopPurchaseSupplier = supplierList.get(0);
+			shopPurchaseOrder.setSupplierId(shopPurchaseSupplier.getId());
+			shopPurchaseOrder.setSupplierName(shopPurchaseSupplier.getSupplierName());
+		}
+		
+		//对象绑定回去
+		shopPurchaseOrder.setStockList(stockList);
+		shopPurchaseOrder.setSupplierList(supplierList);
+		shopPurchaseOrder.setProductList(productList);
+				
+		return shopPurchaseOrder;
+	}	
 	
 	public List<ShopPurchaseOrder> findList(ShopPurchaseOrder shopPurchaseOrder) {
 		return super.findList(shopPurchaseOrder);

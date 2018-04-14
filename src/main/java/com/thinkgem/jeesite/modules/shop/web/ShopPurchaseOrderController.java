@@ -3,7 +3,9 @@
  */
 package com.thinkgem.jeesite.modules.shop.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,15 +17,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
 import com.thinkgem.jeesite.modules.shop.entity.ShopPurchaseOrder;
 import com.thinkgem.jeesite.modules.shop.entity.ShopPurchaseSupplier;
 import com.thinkgem.jeesite.modules.shop.entity.ShopStockInfo;
+import com.thinkgem.jeesite.modules.shop.service.ShopProductService;
 import com.thinkgem.jeesite.modules.shop.service.ShopPurchaseOrderService;
 import com.thinkgem.jeesite.modules.shop.service.ShopPurchaseSupplierService;
 import com.thinkgem.jeesite.modules.shop.service.ShopStockInfoService;
@@ -40,10 +45,6 @@ public class ShopPurchaseOrderController extends BaseController {
 
 	@Autowired
 	private ShopPurchaseOrderService shopPurchaseOrderService;
-	@Autowired
-	private ShopPurchaseSupplierService shopPurchaseSupplierService;
-	@Autowired
-	private ShopStockInfoService shopStockInfoService;
 	
 	
 	@ModelAttribute
@@ -54,20 +55,6 @@ public class ShopPurchaseOrderController extends BaseController {
 		}
 		if (entity == null){
 			entity = new ShopPurchaseOrder();
-			//默认第一个仓库
-			ShopStockInfo parm = new ShopStockInfo();
-			parm.setOfficeId(UserUtils.getUser().getOffice().getId());
-			List<ShopStockInfo> shopStockInfoList = shopStockInfoService.findList(parm);
-			ShopStockInfo shopStockInfo = shopStockInfoList.get(0);
-			entity.setStockId(shopStockInfo.getId());
-			entity.setStockName(shopStockInfo.getStockName());
-			//默认第一个供应商
-			ShopPurchaseSupplier parm2 = new ShopPurchaseSupplier();
-			parm.setOfficeId(UserUtils.getUser().getOffice().getId());
-			List<ShopPurchaseSupplier> shopPurchaseSupplierList = shopPurchaseSupplierService.findList(parm2);
-			ShopPurchaseSupplier shopPurchaseSupplier = shopPurchaseSupplierList.get(0);
-			entity.setSupplierId(shopPurchaseSupplier.getId());
-			entity.setSupplierName(shopPurchaseSupplier.getSupplierName());
 		}
 		return entity;
 	}
@@ -83,8 +70,22 @@ public class ShopPurchaseOrderController extends BaseController {
 	@RequiresPermissions("shop:shopPurchaseOrder:view")
 	@RequestMapping(value = "form")
 	public String form(ShopPurchaseOrder shopPurchaseOrder, Model model) {
-		model.addAttribute("shopPurchaseOrder", shopPurchaseOrder);
+		//model.addAttribute("shopPurchaseOrder", shopPurchaseOrder);
 		return "modules/shop/shopPurchaseOrderForm";
+	}
+	
+	/**
+	 * 余额查询
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "loadingForm")
+	public ShopPurchaseOrder loadingForm(HttpServletRequest request) {
+		String id = request.getParameter("id");
+		ShopPurchaseOrder shopPurchaseOrder = shopPurchaseOrderService.getEdit(id);
+		return shopPurchaseOrder;
 	}
 
 	@RequiresPermissions("shop:shopPurchaseOrder:edit")

@@ -7,13 +7,13 @@
 		a.office_id AS "officeId",
 		a.stock_id AS "stockId",
 		a.stock_name AS "stockName",
+		a.supplier_id AS "supplierId",
+		a.supplier_id AS "supplierName",
 		a.order_no AS "orderNo",
 		a.order_sum AS "orderSum",
 		a.freight_money AS "freightMoney",
 		a.busin_data AS "businData",
 		a.state AS "state",
-		a.order_name AS "orderName",
-		a.order_id AS "orderId",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -67,6 +67,15 @@
 		<include refid="shopPurchaseOrderJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
+			</if>
+			<if test="stockId != null and stockId != ''">
+				AND a.stock_id = #{stockId}
+			</if>
+			<if test="supplierId != null and supplierId != ''">
+				AND a.supplier_id = #{supplierId}
+			</if>
 		</where>		
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -84,13 +93,13 @@
 			office_id,
 			stock_id,
 			stock_name,
+			supplier_id,
+			supplier_name,
 			order_no,
 			order_sum,
 			freight_money,
 			busin_data,
 			state,
-			order_name,
-			order_id,
 			create_by,
 			create_date,
 			update_by,
@@ -102,13 +111,13 @@
 			#{officeId},
 			#{stockId},
 			#{stockName},
+			#{supplierId},
+			#{supplierName},
 			#{orderNo},
 			#{orderSum},
 			#{freightMoney},
 			#{businData},
 			#{state},
-			#{orderName},
-			#{orderId},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
@@ -123,13 +132,13 @@
 			office_id = #{officeId},
 			stock_id = #{stockId},
 			stock_name = #{stockName},
+			supplier_id = #{supplierId},
+			supplier_name = #{supplierName},
 			order_no = #{orderNo},
 			order_sum = #{orderSum},
 			freight_money = #{freightMoney},
 			busin_data = #{businData},
 			state = #{state},
-			order_name = #{orderName},
-			order_id = #{orderId},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks}

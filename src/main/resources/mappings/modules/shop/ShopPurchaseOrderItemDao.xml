@@ -4,12 +4,19 @@
     
 	<sql id="shopPurchaseOrderItemColumns">
 		a.id AS "id",
-		a.order_id AS "orderId",
+		a.order_id AS "shopPurchaseOrder.id",
 		a.product_id AS "productId",
 		a.product_name AS "productName",
 		a.product_no AS "productNo",
 		a.purchase_num AS "purchaseNum",
 		a.order_money AS "orderMoney",
+		a.unit AS "unit",
+		a.spec AS "spec",
+		a.stock_num AS "stockNum",
+		a.discount AS "discount",
+		a.dis_money AS "disMoney",
+		a.all_money AS "allMoney",
+		a.count_money AS "countMoney",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -37,8 +44,8 @@
 		<include refid="shopPurchaseOrderItemJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
-			<if test="orderId != null and orderId != ''">
-				AND a.order_id = #{orderId}
+			<if test="shopPurchaseOrder!= null and shopPurchaseOrder.id != null and shopPurchaseOrder.id != ''">
+				AND a.order_id = #{shopPurchaseOrder.id}
 			</if>
 		</where>
 		<choose>
@@ -78,6 +85,13 @@
 			product_no,
 			purchase_num,
 			order_money,
+			unit,
+			spec,
+			stock_num,
+			discount,
+			dis_money,
+			all_money,
+			count_money,
 			create_by,
 			create_date,
 			update_by,
@@ -86,12 +100,19 @@
 			del_flag
 		) VALUES (
 			#{id},
-			#{orderId},
+			#{shopPurchaseOrder.id},
 			#{productId},
 			#{productName},
 			#{productNo},
 			#{purchaseNum},
 			#{orderMoney},
+			#{unit},
+			#{spec},
+			#{stockNum},
+			#{discount},
+			#{disMoney},
+			#{allMoney},
+			#{countMoney},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
@@ -103,12 +124,19 @@
 	
 	<update id="update">
 		UPDATE shop_purchase_order_item SET 	
-			order_id = #{orderId},
+			order_id = #{shopPurchaseOrder.id},
 			product_id = #{productId},
 			product_name = #{productName},
 			product_no = #{productNo},
 			purchase_num = #{purchaseNum},
 			order_money = #{orderMoney},
+			unit = #{unit},
+			spec = #{spec},
+			stock_num = #{stockNum},
+			discount = #{discount},
+			dis_money = #{disMoney},
+			all_money = #{allMoney},
+			count_money= #{countMoney},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks}
@@ -123,7 +151,7 @@
 				WHERE id = #{id}
 			</when>
 			<otherwise>
-				WHERE order_id = #{orderId}
+				WHERE order_id = #{shopPurchaseOrder.id}
 			</otherwise>
 		</choose>
 	</update>

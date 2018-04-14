@@ -24,14 +24,15 @@ public class ShopPurchaseOrder extends DataEntity<ShopPurchaseOrder> {
 	private String supplierName;		// 供应商
 	private String orderNo;		// 采购单号
 	private Double orderSum;		// 订单总金额
-	private Double freightMoney;		// 额外运费
+	private Double freightMoney;		// 快递运费
 	private String businData;		// 采购日期
 	private Integer state;		// 采购状态
-	private String orderName;		// 销售员
-	private String orderId;		// order_id
 	private String beginBusinData;		// 开始 采购日期
 	private String endBusinData;		// 结束 采购日期
 	private List<ShopPurchaseOrderItem> shopPurchaseOrderItemList = Lists.newArrayList();		// 子表列表
+	private List<ShopStockInfo> stockList = Lists.newArrayList();		// 仓库列表
+	private List<ShopPurchaseSupplier> supplierList = Lists.newArrayList();		// 供应商列表
+	private List<ShopProduct> productList = Lists.newArrayList();		// 商品列表
 	
 	public ShopPurchaseOrder() {
 		super();
@@ -109,24 +110,7 @@ public class ShopPurchaseOrder extends DataEntity<ShopPurchaseOrder> {
 	public void setState(Integer state) {
 		this.state = state;
 	}
-	
-	@Length(min=0, max=50, message="销售员长度必须介于 0 和 50 之间")
-	public String getOrderName() {
-		return orderName;
-	}
 
-	public void setOrderName(String orderName) {
-		this.orderName = orderName;
-	}
-	
-	@Length(min=0, max=64, message="order_id长度必须介于 0 和 64 之间")
-	public String getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
-	}
 	
 	public String getBeginBusinData() {
 		return beginBusinData;
@@ -167,6 +151,29 @@ public class ShopPurchaseOrder extends DataEntity<ShopPurchaseOrder> {
 	public void setSupplierName(String supplierName) {
 		this.supplierName = supplierName;
 	}
-	
+
+	public List<ShopStockInfo> getStockList() {
+		return stockList;
+	}
+
+	public void setStockList(List<ShopStockInfo> stockList) {
+		this.stockList = stockList;
+	}
+
+	public List<ShopPurchaseSupplier> getSupplierList() {
+		return supplierList;
+	}
+
+	public void setSupplierList(List<ShopPurchaseSupplier> supplierList) {
+		this.supplierList = supplierList;
+	}
+
+	public List<ShopProduct> getProductList() {
+		return productList;
+	}
+
+	public void setProductList(List<ShopProduct> productList) {
+		this.productList = productList;
+	}
 	
 }
