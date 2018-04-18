@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopProductDao">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopStockItemDao">
     
-	<sql id="shopProductColumns">
+	<sql id="shopStockItemColumns">
 		a.id AS "id",
-		a.shop_id AS "shopId",
+		a.stock_id AS "stockId",
+		a.stock_name AS "stockName",
 		a.office_id AS "officeId",
 		a.product_type_id AS "productTypeId",
 		a.product_type_name AS "productTypeName",
+		a.product_id AS "productId",
 		a.product_name AS "productName",
 		a.product_no AS "productNo",
-		a.buy_price AS "buyPrice",
-		a.shop_price AS "shopPrice",
+		a.stock_num AS "stockNum",
 		a.warn_stock AS "warnStock",
-		a.unit AS "unit",
-		a.spec AS "spec",
 		a.list_no AS "listNo",
-		a.remark AS "remark",
-		a.one_url AS "oneUrl",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -26,69 +23,52 @@
 		a.del_flag AS "delFlag"
 	</sql>
 	
-	<sql id="shopProductJoins">
+	<sql id="shopStockItemJoins">
 	</sql>
     
-	<select id="get" resultType="ShopProduct">
+	<select id="get" resultType="ShopStockItem">
 		SELECT 
-			<include refid="shopProductColumns"/>
-		FROM shop_product a
-		<include refid="shopProductJoins"/>
+			<include refid="shopStockItemColumns"/>
+		FROM shop_stock_item a
+		<include refid="shopStockItemJoins"/>
 		WHERE a.id = #{id}
 	</select>
 	
-	<select id="findList" resultType="ShopProduct">
+	<select id="findList" resultType="ShopStockItem">
 		SELECT 
-			<include refid="shopProductColumns"/>
-		FROM shop_product a
-		<include refid="shopProductJoins"/>
+			<include refid="shopStockItemColumns"/>
+		FROM shop_stock_item a
+		<include refid="shopStockItemJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="stockId != null and stockId != ''">
+				AND a.stock_id = #{stockId}
+			</if>
 			<if test="productTypeId != null and productTypeId != ''">
 				AND a.product_type_id = #{productTypeId}
 			</if>
-			<if test="productName != null and productName != ''">
-				AND a.product_name LIKE
-					<if test="dbName == 'oracle'"> '%'||#{productName}||'%'</if>
-					<if test="dbName == 'mssql'">AND a.product_name LIKE '%'+#{productName}+'%'</if>
-					<if test="dbName == 'mysql'"> concat('%',#{productName},'%') </if>
-			</if>
-			<if test="pingyinStr != null and pingyinStr != ''">
-				AND to_pinyin(a.product_name) like #{pingyinStr}
-			</if>
-			
-			<if test="productNo != null and productNo != ''">
-				AND a.product_no = #{productNo}
-			</if>
-			<if test="buyPrice != null and buyPrice != ''">
-				AND a.buy_price = #{buyPrice}
-			</if>
-			<if test="unit != null and unit != ''">
-				AND a.unit = #{unit}
-			</if>
-			<if test="spec != null and spec != ''">
-				AND a.spec = #{spec}
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
 			</if>
 			<if test="officeId != null and officeId != ''">
 				AND a.office_id = #{officeId}
 			</if>
-			
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.list_no
+				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>
 	
-	<select id="findAllList" resultType="ShopProduct">
+	<select id="findAllList" resultType="ShopStockItem">
 		SELECT 
-			<include refid="shopProductColumns"/>
-		FROM shop_product a
-		<include refid="shopProductJoins"/>
+			<include refid="shopStockItemColumns"/>
+		FROM shop_stock_item a
+		<include refid="shopStockItemJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 		</where>		
@@ -97,28 +77,25 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.list_no
+				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>
 	
 	<insert id="insert">
-		INSERT INTO shop_product(
+		INSERT INTO shop_stock_item(
 			id,
-			shop_id,
+			stock_id,
+			stock_name,
 			office_id,
 			product_type_id,
 			product_type_name,
+			product_id,
 			product_name,
 			product_no,
-			buy_price,
-			shop_price,
+			stock_num,
 			warn_stock,
-			unit,
-			spec,
 			list_no,
-			remark,
-			one_url,
 			create_by,
 			create_date,
 			update_by,
@@ -127,20 +104,17 @@
 			del_flag
 		) VALUES (
 			#{id},
-			#{shopId},
+			#{stockId},
+			#{stockName},
 			#{officeId},
 			#{productTypeId},
 			#{productTypeName},
+			#{productId},
 			#{productName},
 			#{productNo},
-			#{buyPrice},
-			#{shopPrice},
+			#{stockNum},
 			#{warnStock},
-			#{unit},
-			#{spec},
 			#{listNo},
-			#{remark},
-			#{oneUrl},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
@@ -151,21 +125,18 @@
 	</insert>
 	
 	<update id="update">
-		UPDATE shop_product SET 	
-			shop_id = #{shopId},
+		UPDATE shop_stock_item SET 	
+			stock_id = #{stockId},
+			stock_name = #{stockName},
 			office_id = #{officeId},
 			product_type_id = #{productTypeId},
 			product_type_name = #{productTypeName},
+			product_id = #{productId},
 			product_name = #{productName},
 			product_no = #{productNo},
-			buy_price = #{buyPrice},
-			shop_price = #{shopPrice},
+			stock_num = #{stockNum},
 			warn_stock = #{warnStock},
-			unit = #{unit},
-			spec = #{spec},
 			list_no = #{listNo},
-			remark = #{remark},
-			one_url = #{oneUrl},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks}
@@ -173,7 +144,7 @@
 	</update>
 	
 	<update id="delete">
-		UPDATE shop_product SET 
+		UPDATE shop_stock_item SET 
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>

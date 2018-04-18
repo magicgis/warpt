@@ -45,7 +45,7 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 		return shopPurchaseOrder;
 	}
 	
-	public ShopPurchaseOrder getEdit(String id) {
+	public ShopPurchaseOrder getEdit(String id) throws Exception {
 		ShopPurchaseOrder shopPurchaseOrder = null;
 		//仓库
 		ShopStockInfo parm = new ShopStockInfo();
@@ -57,8 +57,11 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 		List<ShopPurchaseSupplier> supplierList = shopPurchaseSupplierService.findList(parm2);
 		//商品
 		ShopProduct parm3 = new ShopProduct();
-		parm3.setOffice_id(UserUtils.getUser().getOffice().getId());
+		parm3.setOfficeId(UserUtils.getUser().getOffice().getId());
 		List<ShopProduct> productList = shopProductService.findList(parm3);
+		if(stockList.isEmpty() || supplierList.isEmpty() || productList.isEmpty()) {
+			throw new Exception("请先初始化商品、供应商、仓库，再进行单据录入。");
+		}
 		//获取对象
 		if(!StringUtils.isEmpty(id)) {
 			shopPurchaseOrder = get(id);
@@ -73,6 +76,12 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 			ShopPurchaseSupplier shopPurchaseSupplier = supplierList.get(0);
 			shopPurchaseOrder.setSupplierId(shopPurchaseSupplier.getId());
 			shopPurchaseOrder.setSupplierName(shopPurchaseSupplier.getSupplierName());
+			//初始化字表
+//			ShopPurchaseOrderItem initItem = new ShopPurchaseOrderItem();
+//			initItem.setProductId(""); //商品默认不选择
+//			shopPurchaseOrder.getShopPurchaseOrderItemList().add(initItem);
+//			shopPurchaseOrder.getShopPurchaseOrderItemList().add(initItem);
+//			shopPurchaseOrder.getShopPurchaseOrderItemList().add(initItem);
 		}
 		
 		//对象绑定回去

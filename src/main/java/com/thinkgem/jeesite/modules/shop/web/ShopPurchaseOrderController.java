@@ -82,10 +82,18 @@ public class ShopPurchaseOrderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "loadingForm")
-	public ShopPurchaseOrder loadingForm(HttpServletRequest request) {
+	public Map<String, Object> loadingForm(HttpServletRequest request) {
 		String id = request.getParameter("id");
-		ShopPurchaseOrder shopPurchaseOrder = shopPurchaseOrderService.getEdit(id);
-		return shopPurchaseOrder;
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		try {
+			ShopPurchaseOrder shopPurchaseOrder = shopPurchaseOrderService.getEdit(id);
+			returnMap.put("obj", shopPurchaseOrder);
+			returnMap.put("success", true);
+		}catch(Exception e) {
+			returnMap.put("success", false);
+			returnMap.put("msg", e.getMessage());
+		}
+		return returnMap;
 	}
 
 	@RequiresPermissions("shop:shopPurchaseOrder:edit")

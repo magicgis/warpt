@@ -43,7 +43,7 @@
 				}
 			});
 		}
-		function delRow(obj, prefix){
+		/*function delRow(obj, prefix){
 			var id = $(prefix+"_id");
 			var delFlag = $(prefix+"_delFlag");
 			if (id.val() == ""){
@@ -56,6 +56,20 @@
 				delFlag.val("0");
 				$(obj).html("&times;").attr("title", "删除");
 				$(obj).parent().parent().removeClass("error");
+			}
+		}*/
+		//折扣价格计算
+		function levelDiscountPrice(src){
+			var shopPrice = src.value;
+			if (parseFloat(shopPrice).toString() != 'NaN') {
+				var priceInputs = $('.list_price');
+				var discountInputs = $('.list_discount');
+				for(var i=0;i<priceInputs.length;i++){
+					if(priceInputs[i].value == ''){
+						var price = shopPrice*discountInputs[i].value*0.01;
+						priceInputs[i].value = price.toFixed(1);
+					}
+				}
 			}
 		}
 	</script>
@@ -99,6 +113,13 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">销售价：</label>
+			<div class="controls">
+				<form:input path="shopPrice" htmlEscape="false" class="required  number" onblur="levelDiscountPrice(this)"/>
+				<span class="help-inline"><font color="red">*</font> </span>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">库存预警数：</label>
 			<div class="controls">
 				<form:input path="warnStock" htmlEscape="false" maxlength="11" class="input-xlarge  digits" value='10'/>
@@ -129,50 +150,46 @@
 			</div>
 		</div>
 			<div class="control-group">
-				<label class="control-label">销售价格：</label>
+				<label class="control-label">级别价格：</label>
 				<div class="controls">
 					<table id="contentTable" class="table table-striped table-bordered table-condensed">
 						<thead>
 							<tr>
 								<th class="hide"></th>
-								<th>价格名称</th>
+								<th>分类名称</th>
 								<th>折扣比例</th>
 								<th>折扣价格</th>
-								<th>排序</th>
-								<th>备注</th>
-								<shiro:hasPermission name="shop:shopProduct:edit"><th width="10">&nbsp;</th></shiro:hasPermission>
+								<!--<shiro:hasPermission name="shop:shopProduct:edit"><th width="10">&nbsp;</th></shiro:hasPermission>-->
 							</tr>
 						</thead>
 						<tbody id="shopProductPriceList">
 						</tbody>
-						<shiro:hasPermission name="shop:shopProduct:edit"><tfoot>
+						<!--<shiro:hasPermission name="shop:shopProduct:edit"><tfoot>
 							<tr><td colspan="7"><a href="javascript:" onclick="addRow('#shopProductPriceList', shopProductPriceRowIdx, shopProductPriceTpl);shopProductPriceRowIdx = shopProductPriceRowIdx + 1;" class="btn">新增</a></td></tr>
-						</tfoot></shiro:hasPermission>
+						</tfoot></shiro:hasPermission>-->
 					</table>
 					<script type="text/template" id="shopProductPriceTpl">//<!--
 						<tr id="shopProductPriceList{{idx}}">
 							<td class="hide">
 								<input id="shopProductPriceList{{idx}}_id" name="shopProductPriceList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
 								<input id="shopProductPriceList{{idx}}_delFlag" name="shopProductPriceList[{{idx}}].delFlag" type="hidden" value="0"/>
+								<input id="shopProductPriceList{{idx}}_listNo" name="shopProductPriceList[{{idx}}].listNo" type="hidden" value="{{row.listNo}}"/>
 							</td>
 							<td>
-								<input id="shopProductPriceList{{idx}}_levelName" name="shopProductPriceList[{{idx}}].levelName" type="text" value="{{row.levelName}}" maxlength="64" class="input-small required"/><span class="help-inline"><font color="red">*</font> </span>
+								<input id="shopProductPriceList{{idx}}_levelId" name="shopProductPriceList[{{idx}}].levelId" type="hidden" value="{{row.levelId}}"/>
+								<input id="shopProductPriceList{{idx}}_levelName" name="shopProductPriceList[{{idx}}].levelName" type="hidden" value="{{row.levelName}}" />
+								{{row.levelName}}
 							</td>
 							<td>
-								<input id="shopProductPriceList{{idx}}_discount" name="shopProductPriceList[{{idx}}].discount" type="text" value="{{row.discount}}" maxlength="200" class="input-small "/>
+								<input id="shopProductPriceList{{idx}}_discount" name="shopProductPriceList[{{idx}}].discount" type="hidden" value="{{row.discount}}" class="list_discount" />
+								{{row.discount}}%
 							</td>
 							<td>
-								<input id="shopProductPriceList{{idx}}_discountPrice" name="shopProductPriceList[{{idx}}].discountPrice" type="text" value="{{row.discountPrice}}" class="input-small required number"/><span class="help-inline"><font color="red">*</font> </span>
+								<input id="shopProductPriceList{{idx}}_discountPrice" name="shopProductPriceList[{{idx}}].discountPrice" type="text" value="{{row.discountPrice}}" class="list_price input-small required number"/><span class="help-inline"><font color="red">*</font> </span>
 							</td>
-							<td>
-								<input id="shopProductPriceList{{idx}}_listNo" name="shopProductPriceList[{{idx}}].listNo" type="text" value="{{row.listNo}}" maxlength="11" class="input-small  digits"/>
-							</td>
-							<td>
-								<textarea id="shopProductPriceList{{idx}}_remarks" name="shopProductPriceList[{{idx}}].remarks" rows="4" maxlength="255" class="input-small ">{{row.remarks}}</textarea>
-							</td>
-							<shiro:hasPermission name="shop:shopProduct:edit"><td class="text-center" width="10">
+							<!--<shiro:hasPermission name="shop:shopProduct:edit"><td class="text-center" width="10">
 								{{#delBtn}}<span class="close" onclick="delRow(this, '#shopProductPriceList{{idx}}')" title="删除">&times;</span>{{/delBtn}}
-							</td></shiro:hasPermission>
+							</td></shiro:hasPermission>-->
 						</tr>//-->
 					</script>
 					<script type="text/javascript">

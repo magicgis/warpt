@@ -19,7 +19,7 @@
         	top.layer.ready(function(){ 
 				var index =	top.layer.open({
 				    type: 2,
-				    title: '采购单',
+				    title: '采购入库单',
 				    maxmin: false,
 				    resize : false, //是否允许拉伸
 				    //area: ['600px', '450px'],

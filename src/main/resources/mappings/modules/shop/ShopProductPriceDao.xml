@@ -5,6 +5,7 @@
 	<sql id="shopProductPriceColumns">
 		a.id AS "id",
 		a.product_id AS "shopProduct.id",
+		a.level_id AS "levelId",
 		a.level_name AS "levelName",
 		a.discount AS "discount",
 		a.discount_price AS "discountPrice",
@@ -39,6 +40,9 @@
 			<if test="shopProduct != null and shopProduct.id != null and shopProduct.id !='' ">
 				AND a.product_id = #{shopProduct.id}
 			</if>
+			<if test="levelId != null and levelId !='' ">
+				AND a.level_id = #{levelId}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -72,6 +76,7 @@
 		INSERT INTO shop_product_price(
 			id,
 			product_id,
+			level_id,
 			level_name,
 			discount,
 			discount_price,
@@ -85,6 +90,7 @@
 		) VALUES (
 			#{id},
 			#{shopProduct.id},
+			#{levelId},
 			#{levelName},
 			#{discount},
 			#{discountPrice},
@@ -101,6 +107,7 @@
 	<update id="update">
 		UPDATE shop_product_price SET 	
 			product_id = #{shopProduct.id},
+			level_id = #{levelId},
 			level_name = #{levelName},
 			discount = #{discount},
 			discount_price = #{discountPrice},

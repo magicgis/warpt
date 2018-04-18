@@ -33,6 +33,8 @@ public class ShopPurchaseOrder extends DataEntity<ShopPurchaseOrder> {
 	private List<ShopStockInfo> stockList = Lists.newArrayList();		// 仓库列表
 	private List<ShopPurchaseSupplier> supplierList = Lists.newArrayList();		// 供应商列表
 	private List<ShopProduct> productList = Lists.newArrayList();		// 商品列表
+	//供应商折扣
+	private Double discount;
 	
 	public ShopPurchaseOrder() {
 		super();
@@ -152,12 +154,14 @@ public class ShopPurchaseOrder extends DataEntity<ShopPurchaseOrder> {
 		this.supplierName = supplierName;
 	}
 
-	public List<ShopStockInfo> getStockList() {
-		return stockList;
+	
+
+	public Double getDiscount() {
+		return discount;
 	}
 
-	public void setStockList(List<ShopStockInfo> stockList) {
-		this.stockList = stockList;
+	public void setDiscount(Double discount) {
+		this.discount = discount;
 	}
 
 	public List<ShopPurchaseSupplier> getSupplierList() {
@@ -174,6 +178,14 @@ public class ShopPurchaseOrder extends DataEntity<ShopPurchaseOrder> {
 
 	public void setProductList(List<ShopProduct> productList) {
 		this.productList = productList;
+	}
+
+	public List<ShopStockInfo> getStockList() {
+		return stockList;
+	}
+
+	public void setStockList(List<ShopStockInfo> stockList) {
+		this.stockList = stockList;
 	}
 	
 }

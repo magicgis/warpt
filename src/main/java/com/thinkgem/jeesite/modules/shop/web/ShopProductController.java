@@ -3,6 +3,9 @@
  */
 package com.thinkgem.jeesite.modules.shop.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,9 +20,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerLevel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
+import com.thinkgem.jeesite.modules.shop.entity.ShopProductPrice;
+import com.thinkgem.jeesite.modules.shop.service.ShopCustomerLevelService;
 import com.thinkgem.jeesite.modules.shop.service.ShopProductService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
@@ -35,6 +41,8 @@ public class ShopProductController extends BaseController {
 
 	@Autowired
 	private ShopProductService shopProductService;
+	@Autowired
+	private ShopCustomerLevelService shopCustomerLevelService;
 
 	@ModelAttribute
 	public ShopProduct get(@RequestParam(required = false) String id) {
@@ -65,6 +73,7 @@ public class ShopProductController extends BaseController {
 				shopProduct.setProductName(null);
 			}
 		}
+		shopProduct.setOfficeId(UserUtils.getUser().getOffice().getId());
 		Page<ShopProduct> page = shopProductService.findPage(new Page<ShopProduct>(request, response), shopProduct);
 		model.addAttribute("page", page);
 		return "modules/shop/shopProductList";
@@ -73,6 +82,34 @@ public class ShopProductController extends BaseController {
 	@RequiresPermissions("shop:shopProduct:view")
 	@RequestMapping(value = "form")
 	public String form(ShopProduct shopProduct, Model model) {
+		//新增初始化客户级别
+		if(StringUtils.isEmpty(shopProduct.getId())) {
+			ShopCustomerLevel pram = new ShopCustomerLevel();
+			pram.setOfficeId(UserUtils.getUser().getOffice().getId());
+			List<ShopCustomerLevel> leveList = shopCustomerLevelService.findList(pram);
+			List<ShopProductPrice> priceList = new ArrayList<ShopProductPrice>();
+			//初始化价格
+			for (ShopCustomerLevel level : leveList) {
+				ShopProductPrice price = new ShopProductPrice();
+				price.setLevelId(level.getId());
+				price.setLevelName(level.getLevelName());
+				price.setDiscount(level.getDiscount());
+				price.setListNo(level.getSort());
+				priceList.add(price);
+			}
+			shopProduct.setShopProductPriceList(priceList);
+		}
+		//排序
+		if (StringUtils.isBlank(shopProduct.getId())){
+			ShopProduct parm = new ShopProduct();
+			parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+			List<ShopProduct> list = shopProductService.findList(parm);
+			if (list.size() > 0){
+				shopProduct.setListNo(list.get(list.size()-1).getListNo()+1);
+			}else {
+				shopProduct.setListNo(1);
+			}
+		}
 		model.addAttribute("shopProduct", shopProduct);
 		return "modules/shop/shopProductForm";
 	}
@@ -84,7 +121,7 @@ public class ShopProductController extends BaseController {
 			return form(shopProduct, model);
 		}
 		// 设置机构
-		shopProduct.setOffice_id(UserUtils.getUser().getOffice().getId());
+		shopProduct.setOfficeId(UserUtils.getUser().getOffice().getId());
 		shopProductService.save(shopProduct);
 		addMessage(redirectAttributes, "保存商品基本信息成功");
 		return "redirect:" + Global.getAdminPath() + "/shop/shopProduct/?repage";

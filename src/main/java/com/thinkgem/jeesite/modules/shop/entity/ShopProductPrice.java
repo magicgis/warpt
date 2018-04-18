@@ -16,7 +16,8 @@ public class ShopProductPrice extends DataEntity<ShopProductPrice> {
 	
 	private static final long serialVersionUID = 1L;
 	private ShopProduct shopProduct;		// 商品id 父类
-	private String levelName;		// 折扣名称
+	private String levelId;		// 级别id
+	private String levelName;		// 级别名称
 	private String discount;		// 折扣比例
 	private Double discountPrice;		// 折扣价格
 	private Integer listNo;		// 排序
@@ -73,6 +74,14 @@ public class ShopProductPrice extends DataEntity<ShopProductPrice> {
 
 	public void setListNo(Integer listNo) {
 		this.listNo = listNo;
+	}
+
+	public String getLevelId() {
+		return levelId;
+	}
+
+	public void setLevelId(String levelId) {
+		this.levelId = levelId;
 	}
 	
 }

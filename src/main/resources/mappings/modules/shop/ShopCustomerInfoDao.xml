@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopCustomerInfoDao">
+    
+	<sql id="shopCustomerInfoColumns">
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a.level_id AS "levelId",
+		a.level_name AS "levelName",
+		a.customer_name AS "customerName",
+		a.phone AS "phone",
+		a.mobile AS "mobile",
+		a.email AS "email",
+		a.fax AS "fax",
+		a.wechat AS "wechat",
+		a.qq AS "qq",
+		a.bank_name AS "bankName",
+		a.bank_no AS "bankNo",
+		a.bank_address AS "bankAddress",
+		a.address AS "address",
+		a.sort AS "sort",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="shopCustomerInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="ShopCustomerInfo">
+		SELECT 
+			<include refid="shopCustomerInfoColumns"/>
+		FROM shop_customer_info a
+		<include refid="shopCustomerInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopCustomerInfo">
+		SELECT 
+			<include refid="shopCustomerInfoColumns"/>
+		FROM shop_customer_info a
+		<include refid="shopCustomerInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="customerName != null and customerName != ''">
+				AND a.customer_name = #{customerName}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone = #{phone}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShopCustomerInfo">
+		SELECT 
+			<include refid="shopCustomerInfoColumns"/>
+		FROM shop_customer_info a
+		<include refid="shopCustomerInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_customer_info(
+			id,
+			office_id,
+			level_id,
+			level_name,
+			customer_name,
+			phone,
+			mobile,
+			email,
+			fax,
+			wechat,
+			qq,
+			bank_name,
+			bank_no,
+			bank_address,
+			address,
+			sort,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{officeId},
+			#{levelId},
+			#{levelName},
+			#{customerName},
+			#{phone},
+			#{mobile},
+			#{email},
+			#{fax},
+			#{wechat},
+			#{qq},
+			#{bankName},
+			#{bankNo},
+			#{bankAddress},
+			#{address},
+			#{sort},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_customer_info SET 	
+			office_id = #{officeId},
+			level_id = #{levelId},
+			level_name = #{levelName},
+			customer_name = #{customerName},
+			phone = #{phone},
+			mobile = #{mobile},
+			email = #{email},
+			fax = #{fax},
+			wechat = #{wechat},
+			qq = #{qq},
+			bank_name = #{bankName},
+			bank_no = #{bankNo},
+			bank_address = #{bankAddress},
+			address = #{address},
+			sort = #{sort},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_customer_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -6,7 +6,7 @@
 <!-- 引入样式 -->
 <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-	<title>采购单</title>
+	<title>采购入库单</title>
 <style type="text/css">
 .cell-icon{
   cursor:pointer;
@@ -28,7 +28,7 @@ var mypath = '${ctx}';
 				<el-input type='text' v-model="addForm.orderSum" placeholder="扫描商品条形码(或关键字+Enter)" prefix-icon="el-icon-search"></el-input>
 		</el-col>
 		<el-col :span="2">
-		<el-button type="primary" icon="el-icon-check" @click="saveForm()">保存	</el-button>
+		<el-button type="primary" icon="el-icon-check" @click="saveForm()">保存</el-button>
 		</el-col>
 		</el-row>
 		<el-form ref="addForm" :model="addForm" :rules="addFormRules" label-width="80px">
@@ -36,7 +36,7 @@ var mypath = '${ctx}';
 		 	  <el-col :span="6">
 			  <el-form-item label="仓库">
 			  	<el-col :span="16">
-			    <el-select  v-model="addForm.stockId" placeholder="请先选择仓库" >
+			    <el-select  v-model="addForm.stockId" placeholder="请先选择仓库" @change="selectStockObj()">
 			      <el-option v-for="(item, index) in addForm.stockList" v-bind:label="item.stockName" v-bind:value="item.id"></el-option>
 			    </el-select>
 			    </el-col>
@@ -45,7 +45,7 @@ var mypath = '${ctx}';
 		 	  <el-col :span="6">
 			  <el-form-item label="供应商">
 			  	<el-col :span="16">
-			    <el-select  v-model="addForm.supplierId" placeholder="请选择供应商">
+			    <el-select  v-model="addForm.supplierId" placeholder="请选择供应商" @change="selectSupplierObj()">
 			      <el-option v-for="(item, index) in addForm.supplierList" v-bind:label="item.supplierName" v-bind:value="item.id"></el-option>
 			    </el-select>
 			    </el-col>
@@ -67,6 +67,21 @@ var mypath = '${ctx}';
 			  </el-col>			  
 			 </el-row>
 			 <el-row type="flex">
+				<el-col :span="18">
+				  <el-form-item label="备注">
+				  <el-input type='text' v-model="addForm.remarks" ></el-input> 
+				  </el-form-item>
+				</el-col>
+				 <el-col :span="6">
+				  <el-form-item label="实付金额">
+				  	<el-col :span="16">
+				    <el-input type='text' v-model="addForm.freightMoney" placeholder="请输入快递运费"></el-input> 
+				    </el-col>
+				  </el-form-item>
+				</el-col>	
+
+			 </el-row>
+			 <el-row type="flex">
 				<el-table
 				    :data="addForm.shopPurchaseOrderItemList"
 				    border
@@ -78,18 +93,20 @@ var mypath = '${ctx}';
 					      label="操作"
 					      width="80">
 					      <template slot-scope="scope">
-					      	<i class="el-icon-plus" @click="addRow(scope.row)" style="cursor: pointer;color: #008cba;font-weight:bold;"></i>
+					      	<i class="el-icon-plus" @click="addTRow()" style="cursor: pointer;color: #008cba;font-weight:bold;"></i>
 					      	&nbsp;
-					        <i class="el-icon-delete" @click="deleteRow(scope.row)" style="cursor: pointer;color: #008cba;font-weight:bold;"></i>
+					        <i class="el-icon-delete" @click="deleteTRow(scope.$index)" style="cursor: pointer;color: #008cba;font-weight:bold;"></i>
 					      </template>
 					 </el-table-column>
 					<el-table-column 
 					      align="center"
 					      label="商品"
-					       prop="productName"
+					      prop="productName"
 					      width="200">
 					      <template slot-scope="scope">
-					        <span style="margin-left: 10px">{{ scope.row.productName }}</span>
+							  <el-select v-model="scope.row.selectIndex" filterable placeholder="点击选择" @change="selectProductObj(scope.$index)">
+							    <el-option v-for="(item, index) in addForm.productList" v-bind:label="item.productName" v-bind:value="index"></el-option>
+							  </el-select>
 					      </template>
 					 </el-table-column>
 				      <el-table-column
@@ -113,7 +130,7 @@ var mypath = '${ctx}';
 				      label="采购数量"
 				      align="center"
 				      width="100">
-					      <template scope="scope">
+					      <template slot-scope="scope">
 					      <span style="width:120px;">
 					      	<el-input type='text' v-model="scope.row.purchaseNum" ></el-input>
 					      </span>
@@ -130,7 +147,7 @@ var mypath = '${ctx}';
 				        prop="buyPrice"
 				        label="单价"
 				        width="100">
-					      <template scope="scope">
+					      <template slot-scope="scope">
 					      <span style="width:80px;">
 					      	<el-input type='text' v-model="scope.row.orderMoney" ></el-input>
 					      </span>
@@ -141,7 +158,7 @@ var mypath = '${ctx}';
 				        prop="discount"
 				        label="折扣(%)"
 				        width="100">
-					      <template scope="scope">
+					      <template slot-scope="scope">
 					      <span style="width:120px;">
 					      	<el-input type='text' v-model="scope.row.discount" ></el-input>
 					      </span>
@@ -152,7 +169,7 @@ var mypath = '${ctx}';
 				        prop="discount"
 				        label="折后单价"
 				        width="100">
-					      <template scope="scope">
+					      <template slot-scope="scope">
 					      <span style="width:120px;">
 					      	<el-input type='text' v-model="scope.row.disMoney" ></el-input>
 					      </span>
