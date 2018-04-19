@@ -61,7 +61,7 @@
 					${shopProduct.productTypeName}
 				</a></td>
 				<td>
-					${shopProduct.productName}
+					${shopProduct.pingyinStr}
 				</td>
 				<td>
 					${shopProduct.productNo}

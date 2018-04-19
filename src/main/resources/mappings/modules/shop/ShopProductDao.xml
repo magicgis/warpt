@@ -9,6 +9,8 @@
 		a.product_type_id AS "productTypeId",
 		a.product_type_name AS "productTypeName",
 		a.product_name AS "productName",
+		a.product_char AS "productChar",
+		concat(a.product_name,'(',a.product_char,')') AS "pingyinStr",
 		a.product_no AS "productNo",
 		a.buy_price AS "buyPrice",
 		a.shop_price AS "shopPrice",
@@ -54,7 +56,7 @@
 					<if test="dbName == 'mysql'"> concat('%',#{productName},'%') </if>
 			</if>
 			<if test="pingyinStr != null and pingyinStr != ''">
-				AND to_pinyin(a.product_name) like #{pingyinStr}
+				AND a.product_char like concat('%',#{pingyinStr},'%')
 			</if>
 			
 			<if test="productNo != null and productNo != ''">
@@ -110,6 +112,7 @@
 			product_type_id,
 			product_type_name,
 			product_name,
+			product_char,
 			product_no,
 			buy_price,
 			shop_price,
@@ -132,6 +135,7 @@
 			#{productTypeId},
 			#{productTypeName},
 			#{productName},
+			${productChar},
 			#{productNo},
 			#{buyPrice},
 			#{shopPrice},
@@ -157,6 +161,7 @@
 			product_type_id = #{productTypeId},
 			product_type_name = #{productTypeName},
 			product_name = #{productName},
+			product_char = ${productChar},
 			product_no = #{productNo},
 			buy_price = #{buyPrice},
 			shop_price = #{shopPrice},

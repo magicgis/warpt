@@ -23,7 +23,9 @@ public class ShopPurchaseOrder extends DataEntity<ShopPurchaseOrder> {
 	private String supplierId;		// 供应商id
 	private String supplierName;		// 供应商
 	private String orderNo;		// 采购单号
+	private String subjectType; //账目类型
 	private Double orderSum;		// 订单总金额
+	private Double sendSum; //订单实付金额
 	private Double freightMoney;		// 快递运费
 	private String businData;		// 采购日期
 	private Integer state;		// 采购状态
@@ -187,5 +189,23 @@ public class ShopPurchaseOrder extends DataEntity<ShopPurchaseOrder> {
 	public void setStockList(List<ShopStockInfo> stockList) {
 		this.stockList = stockList;
 	}
+
+	public Double getSendSum() {
+		return sendSum;
+	}
+
+	public void setSendSum(Double sendSum) {
+		this.sendSum = sendSum;
+	}
+
+	public String getSubjectType() {
+		return subjectType;
+	}
+
+	public void setSubjectType(String subjectType) {
+		this.subjectType = subjectType;
+	}
+
+
 	
 }

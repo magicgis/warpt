@@ -5,16 +5,13 @@ package com.thinkgem.jeesite.modules.shop.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.modules.shop.dao.ShopStockInfoDao;
-import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
 import com.thinkgem.jeesite.modules.shop.entity.ShopStockInfo;
-import com.thinkgem.jeesite.modules.shop.entity.ShopStockItem;
 import com.thinkgem.jeesite.modules.shop.utils.ShopUtils;
 
 /**

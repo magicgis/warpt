@@ -23,6 +23,7 @@ public class ShopProduct extends DataEntity<ShopProduct> {
 	private String productTypeId; // 商品类型
 	private String productTypeName; // 商品类型名称
 	private String productName; // 商品名称
+	private String productChar; //名称(首字母组合)
 	private String productNo; // 货号(条码)
 	private Double buyPrice; // 采购价
 	private Double shopPrice; // 销售价
@@ -33,8 +34,9 @@ public class ShopProduct extends DataEntity<ShopProduct> {
 	private String remark; // 商品描述
 	private String oneUrl; // 首图url
 	private List<ShopProductPrice> shopProductPriceList = Lists.newArrayList(); // 子表列表
-	// 拼音查询：%b%n%s%
+	// 拼音文字组合显示、拼音查询
 	private String pingyinStr;
+	
 
 	public ShopProduct() {
 		super();
@@ -176,6 +178,14 @@ public class ShopProduct extends DataEntity<ShopProduct> {
 
 	public void setShopPrice(Double shopPrice) {
 		this.shopPrice = shopPrice;
+	}
+
+	public String getProductChar() {
+		return productChar;
+	}
+
+	public void setProductChar(String productChar) {
+		this.productChar = productChar;
 	}
 
 }

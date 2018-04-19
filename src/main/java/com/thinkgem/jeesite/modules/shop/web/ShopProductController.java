@@ -62,14 +62,14 @@ public class ShopProductController extends BaseController {
 		// 判断查询如果是字母，则激活拼音查询
 		if (shopProduct.getProductName() != null) {
 			String productName = shopProduct.getProductName();
-			boolean isWord=productName.matches("[a-zA-Z]+");
-			if(isWord) {
-				char[] c = productName.toCharArray();
-				String pingyinStr = "%";
-				for(char yw:c) {
-					pingyinStr+=yw+"%";
-				}
-				shopProduct.setPingyinStr(pingyinStr);
+			boolean isWord = productName.matches("[a-zA-Z]+");
+			if (isWord) {
+				// char[] c = productName.toCharArray();
+				// String pingyinStr = "%";
+				// for(char yw:c) {
+				// pingyinStr+=yw+"%";
+				// }
+				shopProduct.setPingyinStr(productName.toLowerCase());
 				shopProduct.setProductName(null);
 			}
 		}
@@ -82,13 +82,13 @@ public class ShopProductController extends BaseController {
 	@RequiresPermissions("shop:shopProduct:view")
 	@RequestMapping(value = "form")
 	public String form(ShopProduct shopProduct, Model model) {
-		//新增初始化客户级别
-		if(StringUtils.isEmpty(shopProduct.getId())) {
+		// 新增初始化客户级别
+		if (StringUtils.isEmpty(shopProduct.getId())) {
 			ShopCustomerLevel pram = new ShopCustomerLevel();
 			pram.setOfficeId(UserUtils.getUser().getOffice().getId());
 			List<ShopCustomerLevel> leveList = shopCustomerLevelService.findList(pram);
 			List<ShopProductPrice> priceList = new ArrayList<ShopProductPrice>();
-			//初始化价格
+			// 初始化价格
 			for (ShopCustomerLevel level : leveList) {
 				ShopProductPrice price = new ShopProductPrice();
 				price.setLevelId(level.getId());
@@ -99,14 +99,14 @@ public class ShopProductController extends BaseController {
 			}
 			shopProduct.setShopProductPriceList(priceList);
 		}
-		//排序
-		if (StringUtils.isBlank(shopProduct.getId())){
+		// 排序
+		if (StringUtils.isBlank(shopProduct.getId())) {
 			ShopProduct parm = new ShopProduct();
 			parm.setOfficeId(UserUtils.getUser().getOffice().getId());
 			List<ShopProduct> list = shopProductService.findList(parm);
-			if (list.size() > 0){
-				shopProduct.setListNo(list.get(list.size()-1).getListNo()+1);
-			}else {
+			if (list.size() > 0) {
+				shopProduct.setListNo(list.get(list.size() - 1).getListNo() + 1);
+			} else {
 				shopProduct.setListNo(1);
 			}
 		}

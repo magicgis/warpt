@@ -149,4 +149,20 @@
 		WHERE id = #{id}
 	</update>
 	
+	<select id="findProductStockNum" resultType="shopStockItem">
+		SELECT sum(stock_num) as stockNum,a.product_id as productId,a.product_name as productName 
+		FROM SHOP_STOCK_ITEM a where a.del_flag = #{DEL_FLAG_NORMAL} 
+		<if test="productId != null and productId != ''">
+			AND a.product_id = #{productId}
+		</if>
+		<if test="stockId != null and stockId != ''">
+			AND a.stock_id = #{stockId}
+		</if>
+	</select>	
+	
+	<update id="deleteByProductId" >
+		UPDATE shop_stock_item SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE product_id = #{productId}
+	</update>	
 </mapper>
