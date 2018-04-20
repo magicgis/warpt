@@ -15,8 +15,10 @@
         	return false;
         }
 		
-		function showAddOrder(){
-        	top.layer.ready(function(){ 
+		function showAdd(){
+        	top.layer.ready(function(){
+        		//缓存在打开页面调用
+        		top.loadListForm = $('#searchForm');
 				var index =	top.layer.open({
 				    type: 2,
 				    title: '采购入库单',
@@ -24,6 +26,26 @@
 				    resize : false, //是否允许拉伸
 				    //area: ['600px', '450px'],
 				    content: ctx + '/shop/shopPurchaseOrder/form',
+					success : function(layero, index) {
+					},
+					end : function() {
+					}
+				});
+				top.layer.full(index);
+			});
+		}
+		
+		function showView(id){
+        	top.layer.ready(function(){
+        		//缓存在打开页面调用
+        		top.loadListForm = $('#searchForm');
+				var index =	top.layer.open({
+				    type: 2,
+				    title: '采购入库单',
+				    maxmin: false,
+				    resize : false, //是否允许拉伸
+				    //area: ['600px', '450px'],
+				    content: ctx + '/shop/shopPurchaseOrder/form?id='+id,
 					success : function(layero, index) {
 					},
 					end : function() {
@@ -53,7 +75,7 @@
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
 			<li class="clearfix" style="float: right;">
 			<shiro:hasPermission name="shop:shopPurchaseOrder:edit">
-				<input class="btn btn-primary" type="button" value="新增采购单" onclick="showAddOrder()"/>
+				<input class="btn btn-primary" type="button" value="新增采购单" onclick="showAdd()"/>
 			</shiro:hasPermission>
 			</li>
 		</ul>
@@ -62,25 +84,22 @@
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
-				<th>仓库</th>
+				
 				<th>采购单号</th>
 				<th>订单总金额</th>
 				<th>额外运费</th>
 				<th>采购日期</th>
-				<th>销售员</th>
-				<th>更新日期</th>
+				<th>进入仓库</th>
+				<th>创建日期</th>
 				<shiro:hasPermission name="shop:shopPurchaseOrder:edit"><th>操作</th></shiro:hasPermission>
 			</tr>
 		</thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="shopPurchaseOrder">
 			<tr>
-				<td><a href="${ctx}/shop/shopPurchaseOrder/form?id=${shopPurchaseOrder.id}">
-					${shopPurchaseOrder.stockName}
-				</a></td>
-				<td>
+				<td><a href="javascript:void(0)" onclick="showView('${shopPurchaseOrder.id}')">
 					${shopPurchaseOrder.orderNo}
-				</td>
+				</a></td>
 				<td>
 					${shopPurchaseOrder.orderSum}
 				</td>
@@ -91,14 +110,14 @@
 					${shopPurchaseOrder.businData}
 				</td>
 				<td>
-					${shopPurchaseOrder.orderName}
+					${shopPurchaseOrder.stockName}
 				</td>
 				<td>
-					<fmt:formatDate value="${shopPurchaseOrder.updateDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+					<fmt:formatDate value="${shopPurchaseOrder.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
 				<shiro:hasPermission name="shop:shopPurchaseOrder:edit"><td>
-    				<a href="${ctx}/shop/shopPurchaseOrder/form?id=${shopPurchaseOrder.id}">修改</a>
-					<a href="${ctx}/shop/shopPurchaseOrder/delete?id=${shopPurchaseOrder.id}" onclick="return confirmx('确认要删除该商品采购单吗？', this.href)">删除</a>
+    				<a href="${ctx}/shop/shopPurchaseOrder/form?id=${shopPurchaseOrder.id}">复制退货</a>
+					<a href="${ctx}/shop/shopPurchaseOrder/delete?id=${shopPurchaseOrder.id}" onclick="return confirmx('确认要删除该采购单吗？删除后库存、供应商付款等将撤销不可恢复！', this.href)">删除</a>
 				</td></shiro:hasPermission>
 			</tr>
 		</c:forEach>

@@ -158,6 +158,7 @@ public class ShopUtils {
 			shopStockItem.setStockId(shopStockInfo.getId());
 			shopStockItem.setStockName(shopStockInfo.getStockName());
 			shopStockItem.setProductTypeId(shopProduct.getProductTypeId());
+			shopStockItem.setProductTypeName(shopProduct.getProductTypeName());
 			shopStockItem.setProductName(shopProduct.getProductName());
 			shopStockItem.setProductId(shopProduct.getId());
 			shopStockItem.setProductName(shopProduct.getProductName());
@@ -197,6 +198,7 @@ public class ShopUtils {
 			shopStockItem.setStockId(shopStockInfo.getId());
 			shopStockItem.setStockName(shopStockInfo.getStockName());
 			shopStockItem.setProductTypeId(shopProduct.getProductTypeId());
+			shopStockItem.setProductTypeName(shopProduct.getProductTypeName());
 			shopStockItem.setProductId(shopProduct.getId());
 			shopStockItem.setProductName(shopProduct.getProductName());
 			shopStockItem.setProductNo(shopProduct.getProductNo());
@@ -219,6 +221,6 @@ public class ShopUtils {
 			sb.append(ch);
 		}
 		SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmss", Locale.getDefault());
-		return fi + UserUtils.getUser().getLoginName() + sb.toString() + formatter.format(new Date());
+		return fi + sb.toString() + UserUtils.getUser().getLoginName() + formatter.format(new Date());
 	}
 }

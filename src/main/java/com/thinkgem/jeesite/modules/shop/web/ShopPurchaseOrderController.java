@@ -66,7 +66,7 @@ public class ShopPurchaseOrderController extends BaseController {
 	@RequiresPermissions("shop:shopPurchaseOrder:view")
 	@RequestMapping(value = "form")
 	public String form(ShopPurchaseOrder shopPurchaseOrder, Model model) {
-		// model.addAttribute("shopPurchaseOrder", shopPurchaseOrder);
+		model.addAttribute("shopPurchaseOrder", shopPurchaseOrder);
 		return "modules/shop/shopPurchaseOrderForm";
 	}
 
@@ -108,6 +108,7 @@ public class ShopPurchaseOrderController extends BaseController {
 			shopPurchaseOrderService.saveOrde(shopPurchaseOrder);
 			returnMap.put("success", true);
 		} catch (Exception e) {
+			e.printStackTrace();
 			returnMap.put("success", false);
 			returnMap.put("msg", e.getMessage());
 		}

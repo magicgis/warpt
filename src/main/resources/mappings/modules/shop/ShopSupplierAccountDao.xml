@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopSupplierAccountDao">
+    
+	<sql id="shopSupplierAccountColumns">
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a.supplier_id AS "supplierId",
+		a.busin_data AS "businData",
+		a.order_id AS "orderId",
+		a.account_no AS "accountNo",
+		a.subject_type AS "subjectType",
+		a.meet_money AS "meetMoney",
+		a.fact_money AS "factMoney",
+		a.less_money AS "lessMoney",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="shopSupplierAccountJoins">
+	</sql>
+    
+	<select id="get" resultType="ShopSupplierAccount">
+		SELECT 
+			<include refid="shopSupplierAccountColumns"/>
+		FROM shop_supplier_account a
+		<include refid="shopSupplierAccountJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopSupplierAccount">
+		SELECT 
+			<include refid="shopSupplierAccountColumns"/>
+		FROM shop_supplier_account a
+		<include refid="shopSupplierAccountJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShopSupplierAccount">
+		SELECT 
+			<include refid="shopSupplierAccountColumns"/>
+		FROM shop_supplier_account a
+		<include refid="shopSupplierAccountJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_supplier_account(
+			id,
+			office_id,
+			supplier_id,
+			busin_data,
+			order_id,
+			account_no,
+			subject_type,
+			meet_money,
+			fact_money,
+			less_money,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{officeId},
+			#{supplierId},
+			#{businData},
+			#{orderId},
+			#{accountNo},
+			#{subjectType},
+			#{meetMoney},
+			#{factMoney},
+			#{lessMoney},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_supplier_account SET 	
+			office_id = #{officeId},
+			supplier_id = #{supplierId},
+			busin_data = #{businData},
+			order_id = #{orderId},
+			account_no = #{accountNo},
+			subject_type = #{subjectType},
+			meet_money = #{meetMoney},
+			fact_money = #{factMoney},
+			less_money = #{lessMoney},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_supplier_account SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

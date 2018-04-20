@@ -40,11 +40,11 @@
 		<thead>
 			<tr>
 				<th>供应商名称</th>
+				<th>折扣(%)</th>
 				<th>负责人</th>
 				<th>电话</th>
 				<th>手机</th>
 				<th>邮箱</th>
-				<th>微信</th>
 				<th>更新日期</th>
 				<th>备注</th>
 				<shiro:hasPermission name="shop:shopPurchaseSupplier:edit"><th>操作</th></shiro:hasPermission>
@@ -57,6 +57,9 @@
 					${shopPurchaseSupplier.supplierName}
 				</a></td>
 				<td>
+					${shopPurchaseSupplier.discount}
+				</td>
+				<td>
 					${shopPurchaseSupplier.headName}
 				</td>
 				<td>
@@ -67,9 +70,6 @@
 				</td>
 				<td>
 					${shopPurchaseSupplier.email}
-				</td>
-				<td>
-					${shopPurchaseSupplier.wechat}
 				</td>
 				<td>
 					<fmt:formatDate value="${shopPurchaseSupplier.updateDate}" pattern="yyyy-MM-dd HH:mm:ss"/>

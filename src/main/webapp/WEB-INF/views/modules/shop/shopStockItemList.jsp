@@ -48,16 +48,15 @@
 				<th>库存量</th>
 				<th>库存预警数</th>
 				<th>更新日期</th>
-				<th>备注</th>
-				<shiro:hasPermission name="shop:shopStockItem:edit"><th>操作</th></shiro:hasPermission>
+<%-- 				<shiro:hasPermission name="shop:shopStockItem:edit"><th>操作</th></shiro:hasPermission> --%>
 			</tr>
 		</thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="shopStockItem">
 			<tr>
-				<td><a href="${ctx}/shop/shopStockItem/form?id=${shopStockItem.id}">
+				<td>
 					${shopStockItem.stockName}
-				</a></td>
+				</td>
 				<td>
 					${shopStockItem.productTypeName}
 				</td>
@@ -76,13 +75,10 @@
 				<td>
 					<fmt:formatDate value="${shopStockItem.updateDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
-				<td>
-					${shopStockItem.remarks}
-				</td>
-				<shiro:hasPermission name="shop:shopStockItem:edit"><td>
-    				<a href="${ctx}/shop/shopStockItem/form?id=${shopStockItem.id}">修改</a>
-					<a href="${ctx}/shop/shopStockItem/delete?id=${shopStockItem.id}" onclick="return confirmx('确认要删除该仓库库存吗？', this.href)">删除</a>
-				</td></shiro:hasPermission>
+<%-- 				<shiro:hasPermission name="shop:shopStockItem:edit"><td> --%>
+<%--     				<a href="${ctx}/shop/shopStockItem/form?id=${shopStockItem.id}">修改</a> --%>
+<%-- 					<a href="${ctx}/shop/shopStockItem/delete?id=${shopStockItem.id}" onclick="return confirmx('确认要删除该仓库库存吗？', this.href)">删除</a> --%>
+<%-- 				</td></shiro:hasPermission> --%>
 			</tr>
 		</c:forEach>
 		</tbody>

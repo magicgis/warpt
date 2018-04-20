@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
+import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.shop.dao.ShopPurchaseOrderDao;
 import com.thinkgem.jeesite.modules.shop.dao.ShopPurchaseOrderItemDao;
@@ -77,6 +78,7 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 		} else {
 			shopPurchaseOrder = new ShopPurchaseOrder();
 			shopPurchaseOrder.setSubjectType(ShopUtils.SUBJECT_TYPE_1002);
+			shopPurchaseOrder.setBusinData(DateUtils.getDate());
 			// 新增初始化=========
 			// 默认第一个仓库
 			ShopStockInfo shopStockInfo = stockList.get(0);
@@ -112,6 +114,8 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 
 	@Transactional(readOnly = false)
 	public void saveOrde(ShopPurchaseOrder shopPurchaseOrder) throws Exception {
+		shopPurchaseOrder.setOfficeId(UserUtils.getUser().getOffice().getId());
+		shopPurchaseOrder.setIsNewRecord(false); //自动生成ID
 		// 生产单据编号
 		shopPurchaseOrder.setOrderNo(ShopUtils.generateBillCode("CG"));
 		super.save(shopPurchaseOrder);
@@ -119,6 +123,7 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 			if (shopPurchaseOrderItem.getProductId() == null) {
 				continue;
 			}
+			shopPurchaseOrderItem.setIsNewRecord(false); //自动生成ID
 			shopPurchaseOrderItem.setShopPurchaseOrder(shopPurchaseOrder);
 			shopPurchaseOrderItem.preInsert();
 			shopPurchaseOrderItemDao.insert(shopPurchaseOrderItem);
@@ -143,7 +148,7 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 				shopStockItemService.save(shopStockItem);
 			} else if (stockItemList.size() == 1) { // 增加库存
 				ShopStockItem shopStockItem = stockItemList.get(0);
-				shopStockItem.setStockNum(shopPurchaseOrderItem.getStockNum() + shopStockItem.getStockNum());
+				shopStockItem.setStockNum(shopPurchaseOrderItem.getPurchaseNum() + shopStockItem.getStockNum());
 				shopStockItemService.save(shopStockItem);
 			} else {
 				throw new Exception("库存存在多个该商品，不合法，请联系管理员处理！");

@@ -3,6 +3,8 @@ jQuery(document).ready(function() {
 	app = new Vue({
 		el : '#app',
 		data : {
+			//是否新增视图
+			isAddView : true,
 			// 是否能保存数据，如果存在非法数据不能保存数据
 			isSaveFn : true,
 			// 仓库列表
@@ -12,19 +14,18 @@ jQuery(document).ready(function() {
 			// 产品列表
 			productList : [],
 			addForm : {
-				sendMoney : 0.0,
+				sendSum : 0.0,
 				orderSum : 0.0,
 				freightMoney : 0.0,
 				shopPurchaseOrderItemList : []
 			},
 			addFormRules : {
 				businData : [{
-							type : 'date',
 							required : true,
 							message : '请选择日期',
 							trigger : 'change'
 						}],
-				sendMoney : [{
+				sendSum : [{
 							required : true,
 							validator : function(rule, value, callback) {
 								if (!value) {
@@ -61,10 +62,10 @@ jQuery(document).ready(function() {
 				// cell.children[0].children[1].style.color = "#ffffff";
 			},
 			// 加载查询条件
-			loadingForm : function(id) {
+			loadingForm : function(orderId) {
 				var _self = this;
 				$.post(mypath + '/shop/shopPurchaseOrder/loadingForm', {
-							id : id
+							id : orderId
 						}, function(data) {
 							if (data.success) {
 								_self.stockList = data.obj.stockList;
@@ -83,11 +84,13 @@ jQuery(document).ready(function() {
 														});
 									}
 									_self.addForm.orderSum = 0.0;
-									_self.addForm.sendMoney = 0.0;
+									_self.addForm.sendSum = 0.0;
 									_self.addForm.freightMoney = 0.0;
 									//
 									_self.addForm.subjectType = _self.addForm.subjectType
 											+ '';
+								}else{
+									_self.isAddView = false;
 								}
 							} else {
 								alert(data.msg);
@@ -115,7 +118,15 @@ jQuery(document).ready(function() {
 													.stringify(_self.addForm)
 										}, function(data) {
 											if (data.success) {
-												alert('采购单保存成功[已入库]');
+												_self
+														.$alert(
+																'<strong>采购单保存成功[已入库]</strong>',
+																{
+																	dangerouslyUseHTMLString : true
+																});
+												//更新列表
+												top.loadListForm.submit();
+												//关闭
 												top.layer.closeAll();
 											} else {
 												alert(data.msg);
@@ -153,7 +164,7 @@ jQuery(document).ready(function() {
 				// 由于不更新所以克隆TO.
 				_self.addForm = Object.assign({}, _self.addForm, {
 							orderSum : 0.0,
-							sendMoney : 0.0
+							sendSum : 0.0
 						})
 			},
 			sumRowMoney : function() {
@@ -167,10 +178,10 @@ jQuery(document).ready(function() {
 				}
 				// 由于不更新所以克隆TO.
 				// _self.$set(_self, 'addForm', {orderSum :
-				// orderSum,sendMoney : orderSum});
+				// orderSum,sendSum : orderSum});
 				_self.addForm = Object.assign({}, _self.addForm, {
 							orderSum : orderSum,
-							sendMoney : orderSum
+							sendSum : orderSum
 						});
 			},
 			// 选择产品项
@@ -297,7 +308,7 @@ jQuery(document).ready(function() {
 		}
 	});
 
-	app.loadingForm(null);
+	app.loadingForm(orderId);
 });
 
 // 金额合法验证

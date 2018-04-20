@@ -15,6 +15,7 @@
 </style>
 <script type="text/javascript">
 var mypath = '${ctx}';
+var orderId = '${shopPurchaseOrder.id}';
 </script>
 </head>
 <body>
@@ -29,25 +30,35 @@ var mypath = '${ctx}';
 				<el-input type='text' v-model="addForm.productNo" placeholder="扫描商品条形码" prefix-icon="el-icon-search" @keyup.enter.native="queryAddProduct()" ></el-input>
 		</el-col>
 		<el-col :span="2">
-		<el-button v-if="isSaveFn" type="primary" icon="el-icon-check" @click="submitInfo">采购入库</el-button>
-		<el-button v-if="!isSaveFn" type="primary" icon="el-icon-check" disabled="true">采购入库</el-button>
+			<span v-if="isAddView">
+				<el-button v-if="isSaveFn" type="primary" icon="el-icon-check" @click="submitInfo">采购入库</el-button>
+				<el-button v-if="!isSaveFn" type="primary" icon="el-icon-check" disabled="true">采购入库</el-button>
+			</span>
+			<span v-if="!isAddView">
+				<el-button type="primary" icon="el-icon-check" >复制退货</el-button>
+			</span>
 		</el-col>
 		</el-row>
-		
 		 	<el-row type="flex">
 		 	  <el-col :span="6">
 			  <el-form-item label="仓库">
 			  	<el-col :span="16">
-			    <el-select  v-model="addForm.stockId" placeholder="请先选择仓库" @change="selectClearObj()">
-			      <el-option v-for="(item, index) in stockList" v-bind:label="item.stockName" v-bind:value="item.id"></el-option>
-			    </el-select>
+				    <el-select v-if="isAddView" v-model="addForm.stockId" placeholder="请先选择仓库" @change="selectClearObj()">
+				      <el-option v-for="(item, index) in stockList" v-bind:label="item.stockName" v-bind:value="item.id"></el-option>
+				    </el-select>
+				    <el-select v-if="!isAddView" disabled v-model="addForm.stockId" placeholder="请先选择仓库" @change="selectClearObj()">
+				      <el-option v-for="(item, index) in stockList" v-bind:label="item.stockName" v-bind:value="item.id"></el-option>
+				    </el-select>
 			    </el-col>
 			  </el-form-item>
 		 	  </el-col>
 		 	  <el-col :span="6">
 			  <el-form-item label="供应商">
 			  	<el-col :span="16">
-			    <el-select  v-model="addForm.supplierId" placeholder="请选择供应商" @change="selectClearObj()">
+			    <el-select v-if="isAddView" v-model="addForm.supplierId" placeholder="请选择供应商" @change="selectClearObj()">
+			      <el-option v-for="(item, index) in supplierList" v-bind:label="item.supplierName" v-bind:value="item.id"></el-option>
+			    </el-select>
+			    <el-select v-if="!isAddView" disabled v-model="addForm.supplierId" placeholder="请选择供应商" @change="selectClearObj()">
 			      <el-option v-for="(item, index) in supplierList" v-bind:label="item.supplierName" v-bind:value="item.id"></el-option>
 			    </el-select>
 			    </el-col>
@@ -56,14 +67,16 @@ var mypath = '${ctx}';
 			  <el-col :span="6">
 			  <el-form-item label="采购日期" prop="businData">
 			  	<el-col :span="16">
-			    <el-date-picker type="date" placeholder="选择日期" v-model="addForm.businData" style="width: 100%;" ></el-date-picker>
+			  	<el-date-picker v-if="isAddView" type="date" placeholder="选择日期" v-model="addForm.businData" style="width: 100%;" value-format="yyyy-MM-dd" format="yyyy-MM-dd"></el-date-picker>
+			    <el-date-picker v-if="!isAddView" readonly="true" type="date" v-model="addForm.businData" style="width: 100%;" value-format="yyyy-MM-dd" format="yyyy-MM-dd"></el-date-picker>
 			    </el-col>
 			  </el-form-item>
 			  </el-col>
 			  <el-col :span="6">
 			  <el-form-item label="快递运费" prop="freightMoney">
 			  	<el-col :span="16">
-			    <el-input type='text' v-model="addForm.freightMoney" placeholder="请输入快递运费"></el-input> 
+			    <el-input v-if="isAddView" type='text' v-model="addForm.freightMoney" placeholder="请输入快递运费"></el-input> 
+			    <el-input v-if="!isAddView" readonly="true" type='text' v-model="addForm.freightMoney" ></el-input> 
 			    </el-col>
 			  </el-form-item>
 			  </el-col>			  
@@ -71,13 +84,18 @@ var mypath = '${ctx}';
 			 <el-row type="flex">
 				<el-col :span="12">
 				  <el-form-item label="备注">
-				  <el-input type='text' v-model="addForm.remarks" ></el-input> 
+				  <el-input v-if="isAddView" type='text' v-model="addForm.remarks" ></el-input>
+				  <el-input v-if="!isAddView" readonly="true" type='text' r v-model="addForm.remarks" ></el-input>
 				  </el-form-item>
 				</el-col>
 				 <el-col :span="6">
 				  <el-form-item label="账目类型" >
 				  	<el-col :span="16">
-					    <el-select v-model="addForm.subjectType" placeholder="请选择">
+					    <el-select  v-if="isAddView" v-model="addForm.subjectType" placeholder="请选择">
+				      		<el-option label="采购支出" value="1002"></el-option>
+				      		<el-option label="采购退货" value="1003"></el-option>
+				    	</el-select>
+					    <el-select  v-if="!isAddView" disabled v-model="addForm.subjectType" placeholder="请选择">
 				      		<el-option label="采购支出" value="1002"></el-option>
 				      		<el-option label="采购退货" value="1003"></el-option>
 				    	</el-select>
@@ -85,9 +103,10 @@ var mypath = '${ctx}';
 				  </el-form-item>
 				</el-col>
 				 <el-col :span="6">
-				  <el-form-item label="实付金额" prop="sendMoney">
+				  <el-form-item label="实付金额" prop="sendSum">
 				  	<el-col :span="16">
-				    <el-input type='text' v-model="addForm.sendMoney" placeholder="请输入实付金额"></el-input> 
+				    <el-input v-if="isAddView" type='text' v-model="addForm.sendSum" placeholder="请输入实付金额"></el-input>
+				    <el-input v-if="!isAddView" readonly="true" type='text' v-model="addForm.sendSum" ></el-input> 
 				    </el-col>
 				  </el-form-item>
 				</el-col>	
@@ -104,7 +123,7 @@ var mypath = '${ctx}';
 					      align="center"
 					      label="操作"
 					      width="80">
-					      <template slot-scope="scope">
+					      <template v-if="isAddView" slot-scope="scope">
 					      	<i class="el-icon-plus" @click="addTRow()" style="cursor: pointer;color: #008cba;font-weight:bold;"></i>
 					      	&nbsp;
 					        <i class="el-icon-delete" @click="deleteTRow(scope.$index)" style="cursor: pointer;color: #008cba;font-weight:bold;"></i>
@@ -116,9 +135,10 @@ var mypath = '${ctx}';
 					      prop="productName"
 					      width="200">
 					      <template slot-scope="scope">
-							  <el-select v-model="scope.row.productId" filterable placeholder="点击选择" @change="selectProductObj(scope.$index)">
+							  <el-select v-if="isAddView" v-model="scope.row.productId" filterable placeholder="点击选择" @change="selectProductObj(scope.$index)">
 							    <el-option v-for="(item, index) in productList" v-bind:label="item.pingyinStr" v-bind:value="item.id"></el-option>
 							  </el-select>
+							  <span v-if="!isAddView">{{scope.row.productName}}</span>
 					      </template>
 					 </el-table-column>
 				      <el-table-column
@@ -143,9 +163,10 @@ var mypath = '${ctx}';
 				      align="center"
 				      width="100">
 					      <template slot-scope="scope">
-					      <span style="width:120px;">
+					      <span v-if="isAddView" style="width:120px;">
 					      	<el-input type='text' v-model="scope.row.purchaseNum" @change="changeSetRow(scope.$index)"></el-input>
 					      </span>
+					      <span v-if="!isAddView">{{scope.row.purchaseNum}}</span>
 					      </template>
 				    </el-table-column>
 				    <el-table-column
@@ -160,9 +181,10 @@ var mypath = '${ctx}';
 				        label="单价"
 				        width="100">
 					      <template slot-scope="scope">
-					      <span style="width:80px;">
+					      <span v-if="isAddView" style="width:80px;">
 					      	<el-input type='text' v-model="scope.row.orderMoney" @change="changeSetRow(scope.$index)"></el-input>
 					      </span>
+					      <span v-if="!isAddView">{{scope.row.orderMoney}}</span>
 					      </template>
 				    </el-table-column>
 					<el-table-column
@@ -171,9 +193,10 @@ var mypath = '${ctx}';
 				        label="折扣(%)"
 				        width="100">
 					      <template slot-scope="scope">
-					      <span style="width:120px;">
+					      <span v-if="isAddView" style="width:120px;">
 					      	<el-input type='text' v-model="scope.row.discount" @change="changeSetRow(scope.$index)"></el-input>
 					      </span>
+					      <span v-if="!isAddView">{{scope.row.discount}}</span>
 					      </template>
 				    </el-table-column>
 					<el-table-column
@@ -182,9 +205,10 @@ var mypath = '${ctx}';
 				        label="折后单价"
 				        width="100">
 					      <template slot-scope="scope">
-					      <span style="width:120px;">
+					      <span v-if="isAddView" style="width:120px;">
 					      	<el-input type='text' v-model="scope.row.disMoney" @change="changeSetRow(scope.$index)"></el-input>
 					      </span>
+					      <span v-if="!isAddView">{{scope.row.disMoney}}</span>
 					      </template>
 				    </el-table-column>
 					<el-table-column
