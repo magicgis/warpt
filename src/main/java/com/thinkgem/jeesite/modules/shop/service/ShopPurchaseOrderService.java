@@ -116,6 +116,12 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 	public void saveOrder(ShopPurchaseOrder shopPurchaseOrder) throws Exception {
 		shopPurchaseOrder.setOfficeId(UserUtils.getUser().getOffice().getId());
 		shopPurchaseOrder.setIsNewRecord(false); // 自动生成ID
+		shopPurchaseOrder.setState(ShopUtils.STATE_TYPE_2); //直接入库TO.
+		//进货退货判断正负
+		int subject = 1;
+		if(StringUtils.equals(shopPurchaseOrder.getSubjectType(), ShopUtils.SUBJECT_TYPE_1003)) {
+			subject = -1;
+		}		
 		// 生产单据编号
 		shopPurchaseOrder.setOrderNo(ShopUtils.generateBillCode("CG"));
 		super.save(shopPurchaseOrder);
@@ -130,7 +136,7 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 			// 更新该产品库存
 			ShopUtils.updateProductStockNum(shopPurchaseOrder.getOfficeId(), shopPurchaseOrder.getStockId(),
 					shopPurchaseOrder.getStockName(), shopPurchaseOrderItem.getProductId(),
-					shopPurchaseOrderItem.getPurchaseNum());
+					shopPurchaseOrderItem.getPurchaseNum()*subject);
 		}
 
 		// 新增供应商付款单
@@ -142,8 +148,8 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 		shopSupplierAccount.setBusinData(shopPurchaseOrder.getBusinData());
 		shopSupplierAccount.setAccountNo(shopPurchaseOrder.getOrderNo());
 		shopSupplierAccount.setSubjectType(shopPurchaseOrder.getSubjectType());
-		shopSupplierAccount.setMeetMoney(shopPurchaseOrder.getOrderSum());
-		shopSupplierAccount.setFactMoney(shopPurchaseOrder.getSendSum());
+		shopSupplierAccount.setMeetMoney(shopPurchaseOrder.getOrderSum()*subject);
+		shopSupplierAccount.setFactMoney(shopPurchaseOrder.getSendSum()*subject);
 		shopSupplierAccount.setLessMoney(
 				ShopUtils.subtract(shopSupplierAccount.getMeetMoney(), shopSupplierAccount.getFactMoney()));
 		shopSupplierAccountService.save(shopSupplierAccount);

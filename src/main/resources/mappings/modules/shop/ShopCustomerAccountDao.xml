@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopCustomerAccountDao">
+    
+	<sql id="shopCustomerAccountColumns">
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a.customer_id AS "customerId",
+		a.customer_name AS "customerName",
+		a.busin_data AS "businData",
+		a.sale_id AS "saleId",
+		a.account_no AS "accountNo",
+		a.subject_type AS "subjectType",
+		a.meet_money AS "meetMoney",
+		a.fact_money AS "factMoney",
+		a.less_money AS "lessMoney",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="shopCustomerAccountJoins">
+	</sql>
+    
+	<select id="get" resultType="ShopCustomerAccount">
+		SELECT 
+			<include refid="shopCustomerAccountColumns"/>
+		FROM shop_customer_account a
+		<include refid="shopCustomerAccountJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopCustomerAccount">
+		SELECT 
+			<include refid="shopCustomerAccountColumns"/>
+		FROM shop_customer_account a
+		<include refid="shopCustomerAccountJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="customerId != null and customerId != ''">
+				AND a.customer_id = #{customerId}
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND a.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
+			</if>
+			<if test="accountNo != null and accountNo != ''">
+				AND a.account_no = #{accountNo}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShopCustomerAccount">
+		SELECT 
+			<include refid="shopCustomerAccountColumns"/>
+		FROM shop_customer_account a
+		<include refid="shopCustomerAccountJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_customer_account(
+			id,
+			office_id,
+			customer_id,
+			customer_name,
+			busin_data,
+			sale_id,
+			account_no,
+			subject_type,
+			meet_money,
+			fact_money,
+			less_money,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{officeId},
+			#{customerId},
+			#{customerName},
+			#{businData},
+			#{saleId},
+			#{accountNo},
+			#{subjectType},
+			#{meetMoney},
+			#{factMoney},
+			#{lessMoney},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_customer_account SET 	
+			office_id = #{officeId},
+			customer_id = #{customerId},
+			customer_name = #{customerName},
+			busin_data = #{businData},
+			sale_id = #{saleId},
+			account_no = #{accountNo},
+			subject_type = #{subjectType},
+			meet_money = #{meetMoney},
+			fact_money = #{factMoney},
+			less_money = #{lessMoney},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_customer_account SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopSaleOrderDao">
+    
+	<sql id="shopSaleOrderColumns">
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a.stock_id AS "stockId",
+		a.stock_name AS "stockName",
+		a.customer_id AS "customerId",
+		a.customer_name AS "customerName",
+		a.sale_no AS "saleNo",
+		a.subject_type AS "subjectType",
+		a.order_sum AS "orderSum",
+		a.send_sum AS "sendSum",
+		a.freight_money AS "freightMoney",
+		a.state AS "state",
+		a.busin_data AS "businData",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="shopSaleOrderJoins">
+	</sql>
+    
+	<select id="get" resultType="ShopSaleOrder">
+		SELECT 
+			<include refid="shopSaleOrderColumns"/>
+		FROM shop_sale_order a
+		<include refid="shopSaleOrderJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopSaleOrder">
+		SELECT 
+			<include refid="shopSaleOrderColumns"/>
+		FROM shop_sale_order a
+		<include refid="shopSaleOrderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="customerId != null and customerId != ''">
+				AND a.customer_id = #{customerId}
+			</if>
+			<if test="saleNo != null and saleNo != ''">
+				AND a.sale_no like concat('%',#{saleNo},'%')
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND a.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShopSaleOrder">
+		SELECT 
+			<include refid="shopSaleOrderColumns"/>
+		FROM shop_sale_order a
+		<include refid="shopSaleOrderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_sale_order(
+			id,
+			office_id,
+			stock_id,
+			stock_name,
+			customer_id,
+			customer_name,
+			sale_no,
+			subject_type,
+			order_sum,
+			send_sum,
+			freight_money,
+			state,
+			busin_data,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{officeId},
+			#{stockId},
+			#{stockName},
+			#{customerId},
+			#{customerName},
+			#{saleNo},
+			#{subjectType},
+			#{orderSum},
+			#{sendSum},
+			#{freightMoney},
+			#{state},
+			#{businData},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_sale_order SET 	
+			office_id = #{officeId},
+			stock_id = #{stockId},
+			stock_name = #{stockName},
+			customer_id = #{customerId},
+			customer_name = #{customerName},
+			sale_no = #{saleNo},
+			subject_type = #{subjectType},
+			order_sum = #{orderSum},
+			send_sum = #{sendSum},
+			freight_money = #{freightMoney},
+			state = #{state},
+			busin_data = #{businData},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_sale_order SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

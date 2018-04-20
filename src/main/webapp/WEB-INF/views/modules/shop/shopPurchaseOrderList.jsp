@@ -58,7 +58,7 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/shop/shopPurchaseOrder/">商品采购单列表</a></li>
+		<li class="active"><a href="${ctx}/shop/shopPurchaseOrder/">采购单列表</a></li>
 <%-- 		<shiro:hasPermission name="shop:shopPurchaseOrder:edit"><li><a href="${ctx}/shop/shopPurchaseOrder/form">商品采购单添加</a></li></shiro:hasPermission> --%>
 	</ul>
 	<form:form id="searchForm" modelAttribute="shopPurchaseOrder" action="${ctx}/shop/shopPurchaseOrder/" method="post" class="breadcrumb form-search">

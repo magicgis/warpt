@@ -32,30 +32,20 @@
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="shopCustomerInfo" action="${ctx}/shop/shopCustomerInfo/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<sys:message content="${message}"/>		
+		<sys:message content="${message}"/>
 		<div class="control-group">
-			<label class="control-label">机构ID：</label>
+			<label class="control-label">客户级别：</label>
 			<div class="controls">
-				<form:input path="officeId" htmlEscape="false" maxlength="64" class="input-xlarge required"/>
+				<sys:treeselect id="level" name="levelId" value="${shopCustomerInfo.levelId}" labelName="levelName" labelValue="${shopCustomerInfo.levelName}"
+					title="选择客户级别" url="/shop/shopCustomerLevel/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
 				<span class="help-inline"><font color="red">*</font> </span>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">level_id：</label>
-			<div class="controls">
-				<form:input path="levelId" htmlEscape="false" maxlength="64" class="input-xlarge "/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">折扣名称：</label>
-			<div class="controls">
-				<form:input path="levelName" htmlEscape="false" maxlength="64" class="input-xlarge "/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">客户名称：</label>
 			<div class="controls">
-				<form:input path="customerName" htmlEscape="false" maxlength="255" class="input-xlarge "/>
+				<form:input path="customerName" htmlEscape="false" maxlength="255" class="required"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
@@ -119,7 +109,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">sort：</label>
+			<label class="control-label">排序：</label>
 			<div class="controls">
 				<form:input path="sort" htmlEscape="false" maxlength="11" class="input-xlarge  digits"/>
 			</div>

@@ -30,6 +30,7 @@ public class ShopCustomerInfo extends DataEntity<ShopCustomerInfo> {
 	private String bankAddress;		// 开户行
 	private String address;		// 地址
 	private Integer sort;		// sort
+	private Double discount;		// discount
 	
 	public ShopCustomerInfo() {
 		super();
@@ -171,6 +172,14 @@ public class ShopCustomerInfo extends DataEntity<ShopCustomerInfo> {
 
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+
+	public Double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Double discount) {
+		this.discount = discount;
 	}
 	
 }

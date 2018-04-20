@@ -30,6 +30,12 @@ public class ShopUtils {
 	public static final String SUBJECT_TYPE_1004 = "1004";
 	/** 账目类型：客户收款 **/
 	public static final String SUBJECT_TYPE_1005 = "1005";
+	
+	/** 新增单据 **/
+	public static final int STATE_TYPE_1 = 1;
+	/** 单据入库 **/
+	public static final int STATE_TYPE_2 = 2;
+
 	// 建立货币格式化引用
 	private static final NumberFormat currency = NumberFormat.getCurrencyInstance();
 	// 建立百分比格式化引用
@@ -218,7 +224,7 @@ public class ShopUtils {
 	 * @param productId
 	 * @throws Exception
 	 */
-	public static void updateProductStockNum(String officeId, String stockId, String stockName, String productId, int stockNum)
+	public static void updateProductStockNum(String officeId, String stockId, String stockName, String productId, int addStockNum)
 			throws Exception {
 		ShopStockItemService shopStockItemService = SpringContextHolder.getBean("shopStockItemService");
 		ShopProductService shopProductService = SpringContextHolder.getBean("shopProductService");
@@ -228,9 +234,12 @@ public class ShopUtils {
 		parm.setProductId(productId);
 		List<ShopStockItem> stockItemList = shopStockItemService.findList(parm);
 		if (stockItemList.isEmpty()) { // 如果不存在商品，则创建
+			if(addStockNum < 0) {
+				throw new Exception("商品无库存，无法出货，请联系管理员处理！");
+			}
 			ShopProduct shopProduct = shopProductService.get(productId);
 			ShopStockItem shopStockItem = new ShopStockItem();
-			shopStockItem.setStockNum(stockNum); // 库存初始化
+			shopStockItem.setStockNum(addStockNum); // 库存初始化
 			shopStockItem.setOfficeId(officeId);
 			shopStockItem.setStockId(stockId);
 			shopStockItem.setStockName(stockName);
@@ -242,7 +251,11 @@ public class ShopUtils {
 			shopStockItemService.save(shopStockItem);
 		} else if (stockItemList.size() == 1) { // 增加库存
 			ShopStockItem shopStockItem = stockItemList.get(0);
-			shopStockItem.setStockNum(stockNum + shopStockItem.getStockNum());
+			int setStockNum = addStockNum + shopStockItem.getStockNum();
+			if(setStockNum < 0) {
+				throw new Exception("商品目前库存为"+shopStockItem.getStockNum()+"，无法出货"+addStockNum);
+			}
+			shopStockItem.setStockNum(setStockNum);
 			shopStockItemService.save(shopStockItem);
 		} else {
 			throw new Exception("库存存在多个该商品，不合法，请联系管理员处理！");

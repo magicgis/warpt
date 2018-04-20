@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.shop.dao.ShopSaleOrderItemDao">
+    
+	<sql id="shopSaleOrderItemColumns">
+		a.id AS "id",
+		a.sale_id AS "shopSaleOrder.id",
+		a.product_id AS "productId",
+		a.product_name AS "productName",
+		a.product_no AS "productNo",
+		a.unit AS "unit",
+		a.spec AS "spec",
+		a.sale_num AS "saleNum",
+		a.stock_num AS "stockNum",
+		a.sale_money AS "saleMoney",
+		a.discount AS "discount",
+		a.dis_money AS "disMoney",
+		a.all_money AS "allMoney",
+		a.count_money AS "countMoney",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="shopSaleOrderItemJoins">
+		LEFT JOIN shop_sale_order b ON b.id = a.sale_id
+	</sql>
+    
+	<select id="get" resultType="ShopSaleOrderItem">
+		SELECT 
+			<include refid="shopSaleOrderItemColumns"/>
+		FROM shop_sale_order_item a
+		<include refid="shopSaleOrderItemJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShopSaleOrderItem">
+		SELECT 
+			<include refid="shopSaleOrderItemColumns"/>
+		FROM shop_sale_order_item a
+		<include refid="shopSaleOrderItemJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="shopSaleOrder!= null and shopSaleOrder.id != null and shopSaleOrder.id != ''">
+				AND a.sale_id = #{shopSaleOrder.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShopSaleOrderItem">
+		SELECT 
+			<include refid="shopSaleOrderItemColumns"/>
+		FROM shop_sale_order_item a
+		<include refid="shopSaleOrderItemJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shop_sale_order_item(
+			id,
+			sale_id,
+			product_id,
+			product_name,
+			product_no,
+			unit,
+			spec,
+			sale_num,
+			stock_num,
+			sale_money,
+			discount,
+			dis_money,
+			all_money,
+			count_money,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{shopSaleOrder.id},
+			#{productId},
+			#{productName},
+			#{productNo},
+			#{unit},
+			#{spec},
+			#{saleNum},
+			#{stockNum},
+			#{saleMoney},
+			#{discount},
+			#{disMoney},
+			#{allMoney},
+			#{countMoney},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shop_sale_order_item SET 	
+			sale_id = #{shopSaleOrder.id},
+			product_id = #{productId},
+			product_name = #{productName},
+			product_no = #{productNo},
+			unit = #{unit},
+			spec = #{spec},
+			sale_num = #{saleNum},
+			stock_num = #{stockNum},
+			sale_money = #{saleMoney},
+			discount = #{discount},
+			dis_money = #{disMoney},
+			all_money = #{allMoney},
+			count_money = #{countMoney},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE shop_sale_order_item SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE sale_id = #{shopSaleOrder.id}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>

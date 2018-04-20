@@ -3,6 +3,9 @@
  */
 package com.thinkgem.jeesite.modules.shop.web;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,12 +16,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
 import com.thinkgem.jeesite.modules.shop.service.ShopCustomerInfoService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -59,6 +65,17 @@ public class ShopCustomerInfoController extends BaseController {
 	@RequiresPermissions("shop:shopCustomerInfo:view")
 	@RequestMapping(value = "form")
 	public String form(ShopCustomerInfo shopCustomerInfo, Model model) {
+		//排序
+		if (StringUtils.isBlank(shopCustomerInfo.getId())){
+			ShopCustomerInfo parm = new ShopCustomerInfo();
+			parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+			List<ShopCustomerInfo> list = shopCustomerInfoService.findList(parm);
+			if (list.size() > 0){
+				shopCustomerInfo.setSort(list.get(list.size()-1).getSort()+1);
+			}else {
+				shopCustomerInfo.setSort(1);
+			}
+		}
 		model.addAttribute("shopCustomerInfo", shopCustomerInfo);
 		return "modules/shop/shopCustomerInfoForm";
 	}
@@ -69,8 +86,9 @@ public class ShopCustomerInfoController extends BaseController {
 		if (!beanValidator(model, shopCustomerInfo)){
 			return form(shopCustomerInfo, model);
 		}
+		shopCustomerInfo.setOfficeId(UserUtils.getUser().getOffice().getId());
 		shopCustomerInfoService.save(shopCustomerInfo);
-		addMessage(redirectAttributes, "保存销售客户成功");
+		addMessage(redirectAttributes, "保存客户成功");
 		return "redirect:"+Global.getAdminPath()+"/shop/shopCustomerInfo/?repage";
 	}
 	
@@ -78,8 +96,29 @@ public class ShopCustomerInfoController extends BaseController {
 	@RequestMapping(value = "delete")
 	public String delete(ShopCustomerInfo shopCustomerInfo, RedirectAttributes redirectAttributes) {
 		shopCustomerInfoService.delete(shopCustomerInfo);
-		addMessage(redirectAttributes, "删除销售客户成功");
+		addMessage(redirectAttributes, "删除客户成功");
 		return "redirect:"+Global.getAdminPath()+"/shop/shopCustomerInfo/?repage";
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "treeData")
+	public List<Map<String, Object>> treeData(
+			@RequestParam(required = false) String extId,
+			HttpServletResponse response) {
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+		ShopCustomerInfo parm = new ShopCustomerInfo();
+		// 登陆用户机构过滤
+		parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+		List<ShopCustomerInfo> list = shopCustomerInfoService.findList(parm);
+		for (int i = 0; i < list.size(); i++) {
+			ShopCustomerInfo e = list.get(i);
+			Map<String, Object> map = Maps.newHashMap();
+			map.put("id", e.getId());
+			map.put("pId", "0");
+			map.put("name", e.getCustomerName()+"["+e.getPhone()+"]");
+			mapList.add(map);
+		}
+		return mapList;
+	}	
 
 }
