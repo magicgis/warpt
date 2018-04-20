@@ -74,11 +74,11 @@
 			</li>
 			<li><label>销售日期：</label>
 				<input name="beginBusinData" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate"
-					value="<fmt:formatDate value="${shopSaleOrder.beginBusinData}" pattern="yyyy-MM-dd HH:mm:ss"/>"
-					onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/> - 
+					value="${shopSaleOrder.beginBusinData}"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/> - 
 				<input name="endBusinData" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate"
-					value="<fmt:formatDate value="${shopSaleOrder.endBusinData}" pattern="yyyy-MM-dd HH:mm:ss"/>"
-					onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
+					value="${shopSaleOrder.endBusinData}"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
 			<li class="clearfix" style="float: right;">
@@ -105,12 +105,12 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="shopSaleOrder">
 			<tr>
-				<td><a href="javascript:void(0)" onclick="showView('${shopPurchaseOrder.id}')">
+				<td><a href="javascript:void(0)" onclick="showView('${shopSaleOrder.id}')">
 					${shopSaleOrder.saleNo}
 				</a></td>
 				<td>
-					<c:if test="${shopSaleOrder.subjectType == '1001'}">销售出货</c:if>
-					<c:if test="${shopSaleOrder.subjectType == '1002'}">销售退货</c:if>
+					<c:if test="${shopSaleOrder.subjectType == '1000'}">销售出货</c:if>
+					<c:if test="${shopSaleOrder.subjectType == '1001'}">销售退货</c:if>
 				</td>
 				<td>
 					${shopSaleOrder.customerName}

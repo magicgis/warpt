@@ -75,7 +75,10 @@ public class ShopSupplierAccountController extends BaseController {
 		//求和
 		List<ShopSupplierAccount> countList = shopSupplierAccountService.findCountPage(shopSupplierAccount);
 		if(!countList.isEmpty() && countList.size() == 1) {
-			shopSupplierAccount = countList.get(0);
+			ShopSupplierAccount accountObj = countList.get(0);
+			shopSupplierAccount.setSumMeetMoney(accountObj.getSumMeetMoney());
+			shopSupplierAccount.setSumFactMoney(accountObj.getSumFactMoney());
+			shopSupplierAccount.setSumLessMoney(accountObj.getSumLessMoney());
 		}
 		model.addAttribute("shopSupplierAccount", shopSupplierAccount);
 		

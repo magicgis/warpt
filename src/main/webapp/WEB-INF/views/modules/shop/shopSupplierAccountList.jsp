@@ -50,10 +50,10 @@
 			</li>
 			<li><label>业务日期：</label>
 				<input id="beginBusinData" name="beginBusinData" type="text" readonly="readonly" class="input-medium Wdate"
-				value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				value="${shopSupplierAccount.beginBusinData}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 				-
 				<input id="endBusinData" name="endBusinData" type="text" readonly="readonly" class="input-medium Wdate"
-				value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				value="${shopSupplierAccount.endBusinData}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			</li>
 			<li><label>单据编号：</label>
 				<form:input path="accountNo" htmlEscape="false" maxlength="64" class="input-medium"/>

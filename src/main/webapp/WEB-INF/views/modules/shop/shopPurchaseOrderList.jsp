@@ -70,10 +70,10 @@
 			</li>
 			<li><label>采购日期：</label>
 				<input id="beginBusinData" name="beginBusinData" type="text" readonly="readonly" class="input-medium Wdate"
-				value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				value="${shopPurchaseOrder.beginBusinData}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 				-
 				<input id="endBusinData" name="endBusinData" type="text" readonly="readonly" class="input-medium Wdate"
-				value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				value="${shopPurchaseOrder.endBusinData}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
 			<li class="clearfix" style="float: right;">
