@@ -28,7 +28,7 @@
 	</sql>
 	
 	<sql id="shopPurchaseSupplierJoins">
-		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+		
 	</sql>
     
 	<select id="get" resultType="ShopPurchaseSupplier">
@@ -51,6 +51,9 @@
 			</if>
 			<if test="headName != null and headName != ''">
 				AND a.head_name = #{headName}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
 			</if>
 		</where>
 		<choose>

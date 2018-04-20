@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.shop.web;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.management.RuntimeErrorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,6 +28,7 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.shop.entity.ShopPurchaseOrder;
 import com.thinkgem.jeesite.modules.shop.entity.ShopPurchaseOrderItem;
 import com.thinkgem.jeesite.modules.shop.service.ShopPurchaseOrderService;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 商品采购单Controller
@@ -57,6 +59,7 @@ public class ShopPurchaseOrderController extends BaseController {
 	@RequestMapping(value = { "list", "" })
 	public String list(ShopPurchaseOrder shopPurchaseOrder, HttpServletRequest request, HttpServletResponse response,
 			Model model) {
+		shopPurchaseOrder.setOfficeId(UserUtils.getUser().getOffice().getId());
 		Page<ShopPurchaseOrder> page = shopPurchaseOrderService.findPage(new Page<ShopPurchaseOrder>(request, response),
 				shopPurchaseOrder);
 		model.addAttribute("page", page);
@@ -105,7 +108,7 @@ public class ShopPurchaseOrderController extends BaseController {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		try {
 			ShopPurchaseOrder shopPurchaseOrder = (ShopPurchaseOrder) JsonMapper.fromJsonString(saveJson, ShopPurchaseOrder.class);
-			shopPurchaseOrderService.saveOrde(shopPurchaseOrder);
+			shopPurchaseOrderService.saveOrder(shopPurchaseOrder);
 			returnMap.put("success", true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -154,7 +157,12 @@ public class ShopPurchaseOrderController extends BaseController {
 	@RequiresPermissions("shop:shopPurchaseOrder:edit")
 	@RequestMapping(value = "delete")
 	public String delete(ShopPurchaseOrder shopPurchaseOrder, RedirectAttributes redirectAttributes) {
-		shopPurchaseOrderService.delete(shopPurchaseOrder);
+		try {
+			shopPurchaseOrderService.deleteOrder(shopPurchaseOrder);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 		addMessage(redirectAttributes, "删除商品采购单成功");
 		return "redirect:" + Global.getAdminPath() + "/shop/shopPurchaseOrder/?repage";
 	}

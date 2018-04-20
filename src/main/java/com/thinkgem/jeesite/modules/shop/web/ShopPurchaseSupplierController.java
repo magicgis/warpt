@@ -56,6 +56,7 @@ public class ShopPurchaseSupplierController extends BaseController {
 	@RequiresPermissions("shop:shopPurchaseSupplier:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(ShopPurchaseSupplier shopPurchaseSupplier, HttpServletRequest request, HttpServletResponse response, Model model) {
+		shopPurchaseSupplier.setOfficeId(UserUtils.getUser().getOffice().getId());
 		Page<ShopPurchaseSupplier> page = shopPurchaseSupplierService.findPage(new Page<ShopPurchaseSupplier>(request, response), shopPurchaseSupplier); 
 		model.addAttribute("page", page);
 		return "modules/shop/shopPurchaseSupplierList";

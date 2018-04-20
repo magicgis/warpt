@@ -22,7 +22,7 @@ var orderId = '${shopPurchaseOrder.id}';
 	<div id="app">
 	<template>
 		<el-form ref="addForm" :model="addForm" :rules="addFormRules" label-width="80px">
-		<el-row :gutter="24" style="margin-bottom: 15px;border-bottom:1px dashed #ddd;padding:0 0 10px;">
+		<el-row  v-if="isAddView" :gutter="24" style="margin-bottom: 15px;border-bottom:1px dashed #ddd;padding:0 0 10px;">
 		<el-col :span="16">
 		&nbsp;
 		</el-col>
@@ -30,13 +30,8 @@ var orderId = '${shopPurchaseOrder.id}';
 				<el-input type='text' v-model="addForm.productNo" placeholder="扫描商品条形码" prefix-icon="el-icon-search" @keyup.enter.native="queryAddProduct()" ></el-input>
 		</el-col>
 		<el-col :span="2">
-			<span v-if="isAddView">
-				<el-button v-if="isSaveFn" type="primary" icon="el-icon-check" @click="submitInfo">采购入库</el-button>
-				<el-button v-if="!isSaveFn" type="primary" icon="el-icon-check" disabled="true">采购入库</el-button>
-			</span>
-			<span v-if="!isAddView">
-				<el-button type="primary" icon="el-icon-check" >复制退货</el-button>
-			</span>
+			<el-button v-if="isSaveFn" type="primary" icon="el-icon-check" @click="submitInfo">采购入库</el-button>
+			<el-button v-if="!isSaveFn" type="primary" icon="el-icon-check" disabled="true">采购入库</el-button>
 		</el-col>
 		</el-row>
 		 	<el-row type="flex">
@@ -85,18 +80,18 @@ var orderId = '${shopPurchaseOrder.id}';
 				<el-col :span="12">
 				  <el-form-item label="备注">
 				  <el-input v-if="isAddView" type='text' v-model="addForm.remarks" ></el-input>
-				  <el-input v-if="!isAddView" readonly="true" type='text' r v-model="addForm.remarks" ></el-input>
+				  <el-input v-if="!isAddView" readonly="true" type='text' v-model="addForm.remarks" ></el-input>
 				  </el-form-item>
 				</el-col>
 				 <el-col :span="6">
 				  <el-form-item label="账目类型" >
 				  	<el-col :span="16">
 					    <el-select  v-if="isAddView" v-model="addForm.subjectType" placeholder="请选择">
-				      		<el-option label="采购支出" value="1002"></el-option>
+				      		<el-option label="采购进货" value="1002"></el-option>
 				      		<el-option label="采购退货" value="1003"></el-option>
 				    	</el-select>
 					    <el-select  v-if="!isAddView" disabled v-model="addForm.subjectType" placeholder="请选择">
-				      		<el-option label="采购支出" value="1002"></el-option>
+				      		<el-option label="采购进货" value="1002"></el-option>
 				      		<el-option label="采购退货" value="1003"></el-option>
 				    	</el-select>
 				    </el-col>

@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.shop.dao;
 
+import java.util.List;
+
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.shop.entity.ShopSupplierAccount;
@@ -14,5 +16,10 @@ import com.thinkgem.jeesite.modules.shop.entity.ShopSupplierAccount;
  */
 @MyBatisDao
 public interface ShopSupplierAccountDao extends CrudDao<ShopSupplierAccount> {
-	
+	/**
+	 * 求和统计某供应商
+	 * @param shopSupplierAccount
+	 * @return
+	 */
+	public List<ShopSupplierAccount> findCountPage(ShopSupplierAccount shopSupplierAccount);
 }

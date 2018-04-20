@@ -46,11 +46,14 @@
 				AND a.stock_name = #{stockName}
 			</if>
 			<if test="orderNo != null and orderNo != ''">
-				AND a.order_no = #{orderNo}
+				AND a.order_no like concat('%',#{orderNo},'%')
 			</if>
 			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
 				AND a.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
 			</if>
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
+			</if>			
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

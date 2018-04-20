@@ -113,9 +113,9 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 	}
 
 	@Transactional(readOnly = false)
-	public void saveOrde(ShopPurchaseOrder shopPurchaseOrder) throws Exception {
+	public void saveOrder(ShopPurchaseOrder shopPurchaseOrder) throws Exception {
 		shopPurchaseOrder.setOfficeId(UserUtils.getUser().getOffice().getId());
-		shopPurchaseOrder.setIsNewRecord(false); //自动生成ID
+		shopPurchaseOrder.setIsNewRecord(false); // 自动生成ID
 		// 生产单据编号
 		shopPurchaseOrder.setOrderNo(ShopUtils.generateBillCode("CG"));
 		super.save(shopPurchaseOrder);
@@ -123,42 +123,21 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 			if (shopPurchaseOrderItem.getProductId() == null) {
 				continue;
 			}
-			shopPurchaseOrderItem.setIsNewRecord(false); //自动生成ID
+			shopPurchaseOrderItem.setIsNewRecord(false); // 自动生成ID
 			shopPurchaseOrderItem.setShopPurchaseOrder(shopPurchaseOrder);
 			shopPurchaseOrderItem.preInsert();
 			shopPurchaseOrderItemDao.insert(shopPurchaseOrderItem);
 			// 更新该产品库存
-			ShopStockItem parm = new ShopStockItem();
-			parm.setOfficeId(shopPurchaseOrder.getOfficeId());
-			parm.setStockId(shopPurchaseOrder.getStockId());
-			parm.setProductId(shopPurchaseOrderItem.getProductId());
-			List<ShopStockItem> stockItemList = shopStockItemService.findList(parm);
-			if (stockItemList.isEmpty()) { // 如果不存在商品，则创建
-				ShopProduct shopProduct = shopProductService.get(shopPurchaseOrderItem.getProductId());
-				ShopStockItem shopStockItem = new ShopStockItem();
-				shopStockItem.setStockNum(shopPurchaseOrderItem.getStockNum()); // 库存初始化
-				shopStockItem.setOfficeId(shopPurchaseOrder.getOfficeId());
-				shopStockItem.setStockId(shopPurchaseOrder.getStockId());
-				shopStockItem.setStockName(shopPurchaseOrder.getStockName());
-				shopStockItem.setProductTypeId(shopProduct.getProductTypeId());
-				shopStockItem.setProductId(shopPurchaseOrderItem.getProductId());
-				shopStockItem.setProductName(shopPurchaseOrderItem.getProductName());
-				shopStockItem.setProductNo(shopPurchaseOrderItem.getProductNo());
-				shopStockItem.setWarnStock(shopProduct.getWarnStock());
-				shopStockItemService.save(shopStockItem);
-			} else if (stockItemList.size() == 1) { // 增加库存
-				ShopStockItem shopStockItem = stockItemList.get(0);
-				shopStockItem.setStockNum(shopPurchaseOrderItem.getPurchaseNum() + shopStockItem.getStockNum());
-				shopStockItemService.save(shopStockItem);
-			} else {
-				throw new Exception("库存存在多个该商品，不合法，请联系管理员处理！");
-			}
+			ShopUtils.updateProductStockNum(shopPurchaseOrder.getOfficeId(), shopPurchaseOrder.getStockId(),
+					shopPurchaseOrder.getStockName(), shopPurchaseOrderItem.getProductId(),
+					shopPurchaseOrderItem.getPurchaseNum());
 		}
 
 		// 新增供应商付款单
 		ShopSupplierAccount shopSupplierAccount = new ShopSupplierAccount();
 		shopSupplierAccount.setOfficeId(shopPurchaseOrder.getOfficeId());
 		shopSupplierAccount.setSupplierId(shopPurchaseOrder.getSupplierId());
+		shopSupplierAccount.setSupplierName(shopPurchaseOrder.getSupplierName());
 		shopSupplierAccount.setOrderId(shopPurchaseOrder.getId());
 		shopSupplierAccount.setBusinData(shopPurchaseOrder.getBusinData());
 		shopSupplierAccount.setAccountNo(shopPurchaseOrder.getOrderNo());
@@ -172,9 +151,26 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 	}
 
 	@Transactional(readOnly = false)
-	public void delete(ShopPurchaseOrder shopPurchaseOrder) {
+	public void deleteOrder(ShopPurchaseOrder shopPurchaseOrder) throws Exception {
+		// 还原库存量
+		shopPurchaseOrder = this.get(shopPurchaseOrder.getId());
+		List<ShopPurchaseOrderItem> orderItem = shopPurchaseOrder.getShopPurchaseOrderItemList();
+		for (ShopPurchaseOrderItem shopPurchaseOrderItem : orderItem) {
+			// 扣减该产品库存
+			ShopUtils.updateProductStockNum(shopPurchaseOrder.getOfficeId(), shopPurchaseOrder.getStockId(),
+					shopPurchaseOrder.getStockName(), shopPurchaseOrderItem.getProductId(),
+					shopPurchaseOrderItem.getPurchaseNum()*-1);
+		}
+		//删除供应商付款
+		ShopSupplierAccount parm = new ShopSupplierAccount();
+		parm.setOfficeId(shopPurchaseOrder.getOfficeId());
+		parm.setSupplierId(shopPurchaseOrder.getSupplierId());
+		List<ShopSupplierAccount> supplierAccountList = shopSupplierAccountService.findList(parm);
+		shopSupplierAccountService.delete(supplierAccountList.get(0));
+		
 		super.delete(shopPurchaseOrder);
 		shopPurchaseOrderItemDao.delete(new ShopPurchaseOrderItem(shopPurchaseOrder));
+
 	}
 
 	/**

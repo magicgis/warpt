@@ -32,60 +32,27 @@
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="shopSupplierAccount" action="${ctx}/shop/shopSupplierAccount/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<sys:message content="${message}"/>		
+		<sys:message content="${message}"/>
 		<div class="control-group">
-			<label class="control-label">关联机构id：</label>
+			<label class="control-label">供应商：</label>
 			<div class="controls">
-				<form:input path="officeId" htmlEscape="false" maxlength="64" class="input-xlarge required"/>
+				<sys:treeselect id="supplier" name="supplierId" value="${shopSupplierAccount.supplierId}" labelName="supplierName" labelValue="${shopSupplierAccount.supplierName}"
+					title="选择供应商" url="/shop/shopPurchaseSupplier/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
 				<span class="help-inline"><font color="red">*</font> </span>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">供应商id：</label>
-			<div class="controls">
-				<form:input path="supplierId" htmlEscape="false" maxlength="64" class="input-xlarge "/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">业务时间：</label>
 			<div class="controls">
-				<form:input path="businData" htmlEscape="false" maxlength="19" class="input-xlarge "/>
+				<form:input path="businData" htmlEscape="false" maxlength="19" class="required" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">采购订单id：</label>
+			<label class="control-label">付款金额：</label>
 			<div class="controls">
-				<form:input path="orderId" htmlEscape="false" maxlength="19" class="input-xlarge "/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">单据编号：</label>
-			<div class="controls">
-				<form:input path="accountNo" htmlEscape="false" maxlength="64" class="input-xlarge "/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">账目类型：</label>
-			<div class="controls">
-				<form:input path="subjectType" htmlEscape="false" maxlength="10" class="input-xlarge "/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">应付金额：</label>
-			<div class="controls">
-				<form:input path="meetMoney" htmlEscape="false" class="input-xlarge  number"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">实付金额：</label>
-			<div class="controls">
-				<form:input path="factMoney" htmlEscape="false" class="input-xlarge  number"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">欠款金额：</label>
-			<div class="controls">
-				<form:input path="lessMoney" htmlEscape="false" class="input-xlarge  number"/>
+				<form:input path="factMoney" htmlEscape="false" class="required  number"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">

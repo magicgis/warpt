@@ -26,7 +26,10 @@ public class ShopUtils {
 	public static final String SUBJECT_TYPE_1002 = "1002";
 	/** 账目类型：采购退货 **/
 	public static final String SUBJECT_TYPE_1003 = "1003";
-
+	/** 账目类型：付款供应商 **/
+	public static final String SUBJECT_TYPE_1004 = "1004";
+	/** 账目类型：客户收款 **/
+	public static final String SUBJECT_TYPE_1005 = "1005";
 	// 建立货币格式化引用
 	private static final NumberFormat currency = NumberFormat.getCurrencyInstance();
 	// 建立百分比格式化引用
@@ -206,6 +209,46 @@ public class ShopUtils {
 			shopStockItemService.save(shopStockItem);
 		}
 	}
+	
+	/**
+	 * 更新某产品库存量
+	 * 
+	 * @param officeId
+	 * @param stockId
+	 * @param productId
+	 * @throws Exception
+	 */
+	public static void updateProductStockNum(String officeId, String stockId, String stockName, String productId, int stockNum)
+			throws Exception {
+		ShopStockItemService shopStockItemService = SpringContextHolder.getBean("shopStockItemService");
+		ShopProductService shopProductService = SpringContextHolder.getBean("shopProductService");
+		ShopStockItem parm = new ShopStockItem();
+		parm.setOfficeId(officeId);
+		parm.setStockId(stockId);
+		parm.setProductId(productId);
+		List<ShopStockItem> stockItemList = shopStockItemService.findList(parm);
+		if (stockItemList.isEmpty()) { // 如果不存在商品，则创建
+			ShopProduct shopProduct = shopProductService.get(productId);
+			ShopStockItem shopStockItem = new ShopStockItem();
+			shopStockItem.setStockNum(stockNum); // 库存初始化
+			shopStockItem.setOfficeId(officeId);
+			shopStockItem.setStockId(stockId);
+			shopStockItem.setStockName(stockName);
+			shopStockItem.setProductTypeId(shopProduct.getProductTypeId());
+			shopStockItem.setProductId(productId);
+			shopStockItem.setProductName(shopProduct.getProductName());
+			shopStockItem.setProductNo(shopProduct.getProductNo());
+			shopStockItem.setWarnStock(shopProduct.getWarnStock());
+			shopStockItemService.save(shopStockItem);
+		} else if (stockItemList.size() == 1) { // 增加库存
+			ShopStockItem shopStockItem = stockItemList.get(0);
+			shopStockItem.setStockNum(stockNum + shopStockItem.getStockNum());
+			shopStockItemService.save(shopStockItem);
+		} else {
+			throw new Exception("库存存在多个该商品，不合法，请联系管理员处理！");
+		}
+
+	}	
 
 	/**
 	 * 根据当前时间生成订单号码
@@ -220,7 +263,7 @@ public class ShopUtils {
 			char ch = str.charAt(new Random().nextInt(str.length()));
 			sb.append(ch);
 		}
-		SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmss", Locale.getDefault());
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		return fi + sb.toString() + UserUtils.getUser().getLoginName() + formatter.format(new Date());
 	}
 }

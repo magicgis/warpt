@@ -69,8 +69,11 @@
 				<form:input path="orderNo" htmlEscape="false" maxlength="64" class="input-medium"/>
 			</li>
 			<li><label>采购日期：</label>
-				<form:input path="businData" htmlEscape="false" maxlength="19" class="input-medium"/>-
-				<form:input path="businData" htmlEscape="false" maxlength="19" class="input-medium"/>
+				<input id="beginBusinData" name="beginBusinData" type="text" readonly="readonly" class="input-medium Wdate"
+				value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				-
+				<input id="endBusinData" name="endBusinData" type="text" readonly="readonly" class="input-medium Wdate"
+				value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
 			<li class="clearfix" style="float: right;">
@@ -84,8 +87,8 @@
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
-				
 				<th>采购单号</th>
+				<th>账目类型</th>
 				<th>订单总金额</th>
 				<th>额外运费</th>
 				<th>采购日期</th>
@@ -100,6 +103,10 @@
 				<td><a href="javascript:void(0)" onclick="showView('${shopPurchaseOrder.id}')">
 					${shopPurchaseOrder.orderNo}
 				</a></td>
+				<td>
+					<c:if test="${shopPurchaseOrder.subjectType == '1002'}">采购进货</c:if>
+					<c:if test="${shopPurchaseOrder.subjectType == '1003'}">采购退货</c:if>
+				</td>
 				<td>
 					${shopPurchaseOrder.orderSum}
 				</td>
@@ -116,8 +123,8 @@
 					<fmt:formatDate value="${shopPurchaseOrder.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
 				<shiro:hasPermission name="shop:shopPurchaseOrder:edit"><td>
-    				<a href="${ctx}/shop/shopPurchaseOrder/form?id=${shopPurchaseOrder.id}">复制退货</a>
-					<a href="${ctx}/shop/shopPurchaseOrder/delete?id=${shopPurchaseOrder.id}" onclick="return confirmx('确认要删除该采购单吗？删除后库存、供应商付款等将撤销不可恢复！', this.href)">删除</a>
+<%--     				<a href="${ctx}/shop/shopPurchaseOrder/form?id=${shopPurchaseOrder.id}">复制退货</a> --%>
+					<a href="${ctx}/shop/shopPurchaseOrder/delete?id=${shopPurchaseOrder.id}" onclick="return confirmx('确认要删除该采购单吗？删除后改变的库存、供应商付款等将扣减！', this.href)">删除</a>
 				</td></shiro:hasPermission>
 			</tr>
 		</c:forEach>

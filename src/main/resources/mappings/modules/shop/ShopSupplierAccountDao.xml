@@ -6,6 +6,7 @@
 		a.id AS "id",
 		a.office_id AS "officeId",
 		a.supplier_id AS "supplierId",
+		a.supplier_name AS "supplierName",
 		a.busin_data AS "businData",
 		a.order_id AS "orderId",
 		a.account_no AS "accountNo",
@@ -39,6 +40,18 @@
 		<include refid="shopSupplierAccountJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="supplierId != null and supplierId != ''">
+				AND a.supplier_id = #{supplierId}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
+			</if>
+			<if test="accountNo != null and accountNo != ''">
+				AND a.account_no like concat('%',#{accountNo},'%')
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND a.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -68,11 +81,39 @@
 		</choose>
 	</select>
 	
+	<select id="findCountPage" resultType="ShopSupplierAccount">
+		SELECT 
+			a.office_id AS "officeId",
+			a.supplier_id AS "supplierId",
+			a.supplier_name AS "supplierName",
+			sum(a.meet_money) as "sumMeetMoney",
+			sum(a.fact_money) as "sumFactMoney",
+			sum(a.less_money) as "sumLessMoney"
+		FROM shop_supplier_account a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="supplierId != null and supplierId != ''">
+				AND a.supplier_id = #{supplierId}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND a.office_id = #{officeId}
+			</if>
+			<if test="accountNo != null and accountNo != ''">
+				AND a.account_no like concat('%',#{accountNo},'%')
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND a.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
+			</if>
+		</where>
+		group by a.office_id,a.supplier_id,a.supplier_name
+	</select>
+	
 	<insert id="insert">
 		INSERT INTO shop_supplier_account(
 			id,
 			office_id,
 			supplier_id,
+			supplier_name,
 			busin_data,
 			order_id,
 			account_no,
@@ -90,6 +131,7 @@
 			#{id},
 			#{officeId},
 			#{supplierId},
+			#{supplierName},
 			#{businData},
 			#{orderId},
 			#{accountNo},
@@ -110,6 +152,7 @@
 		UPDATE shop_supplier_account SET 	
 			office_id = #{officeId},
 			supplier_id = #{supplierId},
+			supplier_name = #{supplierName},
 			busin_data = #{businData},
 			order_id = #{orderId},
 			account_no = #{accountNo},

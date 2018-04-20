@@ -21,6 +21,7 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
 import com.thinkgem.jeesite.modules.shop.service.ShopCustomerInfoService;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 销售客户Controller
@@ -49,6 +50,7 @@ public class ShopCustomerInfoController extends BaseController {
 	@RequiresPermissions("shop:shopCustomerInfo:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(ShopCustomerInfo shopCustomerInfo, HttpServletRequest request, HttpServletResponse response, Model model) {
+		shopCustomerInfo.setOfficeId(UserUtils.getUser().getOffice().getId());
 		Page<ShopCustomerInfo> page = shopCustomerInfoService.findPage(new Page<ShopCustomerInfo>(request, response), shopCustomerInfo); 
 		model.addAttribute("page", page);
 		return "modules/shop/shopCustomerInfoList";
