@@ -24,14 +24,16 @@
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<ul class="ul-form">
-			<li><label>仓库id：</label>
-				<form:input path="stockId" htmlEscape="false" maxlength="64" class="input-medium"/>
+			<li><label>仓库：</label>
+				<sys:treeselect id="stock" name="stockId" value="${shopStockItem.stockId}" labelName="stockName" labelValue="${shopStockItem.stockName}"
+					title="选择仓库" url="/shop/shopStockInfo/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
 			</li>
-			<li><label>商品类型ID：</label>
-				<form:input path="productTypeId" htmlEscape="false" maxlength="64" class="input-medium"/>
+			<li><label>商品类型：</label>
+				<sys:treeselect id="productType" name="productTypeId" value="${shopStockItem.productTypeId}" labelName="productTypeName" labelValue="${shopStockItem.productTypeName}"
+					title="选择商品类型" url="/shop/shopProductType/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
 			</li>
-			<li><label>商品id：</label>
-				<form:input path="productId" htmlEscape="false" maxlength="64" class="input-medium"/>
+			<li><label>商品名称：</label>
+				<form:input path="productName" htmlEscape="false" maxlength="64" class="input-medium"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
 			<li class="clearfix"></li>

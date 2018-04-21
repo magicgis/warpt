@@ -27,6 +27,8 @@ public class ShopStockItem extends DataEntity<ShopStockItem> {
 	private Integer warnStock;		// 库存预警数
 	private Integer listNo;		// 排序
 	
+	private String pingyinStr;
+	
 	public ShopStockItem() {
 		super();
 	}
@@ -129,6 +131,14 @@ public class ShopStockItem extends DataEntity<ShopStockItem> {
 
 	public void setListNo(Integer listNo) {
 		this.listNo = listNo;
+	}
+
+	public String getPingyinStr() {
+		return pingyinStr;
+	}
+
+	public void setPingyinStr(String pingyinStr) {
+		this.pingyinStr = pingyinStr;
 	}
 	
 }

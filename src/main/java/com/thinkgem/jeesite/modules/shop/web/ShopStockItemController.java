@@ -21,6 +21,7 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.shop.entity.ShopStockItem;
 import com.thinkgem.jeesite.modules.shop.service.ShopStockItemService;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 仓库库存Controller
@@ -49,6 +50,16 @@ public class ShopStockItemController extends BaseController {
 	@RequiresPermissions("shop:shopStockItem:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(ShopStockItem shopStockItem, HttpServletRequest request, HttpServletResponse response, Model model) {
+		// 判断查询如果是字母，则激活拼音查询
+		if (shopStockItem.getProductName() != null) {
+			String productName = shopStockItem.getProductName();
+			boolean isWord = productName.matches("[a-zA-Z]+");
+			if (isWord) {
+				shopStockItem.setPingyinStr(productName.toLowerCase());
+				shopStockItem.setProductName(null);
+			}
+		}
+		shopStockItem.setOfficeId(UserUtils.getUser().getOffice().getId());
 		Page<ShopStockItem> page = shopStockItemService.findPage(new Page<ShopStockItem>(request, response), shopStockItem); 
 		model.addAttribute("page", page);
 		return "modules/shop/shopStockItemList";

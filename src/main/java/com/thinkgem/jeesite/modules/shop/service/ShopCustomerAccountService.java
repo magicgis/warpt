@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.shop.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,9 @@ import com.thinkgem.jeesite.modules.shop.dao.ShopCustomerAccountDao;
 @Transactional(readOnly = true)
 public class ShopCustomerAccountService extends CrudService<ShopCustomerAccountDao, ShopCustomerAccount> {
 
+	@Autowired
+	private ShopCustomerAccountDao shopCustomerAccountDao;
+	
 	public ShopCustomerAccount get(String id) {
 		return super.get(id);
 	}
@@ -42,6 +46,11 @@ public class ShopCustomerAccountService extends CrudService<ShopCustomerAccountD
 	@Transactional(readOnly = false)
 	public void delete(ShopCustomerAccount shopCustomerAccount) {
 		super.delete(shopCustomerAccount);
+	}
+
+	public List<ShopCustomerAccount> findCountPage(ShopCustomerAccount shopCustomerAccount) {
+		// TODO Auto-generated method stub
+		return shopCustomerAccountDao.findCountPage(shopCustomerAccount);
 	}
 	
 }

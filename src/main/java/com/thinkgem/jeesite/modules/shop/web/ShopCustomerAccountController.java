@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.shop.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,10 +19,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerAccount;
+import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
 import com.thinkgem.jeesite.modules.shop.service.ShopCustomerAccountService;
+import com.thinkgem.jeesite.modules.shop.service.ShopCustomerInfoService;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 客户收款Controller
@@ -33,6 +38,8 @@ public class ShopCustomerAccountController extends BaseController {
 
 	@Autowired
 	private ShopCustomerAccountService shopCustomerAccountService;
+	@Autowired
+	private ShopCustomerInfoService shopCustomerInfoService;
 	
 	@ModelAttribute
 	public ShopCustomerAccount get(@RequestParam(required=false) String id) {
@@ -49,8 +56,27 @@ public class ShopCustomerAccountController extends BaseController {
 	@RequiresPermissions("shop:shopCustomerAccount:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(ShopCustomerAccount shopCustomerAccount, HttpServletRequest request, HttpServletResponse response, Model model) {
+		if (shopCustomerAccount.getCustomerId() == null) {
+			// 默认第一个供应商
+			ShopCustomerInfo parm = new ShopCustomerInfo();
+			parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+			List<ShopCustomerInfo> supplierList = shopCustomerInfoService.findList(parm);
+			ShopCustomerInfo shopCustomerInfo = supplierList.get(0);
+			shopCustomerAccount.setCustomerId(shopCustomerInfo.getId());
+			shopCustomerAccount.setCustomerName(shopCustomerInfo.getCustomerName());
+		}
+		shopCustomerAccount.setOfficeId(UserUtils.getUser().getOffice().getId());
 		Page<ShopCustomerAccount> page = shopCustomerAccountService.findPage(new Page<ShopCustomerAccount>(request, response), shopCustomerAccount); 
 		model.addAttribute("page", page);
+		//求和
+		List<ShopCustomerAccount> countList = shopCustomerAccountService.findCountPage(shopCustomerAccount);
+		if(!countList.isEmpty() && countList.size() == 1) {
+			ShopCustomerAccount accountObj = countList.get(0);
+			shopCustomerAccount.setSumMeetMoney(accountObj.getSumMeetMoney());
+			shopCustomerAccount.setSumFactMoney(accountObj.getSumFactMoney());
+			shopCustomerAccount.setSumLessMoney(accountObj.getSumLessMoney());
+		}
+		model.addAttribute("shopCustomerAccount", shopCustomerAccount);
 		return "modules/shop/shopCustomerAccountList";
 	}
 
@@ -67,6 +93,7 @@ public class ShopCustomerAccountController extends BaseController {
 		if (!beanValidator(model, shopCustomerAccount)){
 			return form(shopCustomerAccount, model);
 		}
+		shopCustomerAccount.setOfficeId(UserUtils.getUser().getOffice().getId());
 		shopCustomerAccountService.save(shopCustomerAccount);
 		addMessage(redirectAttributes, "保存客户收款成功");
 		return "redirect:"+Global.getAdminPath()+"/shop/shopCustomerAccount/?repage";

@@ -24,6 +24,7 @@
 	</sql>
 	
 	<sql id="shopStockItemJoins">
+		left join shop_product b on(a.product_id = b.id) 
 	</sql>
     
 	<select id="get" resultType="ShopStockItem">
@@ -53,13 +54,22 @@
 			<if test="officeId != null and officeId != ''">
 				AND a.office_id = #{officeId}
 			</if>
+			<if test="productName != null and productName != ''">
+				AND b.product_name LIKE
+					<if test="dbName == 'oracle'"> '%'||#{productName}||'%'</if>
+					<if test="dbName == 'mssql'">AND a.product_name LIKE '%'+#{productName}+'%'</if>
+					<if test="dbName == 'mysql'"> concat('%',#{productName},'%') </if>
+			</if> 
+			<if test="pingyinStr != null and pingyinStr != ''">
+				AND b.product_char like concat('%',#{pingyinStr},'%')
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.list_no 
 			</otherwise>
 		</choose>
 	</select>
@@ -77,7 +87,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.list_no 
 			</otherwise>
 		</choose>
 	</select>

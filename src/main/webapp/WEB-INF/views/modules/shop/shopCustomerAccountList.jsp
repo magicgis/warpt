@@ -14,6 +14,26 @@
 			$("#searchForm").submit();
         	return false;
         }
+		
+		function showView(id){
+        	top.layer.ready(function(){
+        		//缓存在打开页面调用
+        		top.loadListForm = $('#searchForm');
+				var index =	top.layer.open({
+				    type: 2,
+				    title: '销售出库单',
+				    maxmin: false,
+				    resize : false, //是否允许拉伸
+				    //area: ['600px', '450px'],
+				    content: ctx + '/shop/shopSaleOrder/form?id='+id,
+					success : function(layero, index) {
+					},
+					end : function() {
+					}
+				});
+				top.layer.full(index);
+			});
+		}
 	</script>
 </head>
 <body>
@@ -25,8 +45,9 @@
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<ul class="ul-form">
-			<li><label>客户id：</label>
-				<form:input path="customerId" htmlEscape="false" maxlength="64" class="input-medium"/>
+			<li><label>客户：</label>
+				<sys:treeselect id="customer" name="customerId" value="${shopCustomerAccount.customerId}" labelName="customerName" labelValue="${shopCustomerAccount.customerName}"
+					title="选择客户" url="/shop/shopCustomerInfo/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
 			</li>
 			<li><label>业务时间：</label>
 				<input name="beginBusinData" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate"
@@ -44,17 +65,23 @@
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>
+	<div style="margin:10px 0px 10px 20px;font-size: 15px;" >
+		<span>${shopCustomerAccount.customerName}</span>
+		<span style="margin-left: 150px;">日期：${shopCustomerAccount.beginBusinData}至${shopCustomerAccount.endBusinData}</span>
+		<span style="margin-left: 150px;color: red;">应付金额：${shopCustomerAccount.sumMeetMoney}</span>
+		<span style="margin-left: 150px;color: red;">实付金额：${shopCustomerAccount.sumFactMoney}</span>
+		<span style="margin-left: 150px;color: red;">欠款金额：${shopCustomerAccount.sumLessMoney}</span>
+	</div>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
-				<th>客户名称</th>
-				<th>业务时间</th>
+				
 				<th>单据编号</th>
+				<th>业务时间</th>
 				<th>账目类型</th>
 				<th>应付金额</th>
 				<th>实付金额</th>
 				<th>欠款金额</th>
-				<th>更新日期</th>
 				<th>备注</th>
 				<shiro:hasPermission name="shop:shopCustomerAccount:edit"><th>操作</th></shiro:hasPermission>
 			</tr>
@@ -62,17 +89,16 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="shopCustomerAccount">
 			<tr>
-				<td><a href="${ctx}/shop/shopCustomerAccount/form?id=${shopCustomerAccount.id}">
-					${shopCustomerAccount.customerName}
-				</a></td>
-				<td>
-					${shopCustomerAccount.businData}
-				</td>
 				<td>
 					${shopCustomerAccount.accountNo}
 				</td>
 				<td>
-					${shopCustomerAccount.subjectType}
+					${shopCustomerAccount.businData}
+				</td>
+				<td>
+					<c:if test="${shopCustomerAccount.subjectType == '1000'}">销售出货</c:if>
+					<c:if test="${shopCustomerAccount.subjectType == '1001'}">销售退货</c:if>
+					<c:if test="${shopCustomerAccount.subjectType == '1005'}">客户收款</c:if>
 				</td>
 				<td>
 					${shopCustomerAccount.meetMoney}
@@ -84,14 +110,16 @@
 					${shopCustomerAccount.lessMoney}
 				</td>
 				<td>
-					<fmt:formatDate value="${shopCustomerAccount.updateDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
-				</td>
-				<td>
 					${shopCustomerAccount.remarks}
 				</td>
 				<shiro:hasPermission name="shop:shopCustomerAccount:edit"><td>
+				<c:if test="${empty shopCustomerAccount.saleId}">
     				<a href="${ctx}/shop/shopCustomerAccount/form?id=${shopCustomerAccount.id}">修改</a>
 					<a href="${ctx}/shop/shopCustomerAccount/delete?id=${shopCustomerAccount.id}" onclick="return confirmx('确认要删除该客户收款吗？', this.href)">删除</a>
+				</c:if>
+				<c:if test="${!empty shopCustomerAccount.saleId}">
+					<a href="javascript:void(0)" onclick="showView('${shopCustomerAccount.saleId}')">查看单据</a>
+				</c:if>
 				</td></shiro:hasPermission>
 			</tr>
 		</c:forEach>
