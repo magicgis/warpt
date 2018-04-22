@@ -30,7 +30,7 @@ var orderId = '${shopPurchaseOrder.id}';
 				<el-input type='text' v-model="addForm.productNo" placeholder="扫描商品条形码" prefix-icon="el-icon-search" @keyup.enter.native="queryAddProduct()" ></el-input>
 		</el-col>
 		<el-col :span="2">
-			<el-button v-if="isSaveFn" type="primary" icon="el-icon-check" @click="submitInfo">采购入库</el-button>
+			<el-button v-if="isSaveFn" type="primary" icon="el-icon-check" @click="submitInfo" v-loading.fullscreen.lock="fullscreenLoading">采购入库</el-button>
 			<el-button v-if="!isSaveFn" type="primary" icon="el-icon-check" disabled="true">采购入库</el-button>
 		</el-col>
 		</el-row>

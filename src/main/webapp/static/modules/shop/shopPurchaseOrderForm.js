@@ -3,6 +3,7 @@ jQuery(document).ready(function() {
 	app = new Vue({
 		el : '#app',
 		data : {
+			fullscreenLoading : false,
 			//是否新增视图
 			isAddView : true,
 			// 是否能保存数据，如果存在非法数据不能保存数据
@@ -64,6 +65,7 @@ jQuery(document).ready(function() {
 			// 加载查询条件
 			loadingForm : function(orderId) {
 				var _self = this;
+				_self.fullscreenLoading = true;
 				$.post(mypath + '/shop/shopPurchaseOrder/loadingForm', {
 							id : orderId
 						}, function(data) {
@@ -92,10 +94,13 @@ jQuery(document).ready(function() {
 								}else{
 									_self.isAddView = false;
 								}
+								//遮罩还原
+								_self.fullscreenLoading = false;
 							} else {
 								alert(data.msg);
 								top.layer.closeAll();
 							}
+							_self.fullscreenLoading = false;
 						});
 			},
 			// 提交验证保存
@@ -108,6 +113,7 @@ jQuery(document).ready(function() {
 							_self.$message.error('请选择商品');
 							return;
 						}
+						_self.fullscreenLoading = true;
 						// 保存操作
 						$
 								.post(
@@ -131,6 +137,7 @@ jQuery(document).ready(function() {
 											} else {
 												alert(data.msg);
 											}
+											_self.fullscreenLoading = false;
 										});
 					} else {
 						_self.$message.error('提交验证不合法，请检查输入项！');
@@ -188,6 +195,7 @@ jQuery(document).ready(function() {
 			selectProductObj : function(index) {
 				var _self = this;
 				var selectObj = _self.addForm.shopPurchaseOrderItemList[index]; // 选择对象
+				_self.fullscreenLoading = true;
 				$.post(mypath + '/shop/shopPurchaseOrder/addOrderItem', {
 							productId : selectObj.productId,
 							stockId : _self.addForm.stockId,
@@ -202,11 +210,13 @@ jQuery(document).ready(function() {
 							} else {
 								_self.$message.error(data.msg);
 							}
+							_self.fullscreenLoading = false;
 						});
 			},
 			// 扫描添加(回车)
 			queryAddProduct : function(ev) {
 				var _self = this;
+				_self.fullscreenLoading = true;
 				$.post(mypath + '/shop/shopPurchaseOrder/addOrderItem', {
 							productNo : _self.addForm.productNo,
 							stockId : _self.addForm.stockId,
@@ -262,6 +272,7 @@ jQuery(document).ready(function() {
 							} else {
 								_self.$message.error(data.msg);
 							}
+							_self.fullscreenLoading = false;
 						});
 			},
 			// 改变某行值更新

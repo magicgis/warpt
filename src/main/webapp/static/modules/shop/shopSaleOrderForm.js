@@ -64,6 +64,7 @@ jQuery(document).ready(function() {
 			// 加载查询条件
 			loadingForm : function(orderId) {
 				var _self = this;
+				_self.fullscreenLoading = true;
 				$.post(mypath + '/shop/shopSaleOrder/loadingForm', {
 							id : orderId
 						}, function(data) {
@@ -89,13 +90,17 @@ jQuery(document).ready(function() {
 									//
 									_self.addForm.subjectType = _self.addForm.subjectType
 											+ '';
+									//遮罩还原
+									_self.fullscreenLoading = false;
 								}else{
 									_self.isAddView = false;
 								}
+								
 							} else {
 								alert(data.msg);
 								top.layer.closeAll();
 							}
+							
 						});
 			},
 			// 提交验证保存
@@ -108,6 +113,7 @@ jQuery(document).ready(function() {
 							_self.$message.error('请选择商品');
 							return;
 						}
+						_self.fullscreenLoading = true;
 						// 保存操作
 						$
 								.post(
@@ -131,6 +137,7 @@ jQuery(document).ready(function() {
 											} else {
 												alert(data.msg);
 											}
+											_self.fullscreenLoading = false;
 										});
 					} else {
 						_self.$message.error('提交验证不合法，请检查输入项！');
@@ -187,6 +194,7 @@ jQuery(document).ready(function() {
 			// 选择产品项
 			selectProductObj : function(index) {
 				var _self = this;
+				_self.fullscreenLoading = true;
 				var selectObj = _self.addForm.shopSaleOrderItemList[index]; // 选择对象
 				$.post(mypath + '/shop/shopSaleOrder/addOrderItem', {
 							productId : selectObj.productId,
@@ -202,11 +210,13 @@ jQuery(document).ready(function() {
 							} else {
 								_self.$message.error(data.msg);
 							}
+							_self.fullscreenLoading = false;
 						});
 			},
 			// 扫描添加(回车)
 			queryAddProduct : function(ev) {
 				var _self = this;
+				_self.fullscreenLoading = true;
 				$.post(mypath + '/shop/shopSaleOrder/addOrderItem', {
 							productNo : _self.addForm.productNo,
 							stockId : _self.addForm.stockId,
@@ -262,6 +272,7 @@ jQuery(document).ready(function() {
 							} else {
 								_self.$message.error(data.msg);
 							}
+							_self.fullscreenLoading = false;
 						});
 			},
 			// 改变某行值更新
