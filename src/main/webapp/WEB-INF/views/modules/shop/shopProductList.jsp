@@ -5,6 +5,7 @@
 	<title>商品基本信息管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
+		var mypath = '${ctx}';
 		$(document).ready(function() {
 			
 		});
@@ -14,6 +15,14 @@
 			$("#searchForm").submit();
         	return false;
         }
+		
+		function impExcelFn(){
+			// 保存操作
+			$.post(mypath+ '/shop/shopProduct/impExcel',
+					{}, function(data) {
+								alert('导入成功');
+			});
+        }		
 	</script>
 </head>
 <body>
@@ -36,7 +45,7 @@
 				<form:input path="productNo" htmlEscape="false" maxlength="500" class="input-medium"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-			<li class="clearfix"></li>
+			<li class="clearfix"><input id="impExcel" onclick="impExcelFn()" class="btn btn-primary" type="button" value="导入Excel"/></li>
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>

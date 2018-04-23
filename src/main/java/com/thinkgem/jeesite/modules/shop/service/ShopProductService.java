@@ -59,7 +59,7 @@ public class ShopProductService extends CrudService<ShopProductDao, ShopProduct>
 		}
 		productChar = productChar.substring(0, productChar.length()-1);
 		productChar = productChar + ")";
-		System.out.println("=========productChar=="+productChar);
+		//System.out.println("=========productChar=="+productChar);
 		shopProduct.setProductChar(productChar);
 		super.save(shopProduct);
 		for (ShopProductPrice shopProductPrice : shopProduct.getShopProductPriceList()) {
@@ -98,6 +98,11 @@ public class ShopProductService extends CrudService<ShopProductDao, ShopProduct>
 		//库存显示删除
 		shopStockItemService.deleteByProductId(shopStockItem);
 		
+	}
+
+	@Transactional(readOnly = false)
+	public void impExcel() {
+		ShopUtils.impShopExcel();
 	}
 
 }

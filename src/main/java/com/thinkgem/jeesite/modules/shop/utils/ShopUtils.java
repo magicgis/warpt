@@ -3,16 +3,26 @@ package com.thinkgem.jeesite.modules.shop.utils;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
+import org.apache.poi.ss.usermodel.Row;
+
+import com.google.common.collect.Lists;
+import com.thinkgem.jeesite.common.utils.IdGen;
 import com.thinkgem.jeesite.common.utils.SpringContextHolder;
+import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
+import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerLevel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
+import com.thinkgem.jeesite.modules.shop.entity.ShopProductPrice;
+import com.thinkgem.jeesite.modules.shop.entity.ShopProductType;
 import com.thinkgem.jeesite.modules.shop.entity.ShopStockInfo;
 import com.thinkgem.jeesite.modules.shop.entity.ShopStockItem;
+import com.thinkgem.jeesite.modules.shop.service.ShopCustomerLevelService;
 import com.thinkgem.jeesite.modules.shop.service.ShopProductService;
+import com.thinkgem.jeesite.modules.shop.service.ShopProductTypeService;
 import com.thinkgem.jeesite.modules.shop.service.ShopStockInfoService;
 import com.thinkgem.jeesite.modules.shop.service.ShopStockItemService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -278,5 +288,80 @@ public class ShopUtils {
 		}
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		return fi + sb.toString() + UserUtils.getUser().getLoginName() + formatter.format(new Date());
+	}
+	
+	/**
+	 * 导入excel TO.
+	 */
+	public static void impShopExcel() {
+		ShopProductService shopProductService = SpringContextHolder.getBean("shopProductService");
+		ShopProductTypeService shopProductTypeService = SpringContextHolder.getBean("shopProductTypeService");
+		ShopCustomerLevelService shopCustomerLevelService = SpringContextHolder.getBean("shopCustomerLevelService");
+		try {
+			ImportExcel ei = new ImportExcel("F:/tmp/商品信息.xls", 0);
+			for (int i = ei.getDataRowNum(); i < ei.getLastDataRowNum(); i++) {
+				Row row = ei.getRow(i);
+				for (int j = 0; j < ei.getLastCellNum(); j++) {
+					Object val = ei.getCellValue(row, j);
+					System.out.print(val+", ");
+				}
+				System.out.print("\n");
+				//保存产品
+				ShopProduct shopProduct = new ShopProduct();
+				//shopProduct.setIsNewRecord(true);
+				//shopProduct.setId(IdGen.uuid());
+				shopProduct.setOfficeId(UserUtils.getUser().getOffice().getId());
+				//商品类型
+				String productTypeName = String.valueOf(ei.getCellValue(row,0)).trim();
+				ShopProductType pram0 = new ShopProductType();
+				pram0.setOffice(UserUtils.getUser().getOffice());
+				pram0.setQueryAllName(productTypeName);
+				List<ShopProductType> shopProductTypeList = shopProductTypeService.findList(pram0);
+				ShopProductType shopProductType = shopProductTypeList.get(0);
+				shopProduct.setProductTypeId(shopProductType.getId());
+				shopProduct.setProductTypeName(productTypeName);
+				shopProduct.setProductName(String.valueOf(ei.getCellValue(row,1)).trim()); //名称
+				shopProduct.setProductNo(String.valueOf(ei.getCellValue(row,2)).trim()); //条码
+				shopProduct.setBuyPrice(Double.valueOf(String.valueOf(ei.getCellValue(row,3)).trim())); //采购价
+				shopProduct.setShopPrice(Double.valueOf(String.valueOf(ei.getCellValue(row,4)).trim())); //销售价
+				BigDecimal warnStock = new BigDecimal(String.valueOf(ei.getCellValue(row,5)).trim());
+				shopProduct.setWarnStock(warnStock.intValue()); //库存预警数
+				shopProduct.setUnit(String.valueOf(ei.getCellValue(row,6)).trim()); //单位
+				shopProduct.setSpec(String.valueOf(ei.getCellValue(row,7)).trim()); //规格
+				BigDecimal listNo = new BigDecimal(String.valueOf(ei.getCellValue(row,8)).trim());
+				shopProduct.setListNo(listNo.intValue()); //排序
+				//分类价格设置
+				int indexKey = 9;
+				ShopCustomerLevel pram = new ShopCustomerLevel();
+				pram.setOfficeId(UserUtils.getUser().getOffice().getId());
+				List<ShopCustomerLevel> leveList = shopCustomerLevelService.findList(pram);
+				List<ShopProductPrice> priceList = new ArrayList<ShopProductPrice>();
+				// 初始化价格
+				for (ShopCustomerLevel level : leveList) {
+					ShopProductPrice price = new ShopProductPrice();
+					price.setId("");
+					//price.setIsNewRecord(true);
+					price.setLevelId(level.getId());
+					price.setLevelName(level.getLevelName());
+					price.setDiscount(level.getDiscount());
+					price.setListNo(level.getSort());
+					//price.setShopProduct(shopProduct);
+					if(indexKey > 11) {
+						price.setDiscountPrice(ShopUtils.multiply(Double.valueOf(level.getDiscount()), 0.01,shopProduct.getBuyPrice()));
+					}else {
+						price.setDiscountPrice(Double.valueOf(String.valueOf(ei.getCellValue(row,indexKey)).trim()));
+					}
+					priceList.add(price);
+					indexKey++;
+				}
+				shopProduct.setShopProductPriceList(priceList);
+				//保存
+				shopProductService.save(shopProduct);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 }

@@ -59,6 +59,9 @@
 			<if test="office != null and office.id != null and office.id != ''">
 				AND a.office_id = #{office.id}
 			</if>
+			<if test="queryAllName !=null and queryAllName !='' ">
+				AND a.name = #{queryAllName}
+			</if>
 		</where>
 		ORDER BY a.sort ASC
 	</select>

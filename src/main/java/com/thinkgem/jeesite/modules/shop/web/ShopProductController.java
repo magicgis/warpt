@@ -3,12 +3,15 @@
  */
 package com.thinkgem.jeesite.modules.shop.web;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,11 +19,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerLevel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
@@ -134,5 +139,14 @@ public class ShopProductController extends BaseController {
 		addMessage(redirectAttributes, "删除商品基本信息成功");
 		return "redirect:" + Global.getAdminPath() + "/shop/shopProduct/?repage";
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "impExcel")
+	public String impExcel(
+			@RequestParam(required = false) String extId,
+			HttpServletResponse response) {
+		shopProductService.impExcel();
+		return "ok";
+	}	
 
 }

@@ -28,6 +28,8 @@ public class ShopProductType extends TreeEntity<ShopProductType> {
 	private Integer levelNo;		// 层级
 	private Integer sort;		// sort
 	
+	private String queryAllName; //全称查询使用
+	
 	public ShopProductType() {
 		super();
 	}
@@ -117,4 +119,16 @@ public class ShopProductType extends TreeEntity<ShopProductType> {
 	public String getParentId() {
 		return parent != null && parent.getId() != null ? parent.getId() : "0";
 	}
+
+	public String getQueryAllName() {
+		return queryAllName;
+	}
+
+	public void setQueryAllName(String queryAllName) {
+		this.queryAllName = queryAllName;
+	}
+
+	
+	
+	
 }
