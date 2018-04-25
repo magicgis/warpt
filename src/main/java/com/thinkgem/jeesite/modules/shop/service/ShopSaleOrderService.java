@@ -108,7 +108,7 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 	}
 	
 	@Transactional(readOnly = false)
-	public void saveOrder(ShopSaleOrder shopSaleOrder) throws Exception {
+	public void saveOrder(ShopSaleOrder shopSaleOrder) {
 		shopSaleOrder.setOfficeId(UserUtils.getUser().getOffice().getId());
 		shopSaleOrder.setIsNewRecord(false); // 自动生成ID
 		shopSaleOrder.setState(ShopUtils.STATE_TYPE_2); //直接入库TO.

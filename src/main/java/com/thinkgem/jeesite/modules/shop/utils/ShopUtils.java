@@ -232,10 +232,8 @@ public class ShopUtils {
 	 * @param officeId
 	 * @param stockId
 	 * @param productId
-	 * @throws Exception
 	 */
-	public static void updateProductStockNum(String officeId, String stockId, String stockName, String productId, int addStockNum)
-			throws Exception {
+	public static void updateProductStockNum(String officeId, String stockId, String stockName, String productId, int addStockNum){
 		ShopStockItemService shopStockItemService = SpringContextHolder.getBean("shopStockItemService");
 		ShopProductService shopProductService = SpringContextHolder.getBean("shopProductService");
 		ShopStockItem parm = new ShopStockItem();
@@ -245,7 +243,7 @@ public class ShopUtils {
 		List<ShopStockItem> stockItemList = shopStockItemService.findList(parm);
 		if (stockItemList.isEmpty()) { // 如果不存在商品，则创建
 			if(addStockNum < 0) {
-				throw new Exception("商品无库存，无法出货，请联系管理员处理！");
+				throw new RuntimeException("商品无库存，无法出货，请联系管理员处理！");
 			}
 			ShopProduct shopProduct = shopProductService.get(productId);
 			ShopStockItem shopStockItem = new ShopStockItem();
@@ -263,12 +261,12 @@ public class ShopUtils {
 			ShopStockItem shopStockItem = stockItemList.get(0);
 			int setStockNum = addStockNum + shopStockItem.getStockNum();
 			if(setStockNum < 0) {
-				throw new Exception("商品目前库存为"+shopStockItem.getStockNum()+"，无法出货"+addStockNum);
+				throw new RuntimeException("商品目前库存为"+shopStockItem.getStockNum()+"，无法出货"+addStockNum);
 			}
 			shopStockItem.setStockNum(setStockNum);
 			shopStockItemService.save(shopStockItem);
 		} else {
-			throw new Exception("库存存在多个该商品，不合法，请联系管理员处理！");
+			throw new RuntimeException("库存存在多个该商品，不合法，请联系管理员处理！");
 		}
 
 	}	

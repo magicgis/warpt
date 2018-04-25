@@ -110,7 +110,7 @@ public class ShopSaleOrderController extends BaseController {
 					ShopSaleOrder.class);
 			shopSaleOrderService.saveOrder(shopSaleOrder);
 			returnMap.put("success", true);
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			e.printStackTrace();
 			returnMap.put("success", false);
 			returnMap.put("msg", e.getMessage());
