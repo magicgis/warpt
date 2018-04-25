@@ -69,7 +69,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.list_no 
+				ORDER BY a.stock_name,a.list_no 
 			</otherwise>
 		</choose>
 	</select>
@@ -87,7 +87,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.list_no 
+				ORDER BY a.stock_name,a.list_no 
 			</otherwise>
 		</choose>
 	</select>
