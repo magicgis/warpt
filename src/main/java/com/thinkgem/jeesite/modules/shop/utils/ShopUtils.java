@@ -183,6 +183,7 @@ public class ShopUtils {
 			shopStockItem.setProductName(shopProduct.getProductName());
 			shopStockItem.setProductNo(shopProduct.getProductNo());
 			shopStockItem.setWarnStock(shopProduct.getWarnStock());
+			shopStockItem.setListNo(shopProduct.getListNo());
 			shopStockItemService.save(shopStockItem);
 		}
 	}
@@ -222,6 +223,7 @@ public class ShopUtils {
 			shopStockItem.setProductName(shopProduct.getProductName());
 			shopStockItem.setProductNo(shopProduct.getProductNo());
 			shopStockItem.setWarnStock(shopProduct.getWarnStock());
+			shopStockItem.setListNo(shopProduct.getListNo());
 			shopStockItemService.save(shopStockItem);
 		}
 	}
