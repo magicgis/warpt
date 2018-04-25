@@ -57,11 +57,11 @@ public class ShopCustomerAccountController extends BaseController {
 	@RequestMapping(value = {"list", ""})
 	public String list(ShopCustomerAccount shopCustomerAccount, HttpServletRequest request, HttpServletResponse response, Model model) {
 		if (shopCustomerAccount.getCustomerId() == null) {
-			// 默认第一个供应商
+			// 默认第一个客户
 			ShopCustomerInfo parm = new ShopCustomerInfo();
 			parm.setOfficeId(UserUtils.getUser().getOffice().getId());
-			List<ShopCustomerInfo> supplierList = shopCustomerInfoService.findList(parm);
-			ShopCustomerInfo shopCustomerInfo = supplierList.get(0);
+			List<ShopCustomerInfo> customerList = shopCustomerInfoService.findList(parm);
+			ShopCustomerInfo shopCustomerInfo = customerList.get(0);
 			shopCustomerAccount.setCustomerId(shopCustomerInfo.getId());
 			shopCustomerAccount.setCustomerName(shopCustomerInfo.getCustomerName());
 		}

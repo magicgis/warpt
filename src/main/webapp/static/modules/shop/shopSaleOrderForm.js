@@ -3,6 +3,7 @@ jQuery(document).ready(function() {
 	app = new Vue({
 		el : '#app',
 		data : {
+			fullscreenLoading : false,
 			//是否新增视图
 			isAddView : true,
 			// 是否能保存数据，如果存在非法数据不能保存数据
