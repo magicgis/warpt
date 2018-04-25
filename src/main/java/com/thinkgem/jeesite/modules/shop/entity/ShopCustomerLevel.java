@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import com.thinkgem.jeesite.common.persistence.DataEntity;
 
 /**
- * 客户级别Entity
+ * 优惠级别Entity
  * @author swbssd
  * @version 2018-04-17
  */

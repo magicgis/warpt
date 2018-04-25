@@ -8,7 +8,7 @@ import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerLevel;
 
 /**
- * 客户级别DAO接口
+ * 优惠级别DAO接口
  * @author swbssd
  * @version 2018-04-17
  */

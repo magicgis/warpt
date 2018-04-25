@@ -346,8 +346,8 @@ public class ShopUtils {
 					price.setDiscount(level.getDiscount());
 					price.setListNo(level.getSort());
 					//price.setShopProduct(shopProduct);
-					if(indexKey > 11) {
-						price.setDiscountPrice(ShopUtils.multiply(Double.valueOf(level.getDiscount()), 0.01,shopProduct.getBuyPrice()));
+					if(indexKey > 12) {
+						price.setDiscountPrice(ShopUtils.multiply(Double.valueOf(level.getDiscount()), 0.01,shopProduct.getShopPrice()));
 					}else {
 						price.setDiscountPrice(Double.valueOf(String.valueOf(ei.getCellValue(row,indexKey)).trim()));
 					}

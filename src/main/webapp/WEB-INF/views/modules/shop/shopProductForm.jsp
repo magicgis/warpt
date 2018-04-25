@@ -66,8 +66,10 @@
 				var discountInputs = $('.list_discount');
 				for(var i=0;i<priceInputs.length;i++){
 					if(priceInputs[i].value == ''){
-						var price = shopPrice*discountInputs[i].value*0.01;
-						priceInputs[i].value = price.toFixed(1);
+						if(isNaN(discountInputs[i].value) == false) {
+							var price = shopPrice*discountInputs[i].value*0.01;
+							priceInputs[i].value = price.toFixed(1);
+						}
 					}
 				}
 			}
@@ -210,4 +212,5 @@
 		</div>
 	</form:form>
 </body>
+
 </html>

@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>客户级别管理</title>
+	<title>优惠级别管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -27,8 +27,8 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/shop/shopCustomerLevel/">客户级别列表</a></li>
-		<li class="active"><a href="${ctx}/shop/shopCustomerLevel/form?id=${shopCustomerLevel.id}">客户级别<shiro:hasPermission name="shop:shopCustomerLevel:edit">${not empty shopCustomerLevel.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="shop:shopCustomerLevel:edit">查看</shiro:lacksPermission></a></li>
+		<li><a href="${ctx}/shop/shopCustomerLevel/">优惠级别列表</a></li>
+		<li class="active"><a href="${ctx}/shop/shopCustomerLevel/form?id=${shopCustomerLevel.id}">优惠级别<shiro:hasPermission name="shop:shopCustomerLevel:edit">${not empty shopCustomerLevel.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="shop:shopCustomerLevel:edit">查看</shiro:lacksPermission></a></li>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="shopCustomerLevel" action="${ctx}/shop/shopCustomerLevel/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
@@ -41,9 +41,9 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">折扣比例(%)：</label>
+			<label class="control-label">优惠比例(%)：</label>
 			<div class="controls">
-				<form:input path="discount" htmlEscape="false" maxlength="200" class="digits required"/>
+				<form:input path="discount" htmlEscape="false" maxlength="200" class="required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>

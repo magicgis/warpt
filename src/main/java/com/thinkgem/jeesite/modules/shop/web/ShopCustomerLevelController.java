@@ -30,7 +30,7 @@ import com.thinkgem.jeesite.modules.shop.service.ShopCustomerLevelService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
- * 客户级别Controller
+ * 优惠级别Controller
  * @author swbssd
  * @version 2018-04-17
  */
@@ -88,7 +88,7 @@ public class ShopCustomerLevelController extends BaseController {
 		}
 		shopCustomerLevel.setOfficeId(UserUtils.getUser().getOffice().getId());
 		shopCustomerLevelService.save(shopCustomerLevel);
-		addMessage(redirectAttributes, "保存客户级别成功");
+		addMessage(redirectAttributes, "保存优惠级别成功");
 		return "redirect:"+Global.getAdminPath()+"/shop/shopCustomerLevel/?repage";
 	}
 	
@@ -96,7 +96,7 @@ public class ShopCustomerLevelController extends BaseController {
 	@RequestMapping(value = "delete")
 	public String delete(ShopCustomerLevel shopCustomerLevel, RedirectAttributes redirectAttributes) {
 		shopCustomerLevelService.delete(shopCustomerLevel);
-		addMessage(redirectAttributes, "删除客户级别成功");
+		addMessage(redirectAttributes, "删除优惠级别成功");
 		return "redirect:"+Global.getAdminPath()+"/shop/shopCustomerLevel/?repage";
 	}
 	

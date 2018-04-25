@@ -87,7 +87,7 @@ public class ShopProductController extends BaseController {
 	@RequiresPermissions("shop:shopProduct:view")
 	@RequestMapping(value = "form")
 	public String form(ShopProduct shopProduct, Model model) {
-		// 新增初始化客户级别
+		// 新增初始化优惠级别
 		if (StringUtils.isEmpty(shopProduct.getId())) {
 			ShopCustomerLevel pram = new ShopCustomerLevel();
 			pram.setOfficeId(UserUtils.getUser().getOffice().getId());

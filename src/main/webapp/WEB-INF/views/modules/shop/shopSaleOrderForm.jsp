@@ -173,7 +173,7 @@ var orderId = '${shopSaleOrder.id}';
 					<el-table-column
 					    align="center"
 				        prop="saleMoney"
-				        label="单价"
+				        label="销售价格"
 				        width="100">
 					      <template slot-scope="scope">
 					      <span v-if="isAddView" style="width:80px;">
@@ -185,7 +185,7 @@ var orderId = '${shopSaleOrder.id}';
 					<el-table-column
 						align="center"
 				        prop="discount"
-				        label="折扣(%)"
+				        label="客户折扣(%)"
 				        width="100">
 					      <template slot-scope="scope">
 					      <span v-if="isAddView" style="width:120px;">

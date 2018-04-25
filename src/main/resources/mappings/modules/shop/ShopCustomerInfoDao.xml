@@ -19,7 +19,7 @@
 		a.bank_address AS "bankAddress",
 		a.address AS "address",
 		a.sort AS "sort",
-		b.discount AS "discount",
+		a.discount AS "discount",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -29,7 +29,7 @@
 	</sql>
 	
 	<sql id="shopCustomerInfoJoins">
-		LEFT JOIN SHOP_CUSTOMER_LEVEL b ON b.id = a.level_id
+		
 	</sql>
     
 	<select id="get" resultType="ShopCustomerInfo">
@@ -98,6 +98,7 @@
 			level_id,
 			level_name,
 			customer_name,
+			discount,
 			phone,
 			mobile,
 			email,
@@ -121,6 +122,7 @@
 			#{levelId},
 			#{levelName},
 			#{customerName},
+			#{discount},
 			#{phone},
 			#{mobile},
 			#{email},
@@ -147,6 +149,7 @@
 			level_id = #{levelId},
 			level_name = #{levelName},
 			customer_name = #{customerName},
+			discount = #{discount},
 			phone = #{phone},
 			mobile = #{mobile},
 			email = #{email},

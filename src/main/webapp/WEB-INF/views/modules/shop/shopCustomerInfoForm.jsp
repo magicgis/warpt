@@ -34,10 +34,10 @@
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>
 		<div class="control-group">
-			<label class="control-label">客户级别：</label>
+			<label class="control-label">优惠级别：</label>
 			<div class="controls">
 				<sys:treeselect id="level" name="levelId" value="${shopCustomerInfo.levelId}" labelName="levelName" labelValue="${shopCustomerInfo.levelName}"
-					title="选择客户级别" url="/shop/shopCustomerLevel/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
+					title="选择优惠级别" url="/shop/shopCustomerLevel/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
@@ -48,6 +48,13 @@
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
+		<div class="control-group">
+			<label class="control-label">客户折扣(%)：</label>
+			<div class="controls">
+				<form:input path="discount" htmlEscape="false" class="required  number" value="100"/>
+				<span class="help-inline"><font color="red">*在优惠折扣上再进行客户打折</font> </span>
+			</div>
+		</div>		
 		<div class="control-group">
 			<label class="control-label">电话：</label>
 			<div class="controls">

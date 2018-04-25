@@ -25,9 +25,9 @@
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<ul class="ul-form">
-			<li><label>客户级别：</label>
+			<li><label>优惠级别：</label>
 				<sys:treeselect id="level" name="levelId" value="${shopCustomerInfo.levelId}" labelName="levelName" labelValue="${shopCustomerInfo.levelName}"
-					title="选择客户级别" url="/shop/shopCustomerLevel/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
+					title="选择优惠级别" url="/shop/shopCustomerLevel/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
 			</li>
 			<li><label>客户名称：</label>
 				<form:input path="customerName" htmlEscape="false" maxlength="255" class="input-medium"/>

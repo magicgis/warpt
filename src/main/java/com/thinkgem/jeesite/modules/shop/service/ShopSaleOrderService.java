@@ -17,7 +17,9 @@ import com.thinkgem.jeesite.modules.shop.dao.ShopSaleOrderDao;
 import com.thinkgem.jeesite.modules.shop.dao.ShopSaleOrderItemDao;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerAccount;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
+import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerLevel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
+import com.thinkgem.jeesite.modules.shop.entity.ShopProductPrice;
 import com.thinkgem.jeesite.modules.shop.entity.ShopSaleOrder;
 import com.thinkgem.jeesite.modules.shop.entity.ShopSaleOrderItem;
 import com.thinkgem.jeesite.modules.shop.entity.ShopStockInfo;
@@ -38,6 +40,8 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 	private ShopSaleOrderItemDao shopSaleOrderItemDao;
 	@Autowired
 	private ShopCustomerInfoService shopCustomerInfoService;
+	@Autowired
+	private ShopCustomerLevelService shopCustomerLevelService;
 	@Autowired
 	private ShopStockInfoService shopStockInfoService;
 	@Autowired
@@ -191,10 +195,11 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 			if (productList.size() > 1) {
 				throw new Exception("商品条码存在重复，请进行修正后再录入!");
 			}
-			shopProduct = productList.get(0);
+			productId = productList.get(0).getId();
 		} else { // 选择商品
-			shopProduct = shopProductService.get(productId);
 		}
+		//或者商品和价格表
+		shopProduct = shopProductService.get(productId);
 		// 仓库库存查询
 		// ShopStockInfo stockInfo = shopStockInfoService.get(stockId);
 		ShopStockItem stockItemParm = new ShopStockItem();
@@ -203,6 +208,19 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 		ShopStockItem stockItem = shopStockItemService.findProductStockNum(stockItemParm);
 		// 客户查询
 		ShopCustomerInfo customer = shopCustomerInfoService.get(customerId);
+		//客户的优惠级别
+		//ShopCustomerLevel shopCustomerLevel = shopCustomerLevelService.get(customer.getLevelId());
+		List<ShopProductPrice> priceList = shopProduct.getShopProductPriceList();
+		double saleMoney = 0.0;
+		for (ShopProductPrice shopProductPrice : priceList) {
+			if(StringUtils.equals(shopProductPrice.getLevelId(),customer.getLevelId())) {
+				saleMoney = shopProductPrice.getDiscountPrice();
+				break;
+			}
+		}
+		if(saleMoney == 0) {
+			throw new Exception("没有找到该优惠级别价格，请设置优惠级别价格并且关联至客户再进行销售。");
+		}
 
 		// 初始化开始
 		ShopSaleOrderItem orderItem = new ShopSaleOrderItem();
@@ -213,11 +231,12 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 		orderItem.setSpec(shopProduct.getSpec());
 		orderItem.setSaleNum(1); // 默认采购1个
 		orderItem.setStockNum(stockItem.getStockNum());
-		orderItem.setSaleMoney(shopProduct.getBuyPrice());
+		//销售价格获取
+		orderItem.setSaleMoney(saleMoney);
 		orderItem.setDiscount(customer.getDiscount());
-		orderItem.setDisMoney(ShopUtils.multiply(shopProduct.getBuyPrice(), customer.getDiscount(), 0.01));
-		orderItem.setAllMoney(ShopUtils.multiply(orderItem.getSaleNum(), shopProduct.getBuyPrice()));
-		orderItem.setCountMoney(ShopUtils.multiply(orderItem.getSaleNum(), shopProduct.getBuyPrice(),
+		orderItem.setDisMoney(ShopUtils.multiply(orderItem.getSaleMoney(), customer.getDiscount(), 0.01));
+		orderItem.setAllMoney(ShopUtils.multiply(orderItem.getSaleNum(), orderItem.getSaleMoney()));
+		orderItem.setCountMoney(ShopUtils.multiply(orderItem.getSaleNum(), orderItem.getSaleMoney(),
 				customer.getDiscount(), 0.01));
 
 		return orderItem;
