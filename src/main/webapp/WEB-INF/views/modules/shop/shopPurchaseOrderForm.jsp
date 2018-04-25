@@ -151,7 +151,7 @@ var orderId = '${shopPurchaseOrder.id}';
 					    align="center"
 				        prop="unit"
 				        label="单位"
-				        width="100">
+				        width="50">
 				      </el-table-column>
 				    <el-table-column
 				      label="采购数量"
@@ -168,7 +168,7 @@ var orderId = '${shopPurchaseOrder.id}';
 				      label="当前库存"
 				      align="center"
 				      prop="stockNum"
-				      width="100">
+				      width="50">
 				    </el-table-column>
 					<el-table-column
 					    align="center"
