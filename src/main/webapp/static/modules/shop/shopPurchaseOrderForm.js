@@ -29,9 +29,9 @@ jQuery(document).ready(function() {
 				sendSum : [{
 							required : true,
 							validator : function(rule, value, callback) {
-								if (!value) {
-									return callback(new Error('金额不能为空'));
-								}
+								//if (!value) {
+								//	return callback(new Error('金额不能为空'));
+								//}
 								if (!isNumber(value)) {
 									callback(new Error('请输入金额'));
 								} else {
@@ -109,8 +109,8 @@ jQuery(document).ready(function() {
 				// 验证判断
 				_self.$refs.addForm.validate(function(result) {
 					if (result && _self.isSaveFn) {
-						if (_self.addForm.orderSum == 0) {
-							_self.$message.error('请选择商品');
+						if (String(_self.addForm.sendSum) == '') {
+							_self.$message.error('请输入实付金额');
 							return;
 						}
 						_self.fullscreenLoading = true;
@@ -158,7 +158,31 @@ jQuery(document).ready(function() {
 				// 删除数组对象
 				_self.addForm.shopPurchaseOrderItemList.splice(index, 1);
 			},
-			selectClearObj : function() {
+			//选择仓库
+			selectStockObj : function() {
+				var _self = this;
+				// 更新名称
+				for (var i = 0; i < _self.stockList.length; i++) {
+					var stock = _self.stockList[i];
+					if(stock.id == _self.addForm.stockId){
+						_self.addForm.stockName = stock.stockName;
+					}
+				}
+				_self.clearObj();
+			},
+			//选择仓库
+			selectSupplierObj : function() {
+				var _self = this;
+				// 更新名称
+				for (var i = 0; i < _self.supplierList.length; i++) {
+					var supplier = _self.supplierList[i];
+					if(supplier.id == _self.addForm.supplierId){
+						_self.addForm.supplierName = supplier.supplierName;
+					}
+				}
+				_self.clearObj();
+			},
+			clearObj : function() {
 				var _self = this;
 				// 重新清空添加
 				_self.addForm.shopPurchaseOrderItemList.splice(0,

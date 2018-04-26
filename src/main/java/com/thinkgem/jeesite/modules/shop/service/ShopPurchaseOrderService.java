@@ -125,10 +125,12 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 		// 生产单据编号
 		shopPurchaseOrder.setOrderNo(ShopUtils.generateBillCode("CG"));
 		super.save(shopPurchaseOrder);
+		boolean subInsertFn = false;
 		for (ShopPurchaseOrderItem shopPurchaseOrderItem : shopPurchaseOrder.getShopPurchaseOrderItemList()) {
 			if (shopPurchaseOrderItem.getProductId() == null) {
 				continue;
 			}
+			subInsertFn = true;
 			shopPurchaseOrderItem.setIsNewRecord(false); // 自动生成ID
 			shopPurchaseOrderItem.setShopPurchaseOrder(shopPurchaseOrder);
 			shopPurchaseOrderItem.preInsert();
@@ -138,7 +140,9 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 					shopPurchaseOrder.getStockName(), shopPurchaseOrderItem.getProductId(),
 					shopPurchaseOrderItem.getPurchaseNum()*subject);
 		}
-
+		if(!subInsertFn) {
+			throw new RuntimeException("请选择商品录入");
+		}
 		// 新增供应商付款单
 		ShopSupplierAccount shopSupplierAccount = new ShopSupplierAccount();
 		shopSupplierAccount.setOfficeId(shopPurchaseOrder.getOfficeId());

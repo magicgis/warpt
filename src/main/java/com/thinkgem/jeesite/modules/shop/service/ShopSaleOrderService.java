@@ -120,10 +120,12 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 		// 生产单据编号
 		shopSaleOrder.setSaleNo(ShopUtils.generateBillCode("XS"));
 		super.save(shopSaleOrder);
+		boolean subInsertFn = false;
 		for (ShopSaleOrderItem shopSaleOrderItem : shopSaleOrder.getShopSaleOrderItemList()) {
 			if (shopSaleOrderItem.getProductId() == null) {
 				continue;
 			}
+			subInsertFn = true;
 			shopSaleOrderItem.setIsNewRecord(false); // 自动生成ID
 			shopSaleOrderItem.setShopSaleOrder(shopSaleOrder);
 			shopSaleOrderItem.preInsert();
@@ -133,7 +135,9 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 					shopSaleOrder.getStockName(), shopSaleOrderItem.getProductId(),
 					shopSaleOrderItem.getSaleNum()*subject*-1);
 		}
-
+		if(!subInsertFn) {
+			throw new RuntimeException("请选择商品录入");
+		}
 		// 新增客户付款单
 		ShopCustomerAccount shopCustomerAccount = new ShopCustomerAccount();
 		shopCustomerAccount.setOfficeId(shopSaleOrder.getOfficeId());

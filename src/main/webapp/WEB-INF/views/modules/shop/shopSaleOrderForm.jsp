@@ -38,10 +38,10 @@ var orderId = '${shopSaleOrder.id}';
 		 	  <el-col :span="6">
 			  <el-form-item label="仓库">
 			  	<el-col :span="16">
-				    <el-select v-if="isAddView" v-model="addForm.stockId" placeholder="请先选择仓库" @change="selectClearObj()">
+				    <el-select v-if="isAddView" v-model="addForm.stockId" placeholder="请先选择仓库" @change="selectStockObj()">
 				      <el-option v-for="(item, index) in stockList" v-bind:label="item.stockName" v-bind:value="item.id"></el-option>
 				    </el-select>
-				    <el-select v-if="!isAddView" disabled v-model="addForm.stockId" placeholder="请先选择仓库" @change="selectClearObj()">
+				    <el-select v-if="!isAddView" disabled v-model="addForm.stockId" placeholder="请先选择仓库" @change="selectStockObj()">
 				      <el-option v-for="(item, index) in stockList" v-bind:label="item.stockName" v-bind:value="item.id"></el-option>
 				    </el-select>
 			    </el-col>
@@ -50,10 +50,10 @@ var orderId = '${shopSaleOrder.id}';
 		 	  <el-col :span="6">
 			  <el-form-item label="销售客户">
 			  	<el-col :span="16">
-			    <el-select v-if="isAddView" v-model="addForm.customerId" placeholder="请选择客户" @change="selectClearObj()">
+			    <el-select v-if="isAddView" v-model="addForm.customerId" placeholder="请选择客户" @change="selectCustomerObj()">
 			      <el-option v-for="(item, index) in customerList" v-bind:label="item.customerName" v-bind:value="item.id"></el-option>
 			    </el-select>
-			    <el-select v-if="!isAddView" disabled v-model="addForm.customerId" placeholder="请选择客户" @change="selectClearObj()">
+			    <el-select v-if="!isAddView" disabled v-model="addForm.customerId" placeholder="请选择客户" @change="selectCustomerObj()">
 			      <el-option v-for="(item, index) in customerList" v-bind:label="item.customerName" v-bind:value="item.id"></el-option>
 			    </el-select>
 			    </el-col>

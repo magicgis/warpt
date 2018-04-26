@@ -4,7 +4,7 @@ jQuery(document).ready(function() {
 		el : '#app',
 		data : {
 			fullscreenLoading : false,
-			//是否新增视图
+			// 是否新增视图
 			isAddView : true,
 			// 是否能保存数据，如果存在非法数据不能保存数据
 			isSaveFn : true,
@@ -29,9 +29,9 @@ jQuery(document).ready(function() {
 				sendSum : [{
 							required : true,
 							validator : function(rule, value, callback) {
-								if (!value) {
-									return callback(new Error('金额不能为空'));
-								}
+								// if (!value) {
+								// return callback(new Error('金额不能为空'));
+								// }
 								if (!isNumber(value)) {
 									callback(new Error('请输入金额'));
 								} else {
@@ -91,17 +91,17 @@ jQuery(document).ready(function() {
 									//
 									_self.addForm.subjectType = _self.addForm.subjectType
 											+ '';
-									//遮罩还原
+									// 遮罩还原
 									_self.fullscreenLoading = false;
-								}else{
+								} else {
 									_self.isAddView = false;
 								}
-								
+
 							} else {
 								alert(data.msg);
 								top.layer.closeAll();
 							}
-							
+
 						});
 			},
 			// 提交验证保存
@@ -110,36 +110,31 @@ jQuery(document).ready(function() {
 				// 验证判断
 				_self.$refs.addForm.validate(function(result) {
 					if (result && _self.isSaveFn) {
-						if (_self.addForm.orderSum == 0) {
-							_self.$message.error('请选择商品');
+						if (String(_self.addForm.sendSum) == '') {
+							_self.$message.error('请输入实付金额');
 							return;
 						}
 						_self.fullscreenLoading = true;
 						// 保存操作
-						$
-								.post(
-										mypath
-												+ '/shop/shopSaleOrder/saveOrderForm',
-										{
-											saveJson : JSON
-													.stringify(_self.addForm)
-										}, function(data) {
-											if (data.success) {
-												_self
-														.$alert(
-																'<strong>销售单保存成功[已出库]</strong>',
-																{
-																	dangerouslyUseHTMLString : true
-																});
-												//更新列表
-												top.loadListForm.submit();
-												//关闭
-												top.layer.closeAll();
-											} else {
-												alert(data.msg);
-											}
-											_self.fullscreenLoading = false;
-										});
+						$.post(mypath + '/shop/shopSaleOrder/saveOrderForm', {
+									saveJson : JSON.stringify(_self.addForm)
+								}, function(data) {
+									if (data.success) {
+										_self
+												.$alert(
+														'<strong>销售单保存成功[已出库]</strong>',
+														{
+															dangerouslyUseHTMLString : true
+														});
+										// 更新列表
+										top.loadListForm.submit();
+										// 关闭
+										top.layer.closeAll();
+									} else {
+										_self.$message.error(data.msg);
+									}
+									_self.fullscreenLoading = false;
+								});
 					} else {
 						_self.$message.error('提交验证不合法，请检查输入项！');
 					}
@@ -148,8 +143,7 @@ jQuery(document).ready(function() {
 			addTRow : function() {
 				var _self = this;
 				var getLength = _self.addForm.shopSaleOrderItemList.length;
-				var maxData = _self.addForm.shopSaleOrderItemList[getLength
-						- 1];
+				var maxData = _self.addForm.shopSaleOrderItemList[getLength - 1];
 				_self.addForm.shopSaleOrderItemList.push({
 							index : maxData.index + 1
 						});
@@ -159,7 +153,31 @@ jQuery(document).ready(function() {
 				// 删除数组对象
 				_self.addForm.shopSaleOrderItemList.splice(index, 1);
 			},
-			selectClearObj : function() {
+			//选择仓库
+			selectStockObj : function() {
+				var _self = this;
+				// 更新名称
+				for (var i = 0; i < _self.stockList.length; i++) {
+					var stock = _self.stockList[i];
+					if(stock.id == _self.addForm.stockId){
+						_self.addForm.stockName = stock.stockName;
+					}
+				}
+				_self.clearObj();
+			},
+			//选择客户
+			selectCustomerObj : function() {
+				var _self = this;
+				// 更新名称
+				for (var i = 0; i < _self.customerList.length; i++) {
+					var customer = _self.customerList[i];
+					if(customer.id == _self.addForm.customerId){
+						_self.addForm.customerName = customer.customerName;
+					}
+				}
+				_self.clearObj();
+			},
+			clearObj : function() {
 				var _self = this;
 				// 重新清空添加
 				_self.addForm.shopSaleOrderItemList.splice(0,
@@ -308,8 +326,7 @@ jQuery(document).ready(function() {
 					selectObj.allMoney = numberUtil.mul(selectObj.saleNum,
 							selectObj.saleMoney, 2);
 					selectObj.countMoney = numberUtil.mul(numberUtil.mul(
-									selectObj.saleNum,
-									selectObj.saleMoney, 2),
+									selectObj.saleNum, selectObj.saleMoney, 2),
 							selectObj.discount * 0.01, 2);
 					_self.addForm.shopSaleOrderItemList.splice(index, 1,
 							selectObj);
