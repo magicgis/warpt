@@ -21,7 +21,7 @@
         		top.loadListForm = $('#searchForm');
 				var index =	top.layer.open({
 				    type: 2,
-				    title: '采购入库单',
+				    title: '销售出库单',
 				    maxmin: false,
 				    resize : false, //是否允许拉伸
 				    //area: ['600px', '450px'],
