@@ -101,10 +101,9 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">货号(条码)：</label>
+			<label class="control-label">条码：</label>
 			<div class="controls">
-				<form:input path="productNo" htmlEscape="false" maxlength="500" class="required" />
-				<span class="help-inline"><font color="red">*</font> </span>
+				<form:input path="productNo" htmlEscape="false" maxlength="500" class="input-xlarge" />
 			</div>
 		</div>
 		<div class="control-group">
