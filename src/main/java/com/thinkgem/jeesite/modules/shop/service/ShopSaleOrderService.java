@@ -216,13 +216,15 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 		//ShopCustomerLevel shopCustomerLevel = shopCustomerLevelService.get(customer.getLevelId());
 		List<ShopProductPrice> priceList = shopProduct.getShopProductPriceList();
 		double saleMoney = 0.0;
+		boolean levelFn = false;
 		for (ShopProductPrice shopProductPrice : priceList) {
 			if(StringUtils.equals(shopProductPrice.getLevelId(),customer.getLevelId())) {
+				levelFn = true;
 				saleMoney = shopProductPrice.getDiscountPrice();
 				break;
 			}
 		}
-		if(saleMoney == 0) {
+		if(!levelFn) {
 			throw new Exception("没有找到该优惠级别价格，请设置优惠级别价格并且关联至客户再进行销售。");
 		}
 
