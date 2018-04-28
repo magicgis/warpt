@@ -29,7 +29,15 @@
 					success : function(layero, index) {
 					},
 					end : function() {
-					}
+					},
+					cancel: function(index, layero){ 
+						if(confirm('确定要取消录入关闭么？')){
+							top.layer.close(index);
+							// 更新列表
+							$('#searchForm').submit();
+						}
+						return false; 
+					}  
 				});
 				top.layer.full(index);
 			});
