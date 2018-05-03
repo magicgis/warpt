@@ -1,4 +1,4 @@
-package com.thinkgem.jeesite.modules.vip.utils;
+package com.war.wechat.app.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

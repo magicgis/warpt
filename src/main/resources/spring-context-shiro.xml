@@ -15,12 +15,12 @@
 		<constructor-arg>
 			<value>
 				/static/** = anon
-				${frontPath}/api/wechat/* = anon
+				${wechatPath}/api/getOpenId = anon
+				${wechatPath}/vip/** = wechat
 				/userfiles/** = anon
 				${adminPath}/cas = cas
 				${adminPath}/login = authc
 				${adminPath}/logout = logout
-				${wechatPath}/** = wechat
 				${adminPath}/** = user
 				/act/editor/** = user
 				/ReportServer/** = user

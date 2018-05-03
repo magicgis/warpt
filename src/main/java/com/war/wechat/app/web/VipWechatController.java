@@ -1,7 +1,7 @@
 /**
  * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
  */
-package com.thinkgem.jeesite.modules.vip.web;
+package com.war.wechat.app.web;
 
 import java.util.HashMap;
 import java.util.List;
