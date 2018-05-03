@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.vip.service.VipUserBaseService;
-import com.thinkgem.jeesite.modules.vip.utils.WeChatUtils;
+import com.war.wechat.app.utils.WeChatUtils;
 
 /**
  * 微信API接口请求端
@@ -23,7 +23,7 @@ import com.thinkgem.jeesite.modules.vip.utils.WeChatUtils;
  * @version 2017-09-17
  */
 @Controller
-@RequestMapping(value = "${frontPath}/api/wechat")
+@RequestMapping(value = "${wechatPath}/api")
 public class WechatApiController extends BaseController {
 
 	@Autowired
