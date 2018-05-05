@@ -167,8 +167,9 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 		}
 		//删除付款客户
 		ShopCustomerAccount parm = new ShopCustomerAccount();
-		parm.setOfficeId(shopSaleOrder.getOfficeId());
-		parm.setCustomerId(shopSaleOrder.getCustomerId());
+		//parm.setOfficeId(shopSaleOrder.getOfficeId());
+		//parm.setCustomerId(shopSaleOrder.getCustomerId());
+		parm.setSaleId(shopSaleOrder.getId());
 		List<ShopCustomerAccount> customerAccountList = shopCustomerAccountService.findList(parm);
 		shopCustomerAccountService.delete(customerAccountList.get(0));
 		

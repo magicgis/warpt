@@ -173,8 +173,9 @@ public class ShopPurchaseOrderService extends CrudService<ShopPurchaseOrderDao, 
 		}
 		//删除供应商付款
 		ShopSupplierAccount parm = new ShopSupplierAccount();
-		parm.setOfficeId(shopPurchaseOrder.getOfficeId());
-		parm.setSupplierId(shopPurchaseOrder.getSupplierId());
+		//parm.setOfficeId(shopPurchaseOrder.getOfficeId());
+		//parm.setSupplierId(shopPurchaseOrder.getSupplierId());
+		parm.setOrderId(shopPurchaseOrder.getId());
 		List<ShopSupplierAccount> supplierAccountList = shopSupplierAccountService.findList(parm);
 		shopSupplierAccountService.delete(supplierAccountList.get(0));
 		
