@@ -46,6 +46,10 @@
 			<if test="officeId != null and officeId != ''">
 				AND a.office_id = #{officeId}
 			</if>
+			<if test="orderId != null and orderId != ''">
+				AND a.order_id = #{orderId}
+			</if>
+			
 			<if test="accountNo != null and accountNo != ''">
 				AND a.account_no like concat('%',#{accountNo},'%')
 			</if>

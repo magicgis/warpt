@@ -49,6 +49,9 @@
 			<if test="accountNo != null and accountNo != ''">
 				AND a.account_no = #{accountNo}
 			</if>
+			<if test="saleId != null and saleId != ''">
+				AND a.sale_id = #{saleId}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
