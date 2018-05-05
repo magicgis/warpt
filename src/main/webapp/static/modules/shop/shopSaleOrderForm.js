@@ -152,6 +152,8 @@ jQuery(document).ready(function() {
 				var _self = this;
 				// 删除数组对象
 				_self.addForm.shopSaleOrderItemList.splice(index, 1);
+				// 求合计
+				_self.sumRowMoney();
 			},
 			//选择仓库
 			selectStockObj : function() {
