@@ -25,7 +25,7 @@ import com.thinkgem.jeesite.modules.vip.entity.VipUserBase;
 import com.thinkgem.jeesite.modules.vip.service.VipUserBaseService;
 
 /**
- * 微信小程序端查询数据
+ * 微信小程序端查询VIP数据
  * 
  * @author swbssd
  * @version 2017-09-17

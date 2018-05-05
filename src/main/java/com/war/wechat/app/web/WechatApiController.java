@@ -4,6 +4,8 @@
 package com.war.wechat.app.web;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.thinkgem.jeesite.common.mapper.JsonMapper;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.vip.service.VipUserBaseService;
 import com.war.wechat.app.utils.WeChatUtils;
@@ -39,15 +42,20 @@ public class WechatApiController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getOpenId")
-	public String getOpenId(HttpServletRequest request) {
+	public Map<String, Object> getOpenId(HttpServletRequest request) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
 		String jsCode = request.getParameter("jsCode");
 		try {
-			return WeChatUtils.getOpenIdByLoginCode(jsCode);
+			//获取openId
+			String loginJson = WeChatUtils.getOpenIdByLoginCode(jsCode);
+			returnMap = JsonMapper.getInstance().fromJson(loginJson, HashMap.class);
+			returnMap.put("success", true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			returnMap.put("success", false);
 		}
-		return "error";
+		return returnMap;
 	}
 
 }
