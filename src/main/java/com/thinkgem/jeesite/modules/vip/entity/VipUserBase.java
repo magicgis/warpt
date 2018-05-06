@@ -36,6 +36,8 @@ public class VipUserBase extends DataEntity<VipUserBase> {
 	private Double useMoeny;
 	private Double restScore;
 	private Double useScore;
+	private String officeName;
+	private String officeAddress;
 
 	public VipUserBase() {
 		super();
@@ -189,6 +191,22 @@ public class VipUserBase extends DataEntity<VipUserBase> {
 
 	public void setOpenId(String openId) {
 		this.openId = openId;
+	}
+
+	public String getOfficeName() {
+		return officeName;
+	}
+
+	public void setOfficeName(String officeName) {
+		this.officeName = officeName;
+	}
+
+	public String getOfficeAddress() {
+		return officeAddress;
+	}
+
+	public void setOfficeAddress(String officeAddress) {
+		this.officeAddress = officeAddress;
 	}
 
 }

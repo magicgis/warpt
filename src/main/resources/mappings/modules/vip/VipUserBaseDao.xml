@@ -165,4 +165,31 @@
 		WHERE id = #{id}
 	</update>
 	
+	
+	<select id="findUserAllVip" resultType="VipUserBase">
+		SELECT 
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a2.name AS "officeName",
+		a2.address AS "officeAddress",
+		a.vip_name AS "vipName",
+		a.vip_phone AS "vipPhone",
+		a9.rest_moeny AS "restMoeny",
+		a9.use_moeny AS "useMoeny",
+		a9.rest_score AS "restScore",
+		a9.use_score AS "useScore"
+		FROM vip_user_base a 
+		inner join sys_office a2 ON (a.office_id = a2.id) 
+		inner join VIP_USER_WALLET a9 ON (a9.vip_id = a.id) 
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="vipPhone != null">
+				AND a.vip_phone = #{vipPhone}
+			</if>			
+			<if test="openId != null">
+				AND a.open_id = #{openId}
+			</if>
+		</where>
+		ORDER BY a.create_date
+	</select>
 </mapper>

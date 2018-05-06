@@ -27,29 +27,30 @@ public class WechatAuthentication extends AuthenticationFilter {
 	@Override
 	protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         log.info("Wechat用户进入校验！" + getLoginUrl());
-        HttpServletRequest req = (HttpServletRequest) request;
-        String openId = req.getParameter("openId");  
-		//验证openId是否绑定，判断用户是否合法
-		VipUserBaseService vipUserBaseService = SpringContextHolder.getBean(VipUserBaseService.class);
-		VipUserBase parm = new VipUserBase();
-		// 登陆用户机构过滤
-		parm.setOpenId(openId);
-		List<VipUserBase> list = vipUserBaseService.findList(parm);
-		if (list != null && !list.isEmpty()) {//TODO 考虑对TOKEN进行更严格的校验
-			return true;
-		}else{
-			response.setContentType("text/plain;charset=UTF-8");
-			Map<String,Object> result = new HashMap<String,Object>();
-			result.put("success", false);
-			result.put("message", "非法的请求,token不合法");
-			String outString = JSONUtils.toJSONString(result);
-			try {
-				response.getWriter().write(outString);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return false;
-		}
+//        HttpServletRequest req = (HttpServletRequest) request;
+//        String openId = req.getParameter("openId");  
+//		//验证openId是否绑定，判断用户是否合法
+//		VipUserBaseService vipUserBaseService = SpringContextHolder.getBean(VipUserBaseService.class);
+//		VipUserBase parm = new VipUserBase();
+//		// 登陆用户机构过滤
+//		parm.setOpenId(openId);
+//		List<VipUserBase> list = vipUserBaseService.findList(parm);
+//		if (list != null && !list.isEmpty()) {//TODO 考虑对TOKEN进行更严格的校验
+//			return true;
+//		}else{
+//			response.setContentType("text/plain;charset=UTF-8");
+//			Map<String,Object> result = new HashMap<String,Object>();
+//			result.put("success", false);
+//			result.put("message", "非法的请求,token不合法");
+//			String outString = JSONUtils.toJSONString(result);
+//			try {
+//				response.getWriter().write(outString);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			return false;
+//		}
+        return true;
 	}
 
 	

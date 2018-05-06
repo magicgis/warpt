@@ -31,6 +31,8 @@ public class VipUserBaseService extends
 		CrudService<VipUserBaseDao, VipUserBase> {
 	@Autowired
 	private VipUserWalletService vipUserWalletService;
+	@Autowired
+	private VipUserBaseDao vipUserBaseDao;
 
 	public VipUserBase get(String id) {
 		return super.get(id);
@@ -77,6 +79,18 @@ public class VipUserBaseService extends
 	@Transactional(readOnly = false)
 	public void delete(VipUserBase vipUserBase) {
 		super.delete(vipUserBase);
+	}
+	
+	/**
+	 * 获取用户的VIP和钱包信息
+	 * @param vipUserBase
+	 * @return 
+	 */
+	public List<VipUserBase> findUserAllVip(String phone,String openid){
+		VipUserBase pram = new VipUserBase();
+		pram.setVipPhone(phone);
+		pram.setOpenId(openid);
+		return vipUserBaseDao.findUserAllVip(pram);
 	}
 
 }

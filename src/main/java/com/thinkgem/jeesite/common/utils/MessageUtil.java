@@ -48,6 +48,8 @@ public class MessageUtil {
 		valMap.put("WALLET_CODE", "SMS_101045051");
 		// 项目消费
 		valMap.put("PROJECT_CODE", "SMS_121911321");
+		//小程序注册绑定
+		valMap.put("WECHAT_CODE", "SMS_133979628");
 		config.put("13543006081", valMap);
 		//
 		valMap = new HashMap<String, String>();
@@ -64,6 +66,8 @@ public class MessageUtil {
 		valMap.put("WALLET_CODE", "SMS_121852019");
 		// 项目消费
 		valMap.put("PROJECT_CODE", "SMS_121912029");
+		//小程序注册绑定
+		valMap.put("WECHAT_CODE", "xxxxxxxxxxxxx");
 		config.put("13726296735", valMap);
 	}
 
@@ -76,7 +80,7 @@ public class MessageUtil {
 	// // 余额
 	// public static final String WALLET_CODE = "SMS_101045051";
 
-	// 短信间隔时间
+	// 短信间隔时间TO.
 	public static Date SEND_TIME = null;
 
 	public static boolean sendMessgeTimeFn() {
@@ -95,6 +99,47 @@ public class MessageUtil {
 		}
 		return false;
 	}
+	
+	/**
+	 * 随机生成6位随机验证码，并且注册进缓存，5分钟有效
+	 * 
+	 * @return
+	 */
+	public static String createRandomVcode(String phone) {
+		// 验证码
+		String vcode = "";
+		for (int i = 0; i < 6; i++) {
+			vcode = vcode + (int) (Math.random() * 9);
+		}
+		//如果存在缓存则先移除
+		CacheUtils.remove(phone);
+		CacheUtils.put(phone+"_"+vcode, new Date());
+		return vcode;
+	}
+	/**
+	 * 验证用户输入的验证码是否正确
+	 * @param phone
+	 * @return
+	 */
+	public static Map<String, Object> compareVcode(String phone, String setCode) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		if (CacheUtils.get(phone + "_" + setCode) != null) {
+			Date oldDate = (Date) CacheUtils.get(phone + "_" + setCode);
+			// 判断时间是否过5分钟
+			if (DateUtils.pastMinutes(oldDate) <= 5) {
+				returnMap.put("success", true);
+			} else {
+				returnMap.put("success", false);
+				returnMap.put("msg", "验证码已失效，请重新获取.");
+				// 移除之前的
+				CacheUtils.remove(phone + "_" + setCode);
+			}
+		} else {
+			returnMap.put("success", false);
+			returnMap.put("msg", "验证码输入错误，请查证后输入.");
+		}
+		return returnMap;
+	}	
 
 	// 产品名称:云通信短信API产品,开发者无需替换
 	static final String product = "Dysmsapi";
@@ -108,8 +153,13 @@ public class MessageUtil {
 	public SendSmsResponse send(String templateCode, String phoneNumbers,
 			Map<String, String> paramMap) {
 		// 短信模板key
-		String key = UserUtils.getUser().getCompany().getZipCode();
-		key = key == null ? "13543006081" : key;
+		String key = null;
+		if(UserUtils.getUser().getCompany() != null) {
+			key = UserUtils.getUser().getCompany().getZipCode();
+			key = key == null ? "13543006081" : key;
+		}else {
+			key = "13543006081";
+		}
 		Map<String, String> configMap = this.config.get(key);
 		if(configMap == null){
 			return null;

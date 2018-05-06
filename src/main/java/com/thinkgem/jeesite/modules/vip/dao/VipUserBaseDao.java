@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.vip.dao;
 
+import java.util.List;
+
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserBase;
@@ -14,5 +16,10 @@ import com.thinkgem.jeesite.modules.vip.entity.VipUserBase;
  */
 @MyBatisDao
 public interface VipUserBaseDao extends CrudDao<VipUserBase> {
-	
+	/**
+	 * 获取用户的VIP和钱包信息
+	 * @param vipUserBase
+	 * @return
+	 */
+	public List<VipUserBase> findUserAllVip(VipUserBase vipUserBase);
 }
