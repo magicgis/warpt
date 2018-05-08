@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
-import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerAccount;
 import com.thinkgem.jeesite.modules.shop.dao.ShopCustomerAccountDao;
+import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerAccount;
+import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
+import com.thinkgem.jeesite.modules.shop.utils.ShopUtils;
 
 /**
  * 客户收款Service
@@ -23,6 +25,8 @@ import com.thinkgem.jeesite.modules.shop.dao.ShopCustomerAccountDao;
 @Transactional(readOnly = true)
 public class ShopCustomerAccountService extends CrudService<ShopCustomerAccountDao, ShopCustomerAccount> {
 
+	@Autowired
+	private ShopCustomerInfoService shopCustomerInfoService;
 	@Autowired
 	private ShopCustomerAccountDao shopCustomerAccountDao;
 	
@@ -52,5 +56,18 @@ public class ShopCustomerAccountService extends CrudService<ShopCustomerAccountD
 		// TODO Auto-generated method stub
 		return shopCustomerAccountDao.findCountPage(shopCustomerAccount);
 	}
+	
+	@Transactional(readOnly = false)
+	public void saveByAdd(ShopCustomerAccount shopCustomerAccount) {
+		//客户名称保持一致
+		ShopCustomerInfo shopCustomerInfo = shopCustomerInfoService.get(shopCustomerAccount.getCustomerId());
+		shopCustomerAccount.setCustomerName(shopCustomerInfo.getCustomerName());
+		//生成单据号
+		shopCustomerAccount.setAccountNo(ShopUtils.generateBillCode("FKC"));
+		shopCustomerAccount.setSubjectType(ShopUtils.SUBJECT_TYPE_1005);
+		shopCustomerAccount.setMeetMoney(shopCustomerAccount.getFactMoney());
+		shopCustomerAccount.setLessMoney(ShopUtils.subtract(shopCustomerAccount.getMeetMoney(), shopCustomerAccount.getFactMoney()));
+		super.save(shopCustomerAccount);
+	}	
 	
 }

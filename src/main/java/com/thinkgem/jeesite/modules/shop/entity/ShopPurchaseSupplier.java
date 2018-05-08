@@ -27,7 +27,7 @@ public class ShopPurchaseSupplier extends DataEntity<ShopPurchaseSupplier> {
 	private String bankName;		// 银行账户
 	private String bankNo;		// 银行账号
 	private String bankAddress;		// 开户行
-	private Double discount;		// discount
+	private Double discount = 100.00;		// discount
 	private String address;		// 地址
 	private Integer sort;
 	

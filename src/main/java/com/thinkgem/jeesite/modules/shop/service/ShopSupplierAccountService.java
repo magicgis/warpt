@@ -50,9 +50,9 @@ public class ShopSupplierAccountService extends CrudService<ShopSupplierAccountD
 	@Transactional(readOnly = false)
 	public void saveByAdd(ShopSupplierAccount shopSupplierAccount) {
 		//生成单据号
-		shopSupplierAccount.setAccountNo(ShopUtils.generateBillCode("FK"));
+		shopSupplierAccount.setAccountNo(ShopUtils.generateBillCode("FKS"));
 		shopSupplierAccount.setSubjectType(ShopUtils.SUBJECT_TYPE_1004);
-		shopSupplierAccount.setMeetMoney(0.0);
+		shopSupplierAccount.setMeetMoney(shopSupplierAccount.getFactMoney());
 		shopSupplierAccount.setLessMoney(ShopUtils.subtract(shopSupplierAccount.getMeetMoney(), shopSupplierAccount.getFactMoney()));
 		super.save(shopSupplierAccount);
 	}

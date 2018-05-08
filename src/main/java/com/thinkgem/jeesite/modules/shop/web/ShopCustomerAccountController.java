@@ -94,7 +94,7 @@ public class ShopCustomerAccountController extends BaseController {
 			return form(shopCustomerAccount, model);
 		}
 		shopCustomerAccount.setOfficeId(UserUtils.getUser().getOffice().getId());
-		shopCustomerAccountService.save(shopCustomerAccount);
+		shopCustomerAccountService.saveByAdd(shopCustomerAccount);
 		addMessage(redirectAttributes, "保存客户收款成功");
 		return "redirect:"+Global.getAdminPath()+"/shop/shopCustomerAccount/?repage";
 	}
