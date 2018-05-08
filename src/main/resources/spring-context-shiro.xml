@@ -15,7 +15,7 @@
 		<constructor-arg>
 			<value>
 				/static/** = anon
-				${wechatPath}/api/getOpenId = anon
+				${wechatPath}/api/** = anon
 				${wechatPath}/vip/** = wechat
 				/userfiles/** = anon
 				${adminPath}/cas = cas
