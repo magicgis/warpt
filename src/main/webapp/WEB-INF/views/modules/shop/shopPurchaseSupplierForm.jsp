@@ -43,7 +43,7 @@
 		<div class="control-group">
 			<label class="control-label">折扣(%)：</label>
 			<div class="controls">
-				<form:input path="discount" htmlEscape="false" class="required  number" value="100"/>
+				<form:input path="discount" htmlEscape="false" class="required  number" />
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>

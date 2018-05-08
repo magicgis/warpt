@@ -51,7 +51,7 @@
 		<div class="control-group">
 			<label class="control-label">客户折扣(%)：</label>
 			<div class="controls">
-				<form:input path="discount" htmlEscape="false" class="required  number" value="100"/>
+				<form:input path="discount" htmlEscape="false" class="required  number" />
 				<span class="help-inline"><font color="red">*在优惠折扣上再进行客户打折</font> </span>
 			</div>
 		</div>		

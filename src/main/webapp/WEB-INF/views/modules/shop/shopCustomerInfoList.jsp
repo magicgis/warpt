@@ -46,8 +46,9 @@
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
-				<th>折扣名称</th>
 				<th>客户名称</th>
+				<th>折扣名称</th>
+				<th>折上折(%)</th>
 				<th>电话</th>
 				<th>手机</th>
 				<th>邮箱</th>
@@ -60,10 +61,13 @@
 		<c:forEach items="${page.list}" var="shopCustomerInfo">
 			<tr>
 				<td><a href="${ctx}/shop/shopCustomerInfo/form?id=${shopCustomerInfo.id}">
-					${shopCustomerInfo.levelName}
-				</a></td>
-				<td>
 					${shopCustomerInfo.customerName}
+				</td></a>
+				<td>
+					${shopCustomerInfo.levelName}
+				</td>
+				<td>
+					${shopCustomerInfo.discount}
 				</td>
 				<td>
 					${shopCustomerInfo.phone}
