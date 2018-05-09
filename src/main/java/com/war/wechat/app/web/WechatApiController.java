@@ -61,7 +61,7 @@ public class WechatApiController extends BaseController {
 			if(phone!=null) {
 				loginMap.put("phone", phone);
 				loginMap.put("isLogin", true);
-			}else { //未绑定账号，需要去登陆绑定
+			} else { //未绑定账号，需要去登陆绑定
 				loginMap.put("isLogin", false);
 			}
 			loginMap.put("success", true);
