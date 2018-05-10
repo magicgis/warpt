@@ -45,7 +45,7 @@
 				<form:input path="productNo" htmlEscape="false" maxlength="500" class="input-medium"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-			<li class="clearfix"><input id="impExcel" onclick="impExcelFn()" class="btn btn-primary" type="button" value="导入Excel"/></li>
+<!-- 			<li class="clearfix"><input id="impExcel" onclick="impExcelFn()" class="btn btn-primary" type="button" value="导入Excel"/></li> -->
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>
