@@ -64,7 +64,7 @@
 					${shopCustomerInfo.customerName}
 				</td></a>
 				<td>
-					${shopCustomerInfo.levelName}
+					${shopCustomerInfo.levelName}<c:if test="${shopCustomerInfo.isVip == 1}">[会员]</c:if>
 				</td>
 				<td>
 					${shopCustomerInfo.discount}

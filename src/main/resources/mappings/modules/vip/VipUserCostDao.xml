@@ -8,6 +8,8 @@
 		a.office_id AS "officeId",
 		a.vip_phone AS "vipPhone",
 		a.vip_name AS "vipName",
+		a.sale_id AS "saleId",
+		a.sale_no AS "saleNo",
 		a.cost_moeny AS "costMoeny",
 		a.cost_score AS "costScore",
 		a.cost_time AS "costTime",
@@ -48,7 +50,10 @@
 			</if>
 			<if test="officeId != null and officeId != ''">
 				AND a.office_id = #{officeId}
-			</if>			
+			</if>	
+			<if test="saleId != null and saleId != ''">
+				AND a.sale_id = #{saleId}
+			</if>	
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -85,6 +90,8 @@
 			office_id,
 			vip_phone,
 			vip_name,
+			sale_id,
+			sale_no,
 			cost_moeny,
 			cost_score,
 			cost_time,
@@ -100,6 +107,8 @@
 			#{officeId},
 			#{vipPhone},
 			#{vipName},
+			#{saleId},
+			#{saleNo},
 			#{costMoeny},
 			#{costScore},
 			#{costTime},
@@ -117,6 +126,8 @@
 			vip_id = #{vipId},
 			office_id = #{officeId},
 			vip_phone = #{vipPhone},
+			sale_id = #{saleId},
+			sale_no = #{saleNo},
 			vip_name = #{vipName},
 			cost_moeny = #{costMoeny},
 			cost_score = #{costScore},

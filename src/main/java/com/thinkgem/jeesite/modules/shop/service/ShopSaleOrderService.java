@@ -17,7 +17,6 @@ import com.thinkgem.jeesite.modules.shop.dao.ShopSaleOrderDao;
 import com.thinkgem.jeesite.modules.shop.dao.ShopSaleOrderItemDao;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerAccount;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
-import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerLevel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
 import com.thinkgem.jeesite.modules.shop.entity.ShopProductPrice;
 import com.thinkgem.jeesite.modules.shop.entity.ShopSaleOrder;
@@ -26,6 +25,10 @@ import com.thinkgem.jeesite.modules.shop.entity.ShopStockInfo;
 import com.thinkgem.jeesite.modules.shop.entity.ShopStockItem;
 import com.thinkgem.jeesite.modules.shop.utils.ShopUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import com.thinkgem.jeesite.modules.vip.entity.VipUserBase;
+import com.thinkgem.jeesite.modules.vip.entity.VipUserCost;
+import com.thinkgem.jeesite.modules.vip.service.VipUserBaseService;
+import com.thinkgem.jeesite.modules.vip.service.VipUserCostService;
 
 /**
  * 销售订单Service
@@ -50,6 +53,10 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 	private ShopProductService shopProductService;
 	@Autowired
 	private ShopCustomerAccountService shopCustomerAccountService;
+	@Autowired
+	private VipUserCostService vipUserCostService;
+	@Autowired
+	private VipUserBaseService vipUserBaseService;
 	
 	public ShopSaleOrder get(String id) {
 		ShopSaleOrder shopSaleOrder = super.get(id);
@@ -67,6 +74,11 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 		ShopCustomerInfo parm2 = new ShopCustomerInfo();
 		parm2.setOfficeId(UserUtils.getUser().getOffice().getId());
 		List<ShopCustomerInfo> customerList = shopCustomerInfoService.findList(parm2);
+		for (ShopCustomerInfo shopCustomerInfo : customerList) {
+			if(!StringUtils.isEmpty(shopCustomerInfo.getPhone())) {
+				shopCustomerInfo.setCustomerName(shopCustomerInfo.getCustomerName()+"["+shopCustomerInfo.getPhone()+"]");
+			}
+		}
 		// 商品
 		ShopProduct parm3 = new ShopProduct();
 		parm3.setOfficeId(UserUtils.getUser().getOffice().getId());
@@ -121,6 +133,7 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 		shopSaleOrder.setSaleNo(ShopUtils.generateBillCode("XS"));
 		super.save(shopSaleOrder);
 		boolean subInsertFn = false;
+		String orderTxt = "";
 		for (ShopSaleOrderItem shopSaleOrderItem : shopSaleOrder.getShopSaleOrderItemList()) {
 			if (shopSaleOrderItem.getProductId() == null) {
 				continue;
@@ -134,6 +147,7 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 			ShopUtils.updateProductStockNum(shopSaleOrder.getOfficeId(), shopSaleOrder.getStockId(),
 					shopSaleOrder.getStockName(), shopSaleOrderItem.getProductId(),
 					shopSaleOrderItem.getSaleNum()*subject*-1);
+			orderTxt += "["+shopSaleOrderItem.getProductName()+"-数量:"+shopSaleOrderItem.getSaleNum()+"];";
 		}
 		if(!subInsertFn) {
 			throw new RuntimeException("请选择商品录入");
@@ -152,6 +166,22 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 		shopCustomerAccount.setLessMoney(
 				ShopUtils.subtract(shopCustomerAccount.getMeetMoney(), shopCustomerAccount.getFactMoney()));
 		shopCustomerAccountService.save(shopCustomerAccount);
+		//如果该客户是会员，新增会员消费
+		ShopCustomerInfo shopCustomerInfo = shopCustomerInfoService.get(shopSaleOrder.getCustomerId());
+		if(shopCustomerInfo.getIsVip() == 1) {
+			VipUserBase vipUserBase = vipUserBaseService.get(shopCustomerInfo.getVipId());
+			VipUserCost vipUserCost = new VipUserCost();
+			vipUserCost.setOfficeId(vipUserBase.getOfficeId());
+			vipUserCost.setSaleId(shopSaleOrder.getId());
+			vipUserCost.setSaleNo(shopSaleOrder.getSaleNo());
+			vipUserCost.setVipId(vipUserBase.getId());
+			vipUserCost.setVipName(vipUserBase.getVipName());
+			vipUserCost.setVipPhone(vipUserBase.getVipPhone());
+			vipUserCost.setCostMoeny(shopCustomerAccount.getFactMoney());
+			vipUserCost.setCostScore(0.00);
+			vipUserCost.setRemarks(orderTxt);
+			vipUserCostService.save(vipUserCost);
+		}
 	}
 	
 	@Transactional(readOnly = false)
@@ -172,7 +202,17 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 		parm.setSaleId(shopSaleOrder.getId());
 		List<ShopCustomerAccount> customerAccountList = shopCustomerAccountService.findList(parm);
 		shopCustomerAccountService.delete(customerAccountList.get(0));
-		
+		//删除会员消费记录
+		ShopCustomerInfo shopCustomerInfo = shopCustomerInfoService.get(shopSaleOrder.getCustomerId());
+		if(shopCustomerInfo.getIsVip() == 1) {
+			VipUserCost costParm = new VipUserCost();
+			costParm.setSaleId(shopSaleOrder.getId());
+			List<VipUserCost> costList = vipUserCostService.findList(costParm);
+			if(costList!=null && !costList.isEmpty()) {
+				VipUserCost vipUserCost = costList.get(0);
+				vipUserCostService.delete(vipUserCost,true);
+			}
+		}
 		super.delete(shopSaleOrder);
 		shopSaleOrderItemDao.delete(new ShopSaleOrderItem(shopSaleOrder));
 	}

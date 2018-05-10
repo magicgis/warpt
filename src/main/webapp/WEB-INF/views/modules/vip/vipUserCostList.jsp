@@ -46,7 +46,7 @@
 				<th>消费时间</th>
 				<th>备注</th>
 				<th>更新日期</th>
-				<!--<shiro:hasPermission name="vip:vipUserCost:edit"><th>操作</th></shiro:hasPermission>-->
+				<shiro:hasPermission name="vip:vipUserCost:edit"><th>操作</th></shiro:hasPermission>
 			</tr>
 		</thead>
 		<tbody>
@@ -73,10 +73,9 @@
 				<td>
 					<fmt:formatDate value="${vipUserCost.updateDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
-				<!--<shiro:hasPermission name="vip:vipUserCost:edit"><td>
-    				<a href="${ctx}/vip/vipUserCost/form?id=${vipUserCost.id}">修改</a>
-					<a href="${ctx}/vip/vipUserCost/delete?id=${vipUserCost.id}" onclick="return confirmx('确认要删除该会员消费记录吗？', this.href)">删除</a>
-				</td></shiro:hasPermission>-->
+				<shiro:hasPermission name="vip:vipUserCost:edit"><td>
+					<a href="${ctx}/vip/vipUserCost/delete?id=${vipUserCost.id}" onclick="return confirmx('确认要删除该会员消费记录吗？删除后会员钱包将还原。', this.href)">删除</a>
+				</td></shiro:hasPermission>
 			</tr>
 		</c:forEach>
 		</tbody>

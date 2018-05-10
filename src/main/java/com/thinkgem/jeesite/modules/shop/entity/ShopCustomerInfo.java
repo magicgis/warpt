@@ -31,6 +31,8 @@ public class ShopCustomerInfo extends DataEntity<ShopCustomerInfo> {
 	private String address;		// 地址
 	private Integer sort;		// sort
 	private Double discount = 100.00;		// discount
+	private String vipId;		// 关联会员id
+	private Integer isVip = 0;		// 是否会员
 	
 	public ShopCustomerInfo() {
 		super();
@@ -180,6 +182,22 @@ public class ShopCustomerInfo extends DataEntity<ShopCustomerInfo> {
 
 	public void setDiscount(Double discount) {
 		this.discount = discount;
+	}
+
+	public String getVipId() {
+		return vipId;
+	}
+
+	public void setVipId(String vipId) {
+		this.vipId = vipId;
+	}
+
+	public Integer getIsVip() {
+		return isVip;
+	}
+
+	public void setIsVip(Integer isVip) {
+		this.isVip = isVip;
 	}
 	
 }

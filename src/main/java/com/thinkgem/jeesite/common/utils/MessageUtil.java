@@ -166,6 +166,7 @@ public class MessageUtil {
 		}
 		templateCode = configMap.get(templateCode);
 		String paramString = JSONUtil.toJson(paramMap);
+		System.out.println(paramString);
 		// 可自助调整超时时间
 		System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
 		System.setProperty("sun.net.client.defaultReadTimeout", "10000");

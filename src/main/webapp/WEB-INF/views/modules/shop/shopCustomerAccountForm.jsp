@@ -44,15 +44,17 @@
 		<div class="control-group">
 			<label class="control-label">收款时间：</label>
 			<div class="controls">
-				<input name="businData" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
+				<input name="businData" type="text" readonly="readonly" maxlength="20" class="required input-medium Wdate "
 					value="<fmt:formatDate value="${shopCustomerAccount.businData}" pattern="yyyy-MM-dd HH:mm:ss"/>"
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">收款金额：</label>
 			<div class="controls">
-				<form:input path="factMoney" htmlEscape="false" class="input-xlarge  number"/>
+				<form:input path="factMoney" htmlEscape="false" class="required input-xlarge  number"/>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">

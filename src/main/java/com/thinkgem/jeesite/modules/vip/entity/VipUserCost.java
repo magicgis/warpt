@@ -19,6 +19,8 @@ public class VipUserCost extends DataEntity<VipUserCost> {
 	private String vipId;		// 会员id
 	private String vipPhone;		// 会员手机
 	private String vipName;		// 会员名称
+	private String saleId;		// 消费订单id
+	private String saleNo;		// 消费订单号
 	private Double costMoeny  = 0.0;		// 消费金额
 	private Double costScore  = 0.0;		// 消费积分
 	private String costTime;		// 消费时间
@@ -89,6 +91,22 @@ public class VipUserCost extends DataEntity<VipUserCost> {
 
 	public void setOfficeId(String officeId) {
 		this.officeId = officeId;
+	}
+
+	public String getSaleId() {
+		return saleId;
+	}
+
+	public void setSaleId(String saleId) {
+		this.saleId = saleId;
+	}
+
+	public String getSaleNo() {
+		return saleNo;
+	}
+
+	public void setSaleNo(String saleNo) {
+		this.saleNo = saleNo;
 	}
 	
 }

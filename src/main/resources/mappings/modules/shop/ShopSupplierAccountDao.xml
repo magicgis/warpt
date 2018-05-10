@@ -109,7 +109,7 @@
 				AND a.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
 			</if>
 		</where>
-		group by a.office_id,a.supplier_id,a.supplier_name
+		group by a.office_id,a.supplier_id
 	</select>
 	
 	<insert id="insert">

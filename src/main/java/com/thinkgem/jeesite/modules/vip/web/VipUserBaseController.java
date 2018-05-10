@@ -27,6 +27,8 @@ import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.MessageUtil;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerLevel;
+import com.thinkgem.jeesite.modules.shop.service.ShopCustomerLevelService;
 import com.thinkgem.jeesite.modules.sys.entity.Area;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserBase;
@@ -44,7 +46,9 @@ public class VipUserBaseController extends BaseController {
 
 	@Autowired
 	private VipUserBaseService vipUserBaseService;
-
+	@Autowired
+	private ShopCustomerLevelService shopCustomerLevelService;
+	
 	@ModelAttribute
 	public VipUserBase get(@RequestParam(required = false) String id) {
 		VipUserBase entity = null;
@@ -60,6 +64,16 @@ public class VipUserBaseController extends BaseController {
 			entity.setArea(area);
 			entity.setLevelId("1");
 			entity.setLevelName("普通用户");
+			//默认初始化第一个级别
+			ShopCustomerLevel parm = new ShopCustomerLevel();
+			parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+			List<ShopCustomerLevel> list = shopCustomerLevelService.findList(parm);
+			if(list==null || list.isEmpty()) {
+				throw new RuntimeException("请先初始化优惠级别。");
+			}
+			ShopCustomerLevel oneLevel = list.get(0);
+			entity.setLevelId(oneLevel.getId());
+			entity.setLevelName(oneLevel.getLevelName());
 		}
 		return entity;
 	}

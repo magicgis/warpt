@@ -83,7 +83,7 @@ public class VipUserCostController extends BaseController {
 	@RequiresPermissions("vip:vipUserCost:edit")
 	@RequestMapping(value = "delete")
 	public String delete(VipUserCost vipUserCost, RedirectAttributes redirectAttributes) {
-		vipUserCostService.delete(vipUserCost);
+		vipUserCostService.delete(vipUserCost,false);
 		addMessage(redirectAttributes, "删除会员消费记录成功");
 		return "redirect:"+Global.getAdminPath()+"/vip/vipUserCost/?repage";
 	}

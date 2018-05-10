@@ -22,8 +22,8 @@ public class VipUserBase extends DataEntity<VipUserBase> {
 	private String vipWechat; // 会员微信号
 	private String openId; // 会员微信openid
 	private String vipQq; // 会员qq号
-	private String levelId; // 会员等级id
-	private String levelName; // 会员等级名称
+	private String levelId; // 优惠等级id
+	private String levelName; // 优惠等级名称
 	private Area area; // 所在区域
 	private String areaName; // 所在区域
 	private String userAddress; // 住址

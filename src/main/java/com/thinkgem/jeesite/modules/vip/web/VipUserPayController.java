@@ -70,7 +70,7 @@ public class VipUserPayController extends BaseController {
 		if (!beanValidator(model, vipUserPay)){
 			return form(vipUserPay, model);
 		}
-		if(vipUserPay.getPayMoeny() == 0){
+		if(vipUserPay.getRealMoeny() == 0){
 			throw new RuntimeException("充值金额不能为0");
 		}
 		//登陆用户机构过滤

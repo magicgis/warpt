@@ -23,6 +23,11 @@
 				}
 			});
 		});
+		
+		function sumPayMoeny(){
+			var sumMoeny = $('#realMoeny').val()*1+$('#giveMoeny').val()*1
+			$('#payMoenyDiv').html(sumMoeny);
+		}
 	</script>
 </head>
 <body>
@@ -48,9 +53,22 @@
 <!-- 			</div> -->
 <!-- 		</div> -->
 		<div class="control-group">
+			<label class="control-label">总金额：</label>
+			<div class="controls" id="payMoenyDiv">
+				0.0
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">充值金额：</label>
 			<div class="controls">
-				<form:input path="payMoeny" htmlEscape="false" class="required  number"/>
+				<form:input path="realMoeny" htmlEscape="false" class="required  number" onblur="sumPayMoeny()"/>
+				<span class="help-inline"><font color="red">*</font> </span>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">赠送金额：</label>
+			<div class="controls">
+				<form:input path="giveMoeny" htmlEscape="false" class="required  number" onblur="sumPayMoeny()"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>

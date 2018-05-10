@@ -48,6 +48,14 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">优惠级别：</label>
+			<div class="controls">
+				<sys:treeselect id="level" name="levelId" value="${vipUserBase.levelId}" labelName="levelName" labelValue="${vipUserBase.levelName}"
+					title="选择优惠级别" url="/shop/shopCustomerLevel/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
+				<span class="help-inline"><font color="red">*</font> </span>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">会员微信号：</label>
 			<div class="controls">
 				<form:input path="vipWechat" htmlEscape="false" maxlength="20" class="input-xlarge "/>
@@ -59,13 +67,13 @@
 				<form:input path="vipQq" htmlEscape="false" maxlength="20" class="input-xlarge "/>
 			</div>
 		</div>
-		<div class="control-group">
+		<!-- <div class="control-group">
 			<label class="control-label">会员等级：</label>
 			<div class="controls">
 				<sys:treeselect id="level" name="levelId" value="${vipUserBase.levelId}" labelName="levelName" labelValue="${vipUserBase.levelName}"
 					title="会员等级" url="/vip/vipUserLevel/treeData" cssClass="required" allowClear="true" notAllowSelectParent="false" />
 			</div>
-		</div>
+		</div> -->
 		<div class="control-group">
 			<label class="control-label">所在区域：</label>
 			<div class="controls">

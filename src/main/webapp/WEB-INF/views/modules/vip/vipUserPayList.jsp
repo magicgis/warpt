@@ -41,11 +41,13 @@
 			<tr>
 				<th>会员名称</th>
 				<th>会员手机</th>
+				<th>充值总额</th>
 				<th>充值金额</th>
+				<th>赠送金额</th>
 				<th>获得积分</th>
 				<th>充值时间</th>
 				<th>备注</th>
-				<!--<shiro:hasPermission name="vip:vipUserPay:edit"><th>操作</th></shiro:hasPermission>-->
+				<shiro:hasPermission name="vip:vipUserPay:edit"><th>操作</th></shiro:hasPermission>
 			</tr>
 		</thead>
 		<tbody>
@@ -61,6 +63,12 @@
 					${vipUserPay.payMoeny}
 				</td>
 				<td>
+					${vipUserPay.realMoeny}
+				</td>
+					<td>
+					${vipUserPay.giveMoeny}
+				</td>
+				<td>
 					${vipUserPay.getScore}
 				</td>
 				<td>
@@ -69,10 +77,9 @@
 				<td>
 					${vipUserPay.remarks}
 				</td>
-				<!--<shiro:hasPermission name="vip:vipUserPay:edit"><td>
-    				<a href="${ctx}/vip/vipUserPay/form?id=${vipUserPay.id}">修改</a>
-					<a href="${ctx}/vip/vipUserPay/delete?id=${vipUserPay.id}" onclick="return confirmx('确认要删除该会员充值记录吗？', this.href)">删除</a>
-				</td></shiro:hasPermission>-->
+				<shiro:hasPermission name="vip:vipUserPay:edit"><td>
+					<a href="${ctx}/vip/vipUserPay/delete?id=${vipUserPay.id}" onclick="return confirmx('确认要删除该会员充值记录吗？删除后会员钱包将还原(如果有充值赠送，进销存收款负项也会直接删除)', this.href)">删除</a>
+				</td></shiro:hasPermission>
 			</tr>
 		</c:forEach>
 		</tbody>

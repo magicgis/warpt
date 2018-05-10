@@ -14,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.MessageUtil;
+import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
+import com.thinkgem.jeesite.modules.shop.service.ShopCustomerInfoService;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.vip.dao.VipUserBaseDao;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserBase;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserWallet;
-import com.war.wechat.base.util.JSONUtil;
 
 /**
  * 会员基本信息Service
@@ -33,6 +35,8 @@ public class VipUserBaseService extends
 	private VipUserWalletService vipUserWalletService;
 	@Autowired
 	private VipUserBaseDao vipUserBaseDao;
+	@Autowired
+	private ShopCustomerInfoService shopCustomerInfoService;
 
 	public VipUserBase get(String id) {
 		return super.get(id);
@@ -65,6 +69,27 @@ public class VipUserBaseService extends
 			vipUserWallet.setRestScore(0.00);
 			vipUserWallet.setUseScore(0.00);
 			vipUserWalletService.save(vipUserWallet);
+			
+			//注册为进销存客户
+			ShopCustomerInfo shopCustomerInfo = new ShopCustomerInfo();
+			shopCustomerInfo.setOfficeId(vipUserBase.getOfficeId());
+			shopCustomerInfo.setLevelId(vipUserBase.getLevelId());
+			shopCustomerInfo.setLevelName(vipUserBase.getLevelName());
+			shopCustomerInfo.setCustomerName(vipUserBase.getVipName());
+			shopCustomerInfo.setPhone(vipUserBase.getVipPhone());
+			shopCustomerInfo.setDiscount(100.0); //默认折扣不设置
+			shopCustomerInfo.setIsVip(1); //是会员
+			shopCustomerInfo.setVipId(vipUserBase.getId());
+			//排序设置
+			ShopCustomerInfo parm = new ShopCustomerInfo();
+			parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+			List<ShopCustomerInfo> customerList = shopCustomerInfoService.findList(parm);
+			if (customerList.size() > 0){
+				shopCustomerInfo.setSort(customerList.get(customerList.size()-1).getSort()+1);
+			}else {
+				shopCustomerInfo.setSort(1);
+			}
+			shopCustomerInfoService.save(shopCustomerInfo);
 			// 发送短信
 			// String content =
 			// "尊敬的["+vipUserBase.getVipPhone()+"]，您已注册成为英树会员！";
@@ -74,6 +99,8 @@ public class VipUserBaseService extends
 			MessageUtil.getInterface().send("REGISTER_CODE", vipUserBase.getVipPhone(),
 					contentMap);
 		}
+		
+
 	}
 
 	@Transactional(readOnly = false)

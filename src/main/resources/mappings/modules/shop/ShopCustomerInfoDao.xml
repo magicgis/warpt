@@ -20,6 +20,8 @@
 		a.address AS "address",
 		a.sort AS "sort",
 		a.discount AS "discount",
+		a.vip_id AS "vipId",
+		a.is_vip AS "isVip",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -61,7 +63,10 @@
 			</if>
 			<if test="levelId != null and levelId != ''">
 				AND a.level_id = #{levelId}
-			</if>			
+			</if>
+			<if test="vipId != null and vipId != ''">
+				AND a.vip_id = #{vipId}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -99,6 +104,8 @@
 			level_name,
 			customer_name,
 			discount,
+			vip_id,
+			is_vip,
 			phone,
 			mobile,
 			email,
@@ -123,6 +130,8 @@
 			#{levelName},
 			#{customerName},
 			#{discount},
+			#{vipId},
+			#{isVip},
 			#{phone},
 			#{mobile},
 			#{email},
@@ -150,6 +159,8 @@
 			level_name = #{levelName},
 			customer_name = #{customerName},
 			discount = #{discount},
+			vip_id = #{vipId},
+			is_vip = #{isVip},
 			phone = #{phone},
 			mobile = #{mobile},
 			email = #{email},

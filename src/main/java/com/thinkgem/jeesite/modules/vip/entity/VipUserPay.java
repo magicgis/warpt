@@ -19,7 +19,9 @@ public class VipUserPay extends DataEntity<VipUserPay> {
 	private String officeId; // 关联机构id
 	private String vipName;		// 会员名称
 	private String vipPhone;		// 会员手机
-	private Double payMoeny = 0.0;		// 充值金额
+	private Double payMoeny = 0.0;		// 充值总金额
+	private Double realMoeny = 0.0;		// 充值实际金额
+	private Double giveMoeny = 0.0;		// 充值赠送金额
 	private Double getScore = 0.0;		// 获得积分
 	private String payTime;		// 充值时间
 	
@@ -89,6 +91,22 @@ public class VipUserPay extends DataEntity<VipUserPay> {
 
 	public void setOfficeId(String officeId) {
 		this.officeId = officeId;
+	}
+
+	public Double getRealMoeny() {
+		return realMoeny;
+	}
+
+	public void setRealMoeny(Double realMoeny) {
+		this.realMoeny = realMoeny;
+	}
+
+	public Double getGiveMoeny() {
+		return giveMoeny;
+	}
+
+	public void setGiveMoeny(Double giveMoeny) {
+		this.giveMoeny = giveMoeny;
 	}
 	
 }

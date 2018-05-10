@@ -87,6 +87,7 @@ public class ShopCustomerInfoController extends BaseController {
 			return form(shopCustomerInfo, model);
 		}
 		shopCustomerInfo.setOfficeId(UserUtils.getUser().getOffice().getId());
+		shopCustomerInfo.setIsVip(0); //非会员
 		shopCustomerInfoService.save(shopCustomerInfo);
 		addMessage(redirectAttributes, "保存客户成功");
 		return "redirect:"+Global.getAdminPath()+"/shop/shopCustomerInfo/?repage";
@@ -115,7 +116,11 @@ public class ShopCustomerInfoController extends BaseController {
 			Map<String, Object> map = Maps.newHashMap();
 			map.put("id", e.getId());
 			map.put("pId", "0");
-			map.put("name", e.getCustomerName()+"["+e.getPhone()+"]");
+			if(StringUtils.isEmpty(e.getPhone())) {
+				map.put("name", e.getCustomerName());
+			}else {
+				map.put("name", e.getCustomerName()+"["+e.getPhone()+"]");
+			}
 			mapList.add(map);
 		}
 		return mapList;

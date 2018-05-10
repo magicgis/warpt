@@ -15,6 +15,7 @@ import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.MessageUtil;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserBase;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserCost;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserWallet;
@@ -69,7 +70,7 @@ public class VipUserCostService extends
 						vipUserWallet.getRestMoeny(),
 						vipUserCost.getCostMoeny());
 				if (restMoeny < 0) {
-					throw new RuntimeException("消费金额余额不足，请充值!");
+					throw new RuntimeException("该会员消费余额不足，请充值!");
 				}
 				vipUserWallet.setRestMoeny(restMoeny);
 				// 增加已用
@@ -89,7 +90,7 @@ public class VipUserCostService extends
 						vipUserWallet.getRestScore(),
 						vipUserCost.getCostScore());
 				if (restScore < 0) {
-					throw new RuntimeException("消费积分余额不足!");
+					throw new RuntimeException("该会员消费积分余额不足，请充值!");
 				}
 				vipUserWallet.setRestScore(restScore);
 				// 增加已用
@@ -104,8 +105,7 @@ public class VipUserCostService extends
 			}
 			vipUserWalletService.save(vipUserWallet);
 			// 发送短信
-			String appendTxt = vipUserCost.getRemarks() == null ? ""
-					: vipUserCost.getRemarks()+" ";
+			String appendTxt = "";
 			if (vipUserCost.getCostMoeny() > 0) {
 				appendTxt += "金额：" + vipUserCost.getCostMoeny() + "";
 			}
@@ -130,9 +130,75 @@ public class VipUserCostService extends
 		}
 	}
 
+	/**
+	 * 
+	 * @param vipUserCost
+	 * @param linkOrder 是否关联销售出库订单
+	 */
 	@Transactional(readOnly = false)
-	public void delete(VipUserCost vipUserCost) {
+	public void delete(VipUserCost vipUserCost,boolean linkOrder) {
+		//如果不是销售订单关联的删除，删除之前需要判断是否关联销售订单，如果关联不给删除
+		if(!StringUtils.isEmpty(vipUserCost.getSaleId()) && !linkOrder) {
+			throw new RuntimeException("该消费记录关联了销售出库单，请从销售出库单处进行删除，订单号["+vipUserCost.getSaleNo()+"]!");
+		}
+		//查询完整记录
+		vipUserCost = this.get(vipUserCost.getId());
+		//钱包还原
+		VipUserWallet vipUserWallet = vipUserWalletService
+				.findByVipId(vipUserCost.getVipId());
+		if (vipUserCost.getCostMoeny() > 0) {
+			// 增加可用
+			double restMoeny = WalletUtils.add(
+					vipUserWallet.getRestMoeny(),
+					vipUserCost.getCostMoeny());
+			vipUserWallet.setRestMoeny(restMoeny);
+			// 减少已用
+			vipUserWallet
+					.setUseMoeny(WalletUtils.subtract(
+							vipUserWallet.getUseMoeny(),
+							vipUserCost.getCostMoeny()));
+			// 刷新总额
+			vipUserWallet.setAllMoeny(WalletUtils.add(
+					vipUserWallet.getRestMoeny(),
+					vipUserWallet.getUseMoeny()));
+		}
+		// 积分消费
+		if (vipUserCost.getCostScore() > 0) {
+			// 增加可用
+			double restScore = WalletUtils.add(
+					vipUserWallet.getRestScore(),
+					vipUserCost.getCostScore());
+			vipUserWallet.setRestScore(restScore);
+			// 减少已用
+			vipUserWallet
+					.setUseScore(WalletUtils.subtract(
+							vipUserWallet.getUseScore(),
+							vipUserCost.getCostScore()));
+			// 刷新总额
+			vipUserWallet.setAllScore(WalletUtils.add(
+					vipUserWallet.getRestScore(),
+					vipUserWallet.getUseScore()));
+		}
+		vipUserWalletService.save(vipUserWallet);
 		super.delete(vipUserCost);
+		// 发送短信
+		String appendTxt = "";
+		if (vipUserCost.getCostMoeny() > 0) {
+			appendTxt += "撤销消费金额：" + vipUserCost.getCostMoeny() + "";
+		}
+		if (vipUserCost.getCostScore() > 0) {
+			appendTxt += "撤销消费积分：" + vipUserCost.getCostScore() + "";
+		}
+		VipUserBase vipUserBase = vipUserBaseService.get(vipUserCost.getVipId());
+		Map<String, String> contentMap = new HashMap<String, String>();
+		contentMap.put("name", vipUserBase.getVipPhone());
+		contentMap.put("msg", appendTxt);
+		contentMap
+				.put("msg1", String.valueOf(vipUserWallet.getRestMoeny()));
+		contentMap
+				.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
+		MessageUtil.getInterface().send("COST_CODE", vipUserBase.getVipPhone(),
+				contentMap);
 	}
 
 }
