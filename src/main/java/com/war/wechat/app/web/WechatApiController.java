@@ -74,6 +74,18 @@ public class WechatApiController extends BaseController {
 		return loginMap;
 	}
 	
+	//演示demo,为了审核通过小程序..
+	@ResponseBody
+	@RequestMapping(value = "loginWechatDemo")
+	public Map<String, Object> loginWechatDemo(HttpServletRequest request) {
+		Map<String, Object> loginMap = new HashMap<String, Object>();
+		loginMap.put("openid", "oCUK05DqW5mXngXewa8wt0cHPQXM");
+		loginMap.put("phone", "13543006081");
+		loginMap.put("isLogin", true);
+		loginMap.put("success", true);
+		return loginMap;
+	}
+	
 	/**
 	 * 绑定小程序并且登陆
 	 * @param request
