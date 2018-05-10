@@ -80,6 +80,7 @@
 	<ul class="nav nav-tabs">
 		<li><a href="${ctx}/shop/shopProduct/">商品基本信息列表</a></li>
 		<li class="active"><a href="${ctx}/shop/shopProduct/form?id=${shopProduct.id}">商品基本信息<shiro:hasPermission name="shop:shopProduct:edit">${not empty shopProduct.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="shop:shopProduct:edit">查看</shiro:lacksPermission></a></li>
+		<shiro:hasPermission name="shop:shopProduct:edit"><li><a href="${ctx}/shop/shopProduct/formImp">商品批量导入</a></li></shiro:hasPermission>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="shopProduct" action="${ctx}/shop/shopProduct/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>

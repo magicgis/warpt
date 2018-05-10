@@ -29,6 +29,7 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/shop/shopProduct/">商品基本信息列表</a></li>
 		<shiro:hasPermission name="shop:shopProduct:edit"><li><a href="${ctx}/shop/shopProduct/form">商品基本信息添加</a></li></shiro:hasPermission>
+		<shiro:hasPermission name="shop:shopProduct:edit"><li><a href="${ctx}/shop/shopProduct/formImp">商品批量导入</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="shopProduct" action="${ctx}/shop/shopProduct/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
@@ -45,7 +46,6 @@
 				<form:input path="productNo" htmlEscape="false" maxlength="500" class="input-medium"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-<!-- 			<li class="clearfix"><input id="impExcel" onclick="impExcelFn()" class="btn btn-primary" type="button" value="导入Excel"/></li> -->
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>
