@@ -63,6 +63,8 @@
 			<label class="control-label">备注：</label>
 			<div class="controls">
 				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="255" class="input-xxlarge "/>
+				<br/>
+				<span style="color: red;">&nbsp;&nbsp;*注意：这里直接录入消费，不会扣减进销存商品项</span>
 			</div>
 		</div>
 		<div class="form-actions">

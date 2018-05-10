@@ -32,7 +32,7 @@
 				<form:input path="vipName" htmlEscape="false" maxlength="20" class="input-medium"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-			<li class="clearfix"></li>
+			<li class="clearfix"><span style="color: red;">&nbsp;&nbsp;*商品销售推荐使用进销存录入消费</span></li>
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>
