@@ -58,7 +58,9 @@
 			<if test="pingyinStr != null and pingyinStr != ''">
 				AND a.product_char like concat('%',#{pingyinStr},'%')
 			</if>
-			
+			<if test="productAllName != null and productAllName != ''">
+				AND a.product_name = #{productAllName}
+			</if>
 			<if test="productNo != null and productNo != ''">
 				AND a.product_no = #{productNo}
 			</if>

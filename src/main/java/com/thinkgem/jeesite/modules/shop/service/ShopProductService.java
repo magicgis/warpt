@@ -101,8 +101,8 @@ public class ShopProductService extends CrudService<ShopProductDao, ShopProduct>
 	}
 
 	@Transactional(readOnly = false)
-	public void impExcel() {
-		ShopUtils.impShopExcel();
+	public void impExcel(String path) {
+		ShopUtils.impShopExcel(path);
 	}
 
 }

@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Row;
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.utils.IdGen;
 import com.thinkgem.jeesite.common.utils.SpringContextHolder;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerLevel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
@@ -293,12 +294,12 @@ public class ShopUtils {
 	/**
 	 * 导入excel TO.
 	 */
-	public static void impShopExcel() {
+	public static void impShopExcel(String path) {
 		ShopProductService shopProductService = SpringContextHolder.getBean("shopProductService");
 		ShopProductTypeService shopProductTypeService = SpringContextHolder.getBean("shopProductTypeService");
 		ShopCustomerLevelService shopCustomerLevelService = SpringContextHolder.getBean("shopCustomerLevelService");
 		try {
-			ImportExcel ei = new ImportExcel("F:/tmp/商品信息.xls", 0);
+			ImportExcel ei = new ImportExcel(path, 0);
 			for (int i = ei.getDataRowNum(); i < ei.getLastDataRowNum(); i++) {
 				Row row = ei.getRow(i);
 				for (int j = 0; j < ei.getLastCellNum(); j++) {
@@ -317,17 +318,33 @@ public class ShopUtils {
 				pram0.setOffice(UserUtils.getUser().getOffice());
 				pram0.setQueryAllName(productTypeName);
 				List<ShopProductType> shopProductTypeList = shopProductTypeService.findList(pram0);
+				if(shopProductTypeList.isEmpty()) {
+					throw new RuntimeException("请初始化【商品分类】："+productTypeName);
+				}
 				ShopProductType shopProductType = shopProductTypeList.get(0);
 				shopProduct.setProductTypeId(shopProductType.getId());
 				shopProduct.setProductTypeName(productTypeName);
-				shopProduct.setProductName(String.valueOf(ei.getCellValue(row,1)).trim()); //名称
-				shopProduct.setProductNo(String.valueOf(ei.getCellValue(row,2)).trim()); //条码
+				String productName = String.valueOf(ei.getCellValue(row,1)).trim();
+				String productNo = String.valueOf(ei.getCellValue(row,2)).trim();
+				String spec = String.valueOf(ei.getCellValue(row,7)).trim();
+				//判断是否存在此商品名称+条码+规格，如果存在不给导入
+				ShopProduct parm = new ShopProduct();
+				parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+				parm.setProductAllName(productName);
+				parm.setProductNo(productNo);
+				parm.setSpec(spec);
+				List<ShopProduct> listShopProduct = shopProductService.findList(parm);
+				if(!listShopProduct.isEmpty()) {
+					throw new RuntimeException("商品："+productName+"规格："+spec+"条码："+productNo+" 已存在，不能再次导入。");
+				}
+				shopProduct.setProductName(productName); //名称
+				shopProduct.setProductNo(productNo); //条码
 				shopProduct.setBuyPrice(Double.valueOf(String.valueOf(ei.getCellValue(row,3)).trim())); //采购价
 				shopProduct.setShopPrice(Double.valueOf(String.valueOf(ei.getCellValue(row,4)).trim())); //销售价
 				BigDecimal warnStock = new BigDecimal(String.valueOf(ei.getCellValue(row,5)).trim());
 				shopProduct.setWarnStock(warnStock.intValue()); //库存预警数
 				shopProduct.setUnit(String.valueOf(ei.getCellValue(row,6)).trim()); //单位
-				shopProduct.setSpec(String.valueOf(ei.getCellValue(row,7)).trim()); //规格
+				shopProduct.setSpec(spec); //规格
 				BigDecimal listNo = new BigDecimal(String.valueOf(ei.getCellValue(row,8)).trim());
 				shopProduct.setListNo(listNo.intValue()); //排序
 				//分类价格设置
@@ -336,8 +353,15 @@ public class ShopUtils {
 				pram.setOfficeId(UserUtils.getUser().getOffice().getId());
 				List<ShopCustomerLevel> leveList = shopCustomerLevelService.findList(pram);
 				List<ShopProductPrice> priceList = new ArrayList<ShopProductPrice>();
+				if(leveList.isEmpty()){
+					throw new RuntimeException("请初始化【优惠级别】");
+				}
 				// 初始化价格
 				for (ShopCustomerLevel level : leveList) {
+					String excelTile = String.valueOf(ei.getCellValue(ei.getRow(0), indexKey)).trim();
+					if(!StringUtils.equals(excelTile, level.getLevelName())) {
+						throw new RuntimeException("排序"+level.getSort()+"号的优惠级别名称不正确，Excel中为："+excelTile+" 系统中为："+level.getLevelName());
+					}
 					ShopProductPrice price = new ShopProductPrice();
 					price.setId("");
 					//price.setIsNewRecord(true);
@@ -346,11 +370,7 @@ public class ShopUtils {
 					price.setDiscount(level.getDiscount());
 					price.setListNo(level.getSort());
 					//price.setShopProduct(shopProduct);
-					if(indexKey > 12) {
-						price.setDiscountPrice(ShopUtils.multiply(Double.valueOf(level.getDiscount()), 0.01,shopProduct.getShopPrice()));
-					}else {
-						price.setDiscountPrice(Double.valueOf(String.valueOf(ei.getCellValue(row,indexKey)).trim()));
-					}
+					price.setDiscountPrice(Double.valueOf(String.valueOf(ei.getCellValue(row,indexKey)).trim()));
 					priceList.add(price);
 					indexKey++;
 				}

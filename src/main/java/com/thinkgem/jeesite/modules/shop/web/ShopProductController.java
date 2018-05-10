@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.shop.web;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,22 +11,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerLevel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopProduct;
@@ -119,6 +118,13 @@ public class ShopProductController extends BaseController {
 		return "modules/shop/shopProductForm";
 	}
 
+	@RequiresPermissions("shop:shopProduct:view")
+	@RequestMapping(value = "formImp")
+	public String impForm(ShopProduct shopProduct, Model model) {
+
+		return "modules/shop/shopProductFormImp";
+	}
+
 	@RequiresPermissions("shop:shopProduct:edit")
 	@RequestMapping(value = "save")
 	public String save(ShopProduct shopProduct, Model model, RedirectAttributes redirectAttributes) {
@@ -139,14 +145,42 @@ public class ShopProductController extends BaseController {
 		addMessage(redirectAttributes, "删除商品基本信息成功");
 		return "redirect:" + Global.getAdminPath() + "/shop/shopProduct/?repage";
 	}
-	
-	@ResponseBody
-	@RequestMapping(value = "impExcel")
-	public String impExcel(
-			@RequestParam(required = false) String extId,
-			HttpServletResponse response) {
-		shopProductService.impExcel();
-		return "ok";
-	}	
+
+	// @ResponseBody
+	// @RequestMapping(value = "impExcel")
+	// public String impExcel(@RequestParam(required = false) String extId,
+	// HttpServletResponse response) {
+	// //shopProductService.impExcel();
+	// return "ok";
+	// }
+
+	@RequestMapping(value = "/saveImpProduct", method = RequestMethod.POST)
+	public void saveImpProduct(@RequestParam("impfile") CommonsMultipartFile impfile, HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		String resMsg = "";
+		try {
+			if(impfile.isEmpty()) {
+				response.getWriter().write("请选择上传文档.");
+				return;
+			}
+			String strDirPath = request.getSession().getServletContext().getRealPath("/");
+			long startTime = System.currentTimeMillis();
+			String path = strDirPath + File.separator + "userfiles" + File.separator + "impExcel_"
+					+ UserUtils.getUser().getOffice().getId() + ".xls";
+			System.out.println("path:" + path);
+			File newFile = new File(path);
+			// 通过CommonsMultipartFile的方法直接写文件
+			impfile.transferTo(newFile);
+			long endTime = System.currentTimeMillis();
+			shopProductService.impExcel(path);
+			System.out.println("运行时间：" + String.valueOf(endTime - startTime) + "ms");
+			resMsg = "1";
+		} catch (Exception e) {
+			System.out.println("-------------------------");
+			//e.printStackTrace();
+			resMsg = e.getMessage();
+		}
+		response.getWriter().write(resMsg);
+	}
 
 }

@@ -36,6 +36,9 @@ public class ShopProduct extends DataEntity<ShopProduct> {
 	private List<ShopProductPrice> shopProductPriceList = Lists.newArrayList(); // 子表列表
 	// 拼音文字组合显示、拼音查询
 	private String pingyinStr;
+	//全名称查询
+	private String productAllName;
+	
 	
 
 	public ShopProduct() {
@@ -186,6 +189,14 @@ public class ShopProduct extends DataEntity<ShopProduct> {
 
 	public void setProductChar(String productChar) {
 		this.productChar = productChar;
+	}
+
+	public String getProductAllName() {
+		return productAllName;
+	}
+
+	public void setProductAllName(String productAllName) {
+		this.productAllName = productAllName;
 	}
 
 }
