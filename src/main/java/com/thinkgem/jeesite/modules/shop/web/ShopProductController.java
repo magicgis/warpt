@@ -174,7 +174,7 @@ public class ShopProductController extends BaseController {
 			long endTime = System.currentTimeMillis();
 			shopProductService.impExcel(path);
 			System.out.println("运行时间：" + String.valueOf(endTime - startTime) + "ms");
-			resMsg = "1";
+			resMsg = "导入成功！";
 		} catch (Exception e) {
 			System.out.println("-------------------------");
 			//e.printStackTrace();
