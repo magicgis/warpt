@@ -14,6 +14,17 @@
 			$("#searchForm").submit();
         	return false;
         }
+		
+		function exportExcel(){
+			$.post('${ctx}/vip/vipUserCost/exportExcel', {
+			}, function(data) {
+				if (data.success) {
+					window.open(data.urlPath,'_blank');
+				} else {
+					alert(data.msg)
+				}
+			});
+		}
 	</script>
 </head>
 <body>
@@ -32,7 +43,8 @@
 				<form:input path="vipName" htmlEscape="false" maxlength="20" class="input-medium"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-			<li class="clearfix"><span style="color: red;">&nbsp;&nbsp;*商品销售推荐使用进销存录入消费</span></li>
+			<li class="clearfix"><input class="btn btn-primary" type="button" value="导出Excel" onclick="exportExcel()"/>
+			<span style="color: red;">&nbsp;&nbsp;*商品销售推荐使用进销存录入消费</span></li>
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>
@@ -74,7 +86,7 @@
 					<fmt:formatDate value="${vipUserCost.updateDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
 				<shiro:hasPermission name="vip:vipUserCost:edit"><td>
-					<a href="${ctx}/vip/vipUserCost/delete?id=${vipUserCost.id}" onclick="return confirmx('确认要删除该会员消费记录吗？删除后会员钱包将还原。', this.href)">删除</a>
+					<a href="${ctx}/vip/vipUserCost/delete?id=${vipUserCost.id}" onclick="return confirmx('确认要撤销该会员消费记录吗？删除后会员钱包将还原。', this.href)">撤销消费</a>
 				</td></shiro:hasPermission>
 			</tr>
 		</c:forEach>

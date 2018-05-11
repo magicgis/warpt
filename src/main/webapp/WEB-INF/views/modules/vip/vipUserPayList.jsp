@@ -14,6 +14,17 @@
 			$("#searchForm").submit();
         	return false;
         }
+		
+		function exportExcel(){
+			$.post('${ctx}/vip/vipUserPay/exportExcel', {
+			}, function(data) {
+				if (data.success) {
+					window.open(data.urlPath,'_blank');
+				} else {
+					alert(data.msg)
+				}
+			});
+		}
 	</script>
 </head>
 <body>
@@ -32,7 +43,7 @@
 				<form:input path="vipPhone" htmlEscape="false" maxlength="20" class="input-medium"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-			<li class="clearfix"></li>
+			<li class="clearfix"><input class="btn btn-primary" type="button" value="导出Excel" onclick="exportExcel()"/></li>
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>
@@ -78,7 +89,7 @@
 					${vipUserPay.remarks}
 				</td>
 				<shiro:hasPermission name="vip:vipUserPay:edit"><td>
-					<a href="${ctx}/vip/vipUserPay/delete?id=${vipUserPay.id}" onclick="return confirmx('确认要删除该会员充值记录吗？删除后会员钱包将还原(如果有充值赠送，进销存收款负项也会直接删除)', this.href)">删除</a>
+					<a href="${ctx}/vip/vipUserPay/delete?id=${vipUserPay.id}" onclick="return confirmx('确认要撤销该会员充值记录吗？删除后会员钱包将还原(如果有充值赠送，进销存收款负项也会直接删除)', this.href)">撤销充值</a>
 				</td></shiro:hasPermission>
 			</tr>
 		</c:forEach>
