@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.vip.web;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,5 +177,26 @@ public class VipUserBaseController extends BaseController {
 		}
 		return returnMap;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "exportExcel")
+	public Map<String, Object> exportExcel(HttpServletRequest request) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		try {
+			String strDirPath = request.getSession().getServletContext().getRealPath("/");
+			String exportPath = strDirPath + File.separator + "userfiles" + File.separator + "expExcel_"
+					+ UserUtils.getUser().getOffice().getId() + ".xlsx";
+			vipUserBaseService.exportExcel(exportPath);
+			returnMap.put("success", true);
+			returnMap.put("urlPath", File.separator + "userfiles" + File.separator + "expExcel_"
+					+ UserUtils.getUser().getOffice().getId() + ".xlsx");
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnMap.put("success", false);
+			returnMap.put("msg", e.getMessage());
+		}
+		return returnMap;
+	}	
+	
 
 }

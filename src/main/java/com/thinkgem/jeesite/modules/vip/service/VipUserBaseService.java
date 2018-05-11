@@ -3,17 +3,22 @@
  */
 package com.thinkgem.jeesite.modules.vip.service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.MessageUtil;
+import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
 import com.thinkgem.jeesite.modules.shop.service.ShopCustomerInfoService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -118,6 +123,43 @@ public class VipUserBaseService extends
 		pram.setVipPhone(phone);
 		pram.setOpenId(openid);
 		return vipUserBaseDao.findUserAllVip(pram);
+	}
+
+	/**
+	 * 会员数据导出excel
+	 * @return
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	public void exportExcel(String exportPath) throws FileNotFoundException, IOException {
+		//查询当前机构会员数据
+		String userId = UserUtils.getUser().getOffice().getId();
+		VipUserBase parm = new VipUserBase();
+		parm.setOfficeId(userId);
+		List<VipUserBase> vipList = this.findList(parm);
+		//设置表头
+		List<String> headerList = Lists.newArrayList();
+		headerList.add("会员名称");
+		headerList.add("会员手机");
+		headerList.add("会员等级");
+		headerList.add("可用金额");
+		headerList.add("已用金额");
+		headerList.add("可用积分");
+		headerList.add("已兑积分");
+		ExportExcel ee = new ExportExcel("会员信息", headerList);
+		//设置表体
+		for (VipUserBase vipUserBase : vipList) {
+			Row row = ee.addRow();
+			ee.addCell(row, 0,vipUserBase.getVipName());
+			ee.addCell(row, 1,vipUserBase.getVipPhone());
+			ee.addCell(row, 2,vipUserBase.getLevelName());
+			ee.addCell(row, 3,vipUserBase.getRestMoeny());
+			ee.addCell(row, 4,vipUserBase.getUseMoeny());
+			ee.addCell(row, 5,vipUserBase.getRestScore());
+			ee.addCell(row, 6,vipUserBase.getUseScore());
+		}
+		ee.writeFile(exportPath);
+		ee.dispose();
 	}
 
 }

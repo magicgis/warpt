@@ -3,23 +3,29 @@
  */
 package com.thinkgem.jeesite.modules.vip.service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.MessageUtil;
+import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerAccount;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
 import com.thinkgem.jeesite.modules.shop.service.ShopCustomerAccountService;
 import com.thinkgem.jeesite.modules.shop.service.ShopCustomerInfoService;
 import com.thinkgem.jeesite.modules.shop.utils.ShopUtils;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.vip.dao.VipUserPayDao;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserBase;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserPay;
@@ -197,6 +203,45 @@ public class VipUserPayService extends CrudService<VipUserPayDao, VipUserPay> {
 		contentMap
 				.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
 		MessageUtil.getInterface().send("PAY_CODE", vipUserBase.getVipPhone(), contentMap);
+	}
+	
+	/**
+	 * 导出会员充值
+	 * @param exportPath
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	public void exportExcel(String exportPath) throws FileNotFoundException, IOException {
+		//查询当前数据
+		String userId = UserUtils.getUser().getOffice().getId();
+		VipUserPay parm = new VipUserPay();
+		parm.setOfficeId(userId);
+		List<VipUserPay> payList = this.findList(parm);
+		//设置表头
+		List<String> headerList = Lists.newArrayList();
+		headerList.add("会员手机");
+		headerList.add("会员名称");
+		headerList.add("充值总额");
+		headerList.add("充值金额");
+		headerList.add("赠送金额");
+		headerList.add("获得积分");
+		headerList.add("充值时间");
+		headerList.add("备注");
+		ExportExcel ee = new ExportExcel("会员充值记录", headerList);
+		//设置表体
+		for (VipUserPay vipUserPay : payList) {
+			Row row = ee.addRow();
+			ee.addCell(row, 0,vipUserPay.getVipPhone());
+			ee.addCell(row, 1,vipUserPay.getVipName());
+			ee.addCell(row, 2,vipUserPay.getPayMoeny());
+			ee.addCell(row, 3,vipUserPay.getRealMoeny());
+			ee.addCell(row, 4,vipUserPay.getGiveMoeny());
+			ee.addCell(row, 5,vipUserPay.getGetScore());
+			ee.addCell(row, 6,vipUserPay.getPayTime());
+			ee.addCell(row, 7,vipUserPay.getRemarks());
+		}
+		ee.writeFile(exportPath);
+		ee.dispose();
 	}
 
 }

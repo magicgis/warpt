@@ -3,25 +3,30 @@
  */
 package com.thinkgem.jeesite.modules.vip.service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.MessageUtil;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import com.thinkgem.jeesite.modules.vip.dao.VipUserCostDao;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserBase;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserCost;
 import com.thinkgem.jeesite.modules.vip.entity.VipUserWallet;
 import com.thinkgem.jeesite.modules.vip.utils.WalletUtils;
-import com.thinkgem.jeesite.modules.vip.dao.VipUserCostDao;
-import com.war.wechat.base.util.JSONUtil;
 
 /**
  * 会员消费记录Service
@@ -199,6 +204,41 @@ public class VipUserCostService extends
 				.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
 		MessageUtil.getInterface().send("COST_CODE", vipUserBase.getVipPhone(),
 				contentMap);
+	}
+
+	/**
+	 * 导出会员消费
+	 * @param exportPath
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	public void exportExcel(String exportPath) throws FileNotFoundException, IOException {
+		//查询当前数据
+		String userId = UserUtils.getUser().getOffice().getId();
+		VipUserCost parm = new VipUserCost();
+		parm.setOfficeId(userId);
+		List<VipUserCost> costList = this.findList(parm);
+		//设置表头
+		List<String> headerList = Lists.newArrayList();
+		headerList.add("会员手机");
+		headerList.add("会员名称");
+		headerList.add("消费金额");
+		headerList.add("消费积分");
+		headerList.add("消费时间");
+		headerList.add("备注");
+		ExportExcel ee = new ExportExcel("会员消费记录", headerList);
+		//设置表体
+		for (VipUserCost vipUserCost : costList) {
+			Row row = ee.addRow();
+			ee.addCell(row, 0,vipUserCost.getVipPhone());
+			ee.addCell(row, 1,vipUserCost.getVipName());
+			ee.addCell(row, 2,vipUserCost.getCostMoeny());
+			ee.addCell(row, 3,vipUserCost.getCostScore());
+			ee.addCell(row, 4,vipUserCost.getCostTime());
+			ee.addCell(row, 5,vipUserCost.getRemarks());
+		}
+		ee.writeFile(exportPath);
+		ee.dispose();
 	}
 
 }

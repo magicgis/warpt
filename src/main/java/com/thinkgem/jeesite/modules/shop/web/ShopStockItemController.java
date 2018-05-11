@@ -3,6 +3,10 @@
  */
 package com.thinkgem.jeesite.modules.shop.web;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
@@ -89,6 +94,26 @@ public class ShopStockItemController extends BaseController {
 		shopStockItemService.delete(shopStockItem);
 		addMessage(redirectAttributes, "删除仓库库存成功");
 		return "redirect:"+Global.getAdminPath()+"/shop/shopStockItem/?repage";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "exportExcel")
+	public Map<String, Object> exportExcel(HttpServletRequest request) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		try {
+			String strDirPath = request.getSession().getServletContext().getRealPath("/");
+			String exportPath = strDirPath + File.separator + "userfiles" + File.separator + "expExcel_"
+					+ UserUtils.getUser().getOffice().getId() + ".xlsx";
+			shopStockItemService.exportExcel(exportPath);
+			returnMap.put("success", true);
+			returnMap.put("urlPath", File.separator + "userfiles" + File.separator + "expExcel_"
+					+ UserUtils.getUser().getOffice().getId() + ".xlsx");
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnMap.put("success", false);
+			returnMap.put("msg", e.getMessage());
+		}
+		return returnMap;
 	}
 
 }
