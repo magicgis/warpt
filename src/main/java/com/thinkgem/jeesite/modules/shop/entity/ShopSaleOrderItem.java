@@ -24,10 +24,22 @@ public class ShopSaleOrderItem extends DataEntity<ShopSaleOrderItem> {
 	private Integer saleNum;		// 销售数量
 	private Integer stockNum;		// stock_num
 	private Double saleMoney;		// 销售单价
-	private Double discount;		// discount
-	private Double disMoney;		// dis_money
+	private Double discount;		// 折扣
+	private Double disMoney;		// 折后单价
 	private Double allMoney;		// 原总金额
 	private Double countMoney;		// 折后总金额
+	//查询和报表
+	private String officeId;		// 关联机构id
+	private String customerId;		// 客户id
+	private String customerName;		// 客户名称
+	private String saleNo;		// 订单号
+	private String beginBusinData;		// 开始 销售日期
+	private String endBusinData;		// 结束 销售日期
+	private Integer sumProduct;//销售商品数
+	private Double sumMoney;//销售额汇总
+	private Double sumProfit;//销售毛利汇总
+	private Double percentage;//销售毛利率(%)
+	private Double sumBuyPrice; //采购成本求和
 	
 	public ShopSaleOrderItem() {
 		super();
@@ -148,6 +160,94 @@ public class ShopSaleOrderItem extends DataEntity<ShopSaleOrderItem> {
 
 	public void setCountMoney(Double countMoney) {
 		this.countMoney = countMoney;
+	}
+
+	public Integer getSumProduct() {
+		return sumProduct;
+	}
+
+	public void setSumProduct(Integer sumProduct) {
+		this.sumProduct = sumProduct;
+	}
+
+	public Double getSumMoney() {
+		return sumMoney;
+	}
+
+	public void setSumMoney(Double sumMoney) {
+		this.sumMoney = sumMoney;
+	}
+
+	public Double getSumProfit() {
+		return sumProfit;
+	}
+
+	public void setSumProfit(Double sumProfit) {
+		this.sumProfit = sumProfit;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getSaleNo() {
+		return saleNo;
+	}
+
+	public void setSaleNo(String saleNo) {
+		this.saleNo = saleNo;
+	}
+
+	public String getBeginBusinData() {
+		return beginBusinData;
+	}
+
+	public void setBeginBusinData(String beginBusinData) {
+		this.beginBusinData = beginBusinData;
+	}
+
+	public String getEndBusinData() {
+		return endBusinData;
+	}
+
+	public void setEndBusinData(String endBusinData) {
+		this.endBusinData = endBusinData;
+	}
+
+	public String getOfficeId() {
+		return officeId;
+	}
+
+	public void setOfficeId(String officeId) {
+		this.officeId = officeId;
+	}
+
+	public Double getPercentage() {
+		return percentage;
+	}
+
+	public void setPercentage(Double percentage) {
+		this.percentage = percentage;
+	}
+
+	public Double getSumBuyPrice() {
+		return sumBuyPrice;
+	}
+
+	public void setSumBuyPrice(Double sumBuyPrice) {
+		this.sumBuyPrice = sumBuyPrice;
 	}
 	
 }

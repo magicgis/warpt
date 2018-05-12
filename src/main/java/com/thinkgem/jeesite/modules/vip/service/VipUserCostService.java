@@ -121,15 +121,19 @@ public class VipUserCostService extends
 			// + appendTxt + "当前账户余额：" + vipUserWallet.getRestMoeny()
 			// + "当前积分余额：" + vipUserWallet.getRestScore();
 			// 发送短信意见
-			Map<String, String> contentMap = new HashMap<String, String>();
-			contentMap.put("name", vipUserBase.getVipPhone());
-			contentMap.put("msg", appendTxt);
-			contentMap
-					.put("msg1", String.valueOf(vipUserWallet.getRestMoeny()));
-			contentMap
-					.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
-			MessageUtil.getInterface().send("COST_CODE", vipUserBase.getVipPhone(),
-					contentMap);
+			if (!StringUtils.equals(vipUserBase.getLevelName(), "一级代理")
+					&& !StringUtils.equals(vipUserBase.getLevelName(), "二级代理")
+					&& !StringUtils.equals(vipUserBase.getLevelName(), "特约代理")) {
+				Map<String, String> contentMap = new HashMap<String, String>();
+				contentMap.put("name", vipUserBase.getVipPhone());
+				contentMap.put("msg", appendTxt);
+				contentMap
+						.put("msg1", String.valueOf(vipUserWallet.getRestMoeny()));
+				contentMap
+						.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
+				MessageUtil.getInterface().send("COST_CODE", vipUserBase.getVipPhone(),
+						contentMap);
+			}
 		} else { // 修改消费
 
 		}
@@ -187,23 +191,27 @@ public class VipUserCostService extends
 		vipUserWalletService.save(vipUserWallet);
 		super.delete(vipUserCost);
 		// 发送短信
-		String appendTxt = "";
-		if (vipUserCost.getCostMoeny() > 0) {
-			appendTxt += "撤销消费金额：" + vipUserCost.getCostMoeny() + "";
-		}
-		if (vipUserCost.getCostScore() > 0) {
-			appendTxt += "撤销消费积分：" + vipUserCost.getCostScore() + "";
-		}
 		VipUserBase vipUserBase = vipUserBaseService.get(vipUserCost.getVipId());
-		Map<String, String> contentMap = new HashMap<String, String>();
-		contentMap.put("name", vipUserBase.getVipPhone());
-		contentMap.put("msg", appendTxt);
-		contentMap
-				.put("msg1", String.valueOf(vipUserWallet.getRestMoeny()));
-		contentMap
-				.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
-		MessageUtil.getInterface().send("COST_CODE", vipUserBase.getVipPhone(),
-				contentMap);
+		if (!StringUtils.equals(vipUserBase.getLevelName(), "一级代理")
+				&& !StringUtils.equals(vipUserBase.getLevelName(), "二级代理")
+				&& !StringUtils.equals(vipUserBase.getLevelName(), "特约代理")) {
+			String appendTxt = "";
+			if (vipUserCost.getCostMoeny() > 0) {
+				appendTxt += "撤销消费金额：" + vipUserCost.getCostMoeny() + "";
+			}
+			if (vipUserCost.getCostScore() > 0) {
+				appendTxt += "撤销消费积分：" + vipUserCost.getCostScore() + "";
+			}
+			Map<String, String> contentMap = new HashMap<String, String>();
+			contentMap.put("name", vipUserBase.getVipPhone());
+			contentMap.put("msg", appendTxt);
+			contentMap
+					.put("msg1", String.valueOf(vipUserWallet.getRestMoeny()));
+			contentMap
+					.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
+			MessageUtil.getInterface().send("COST_CODE", vipUserBase.getVipPhone(),
+					contentMap);
+		}
 	}
 
 	/**

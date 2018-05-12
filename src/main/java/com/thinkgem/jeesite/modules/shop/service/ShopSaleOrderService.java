@@ -43,8 +43,8 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 	private ShopSaleOrderItemDao shopSaleOrderItemDao;
 	@Autowired
 	private ShopCustomerInfoService shopCustomerInfoService;
-	@Autowired
-	private ShopCustomerLevelService shopCustomerLevelService;
+//	@Autowired
+//	private ShopCustomerLevelService shopCustomerLevelService;
 	@Autowired
 	private ShopStockInfoService shopStockInfoService;
 	@Autowired
@@ -117,6 +117,28 @@ public class ShopSaleOrderService extends CrudService<ShopSaleOrderDao, ShopSale
 	
 	public Page<ShopSaleOrder> findPage(Page<ShopSaleOrder> page, ShopSaleOrder shopSaleOrder) {
 		return super.findPage(page, shopSaleOrder);
+	}
+	
+	public Page<ShopSaleOrderItem> findItemPage(Page<ShopSaleOrderItem> page, ShopSaleOrderItem shopSaleOrderItem) {
+		shopSaleOrderItem.setPage(page);
+		page.setList(shopSaleOrderItemDao.findItemPage(shopSaleOrderItem));
+		return page;
+	}
+	
+	public List<ShopSaleOrderItem> findSumItem(ShopSaleOrderItem shopSaleOrderItem) {
+		return shopSaleOrderItemDao.findSumItem(shopSaleOrderItem);
+	}	
+	
+	public Page<ShopSaleOrderItem> findGroupByProductPage(Page<ShopSaleOrderItem> page, ShopSaleOrderItem shopSaleOrderItem) {
+		shopSaleOrderItem.setPage(page);
+		page.setList(shopSaleOrderItemDao.findGroupByProductPage(shopSaleOrderItem));
+		return page;
+	}
+	
+	public Page<ShopSaleOrderItem> findGroupByCustomerPage(Page<ShopSaleOrderItem> page, ShopSaleOrderItem shopSaleOrderItem) {
+		shopSaleOrderItem.setPage(page);
+		page.setList(shopSaleOrderItemDao.findGroupByCustomerPage(shopSaleOrderItem));
+		return page;
 	}
 	
 	@Transactional(readOnly = false)

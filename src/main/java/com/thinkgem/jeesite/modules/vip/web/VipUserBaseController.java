@@ -63,8 +63,8 @@ public class VipUserBaseController extends BaseController {
 			area.setId("3");
 			area.setName("珠海市");
 			entity.setArea(area);
-			entity.setLevelId("1");
-			entity.setLevelName("普通用户");
+			//entity.setLevelId("1");
+			//entity.setLevelName("普通用户");
 			//默认初始化第一个级别
 			ShopCustomerLevel parm = new ShopCustomerLevel();
 			parm.setOfficeId(UserUtils.getUser().getOffice().getId());

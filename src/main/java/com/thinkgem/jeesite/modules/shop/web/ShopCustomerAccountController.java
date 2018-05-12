@@ -66,8 +66,6 @@ public class ShopCustomerAccountController extends BaseController {
 			shopCustomerAccount.setCustomerName(shopCustomerInfo.getCustomerName());
 		}
 		shopCustomerAccount.setOfficeId(UserUtils.getUser().getOffice().getId());
-		Page<ShopCustomerAccount> page = shopCustomerAccountService.findPage(new Page<ShopCustomerAccount>(request, response), shopCustomerAccount); 
-		model.addAttribute("page", page);
 		//求和
 		List<ShopCustomerAccount> countList = shopCustomerAccountService.findCountPage(shopCustomerAccount);
 		if(!countList.isEmpty() && countList.size() == 1) {
@@ -77,6 +75,10 @@ public class ShopCustomerAccountController extends BaseController {
 			shopCustomerAccount.setSumFactMoney(accountObj.getSumFactMoney());
 			shopCustomerAccount.setSumLessMoney(accountObj.getSumLessMoney());
 		}
+		//列表
+		Page<ShopCustomerAccount> page = shopCustomerAccountService.findPage(new Page<ShopCustomerAccount>(request, response), shopCustomerAccount); 
+		model.addAttribute("page", page);
+
 		model.addAttribute("shopCustomerAccount", shopCustomerAccount);
 		return "modules/shop/shopCustomerAccountList";
 	}

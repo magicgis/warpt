@@ -69,9 +69,6 @@ public class ShopSupplierAccountController extends BaseController {
 			
 		}
 		shopSupplierAccount.setOfficeId(UserUtils.getUser().getOffice().getId());
-		Page<ShopSupplierAccount> page = shopSupplierAccountService
-				.findPage(new Page<ShopSupplierAccount>(request, response), shopSupplierAccount);
-		model.addAttribute("page", page);
 		//求和
 		List<ShopSupplierAccount> countList = shopSupplierAccountService.findCountPage(shopSupplierAccount);
 		if(!countList.isEmpty() && countList.size() == 1) {
@@ -80,6 +77,10 @@ public class ShopSupplierAccountController extends BaseController {
 			shopSupplierAccount.setSumFactMoney(accountObj.getSumFactMoney());
 			shopSupplierAccount.setSumLessMoney(accountObj.getSumLessMoney());
 		}
+		//列表
+		Page<ShopSupplierAccount> page = shopSupplierAccountService
+				.findPage(new Page<ShopSupplierAccount>(request, response), shopSupplierAccount);
+		model.addAttribute("page", page);
 		model.addAttribute("shopSupplierAccount", shopSupplierAccount);
 		
 		return "modules/shop/shopSupplierAccountList";

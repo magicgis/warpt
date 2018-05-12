@@ -19,6 +19,7 @@ import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.MessageUtil;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerAccount;
 import com.thinkgem.jeesite.modules.shop.entity.ShopCustomerInfo;
@@ -129,13 +130,17 @@ public class VipUserPayService extends CrudService<VipUserPayDao, VipUserPay> {
 			// + "当前账户余额："+vipUserWallet.getRestMoeny()+
 			// "当前积分余额："+vipUserWallet.getRestScore();
 			// 发送短信意见
-			Map<String, String> contentMap = new HashMap<String, String>();
-			contentMap.put("name", vipUserBase.getVipPhone());
-			contentMap
-					.put("msg1", String.valueOf(vipUserWallet.getRestMoeny()));
-			contentMap
-					.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
-			MessageUtil.getInterface().send("PAY_CODE", vipUserBase.getVipPhone(), contentMap);
+			if (!StringUtils.equals(vipUserBase.getLevelName(), "一级代理")
+					&& !StringUtils.equals(vipUserBase.getLevelName(), "二级代理")
+					&& !StringUtils.equals(vipUserBase.getLevelName(), "特约代理")) {
+				Map<String, String> contentMap = new HashMap<String, String>();
+				contentMap.put("name", vipUserBase.getVipPhone());
+				contentMap
+						.put("msg1", String.valueOf(vipUserWallet.getRestMoeny()));
+				contentMap
+						.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
+				MessageUtil.getInterface().send("PAY_CODE", vipUserBase.getVipPhone(), contentMap);
+			}
 		} else { // 修改充值
 
 		}
@@ -196,13 +201,17 @@ public class VipUserPayService extends CrudService<VipUserPayDao, VipUserPay> {
 		super.delete(vipUserPay);
 		// 发送短信
 		VipUserBase vipUserBase = vipUserBaseService.get(vipUserPay.getVipId());
-		Map<String, String> contentMap = new HashMap<String, String>();
-		contentMap.put("name", vipUserBase.getVipPhone()+"(充值撤销)");
-		contentMap
-				.put("msg1", String.valueOf(vipUserWallet.getRestMoeny()));
-		contentMap
-				.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
-		MessageUtil.getInterface().send("PAY_CODE", vipUserBase.getVipPhone(), contentMap);
+		if (!StringUtils.equals(vipUserBase.getLevelName(), "一级代理")
+				&& !StringUtils.equals(vipUserBase.getLevelName(), "二级代理")
+				&& !StringUtils.equals(vipUserBase.getLevelName(), "特约代理")) {
+			Map<String, String> contentMap = new HashMap<String, String>();
+			contentMap.put("name", vipUserBase.getVipPhone()+"(充值撤销)");
+			contentMap
+					.put("msg1", String.valueOf(vipUserWallet.getRestMoeny()));
+			contentMap
+					.put("msg2", String.valueOf(vipUserWallet.getRestScore()));
+			MessageUtil.getInterface().send("PAY_CODE", vipUserBase.getVipPhone(), contentMap);
+		}
 	}
 	
 	/**
