@@ -48,6 +48,9 @@
 	</form:form>
 	<sys:message content="${message}"/>
 	<div style="margin:10px 0px 10px 20px;font-size: 15px;" >
+		<c:if test="${!empty shopSaleOrderItem.beginBusinData && !empty shopSaleOrderItem.endBusinData}">
+		<span >日期：${shopSaleOrderItem.beginBusinData}至${shopSaleOrderItem.endBusinData}</span>
+		</c:if>
 		<span style="margin-left: 100px;color: red;">销售商品数：${shopSaleOrderItem.sumProduct}</span>
 		<span style="margin-left: 100px;color: red;">销售额：${shopSaleOrderItem.sumMoney}</span>
 		<span style="margin-left: 100px;color: red;">销售毛利：${shopSaleOrderItem.sumProfit}</span>

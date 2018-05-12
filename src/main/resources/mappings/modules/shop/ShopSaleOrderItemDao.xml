@@ -52,10 +52,10 @@
 				AND b.customer_id = #{customerId}
 			</if>
 			<if test="saleNo != null and saleNo != ''">
-				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+				AND b.sale_no like concat('%',#{saleNo},'%')
 			</if>
 			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
-				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+				AND b.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
 			</if>
 			<if test="officeId != null and officeId != ''">
 				AND b.office_id = #{officeId}
@@ -184,10 +184,10 @@
 				AND b.customer_id = #{customerId}
 			</if>
 			<if test="saleNo != null and saleNo != ''">
-				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+				AND b.sale_no like concat('%',#{saleNo},'%')
 			</if>
 			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
-				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+				AND b.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
 			</if>
 			<if test="officeId != null and officeId != ''">
 				AND b.office_id = #{officeId}
@@ -228,10 +228,10 @@
 				AND b.customer_id = #{customerId}
 			</if>
 			<if test="saleNo != null and saleNo != ''">
-				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+				AND b.sale_no like concat('%',#{saleNo},'%')
 			</if>
 			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
-				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+				AND b.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
 			</if>
 			<if test="officeId != null and officeId != ''">
 				AND b.office_id = #{officeId}
@@ -262,10 +262,10 @@
 				AND b.customer_id = #{customerId}
 			</if>
 			<if test="saleNo != null and saleNo != ''">
-				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+				AND b.sale_no like concat('%',#{saleNo},'%')
 			</if>
 			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
-				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+				AND b.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
 			</if>
 			<if test="officeId != null and officeId != ''">
 				AND b.office_id = #{officeId}
@@ -293,10 +293,10 @@
 				AND b.customer_id = #{customerId}
 			</if>
 			<if test="saleNo != null and saleNo != ''">
-				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+				AND b.sale_no like concat('%',#{saleNo},'%')
 			</if>
 			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
-				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+				AND b.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
 			</if>
 			<if test="officeId != null and officeId != ''">
 				AND b.office_id = #{officeId}

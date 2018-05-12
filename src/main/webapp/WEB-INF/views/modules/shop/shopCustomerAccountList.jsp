@@ -67,7 +67,7 @@
 	<sys:message content="${message}"/>
 	<div style="margin:10px 0px 10px 20px;font-size: 15px;" >
 		<span>${shopCustomerAccount.customerName}</span>
-		<c:if test="${!empty shopCustomerAccount.beginBusinData || !empty shopCustomerAccount.endBusinData}">
+		<c:if test="${!empty shopCustomerAccount.beginBusinData && !empty shopCustomerAccount.endBusinData}">
 		<span style="margin-left: 100px;">日期：${shopCustomerAccount.beginBusinData}至${shopCustomerAccount.endBusinData}</span>
 		</c:if>
 		<c:if test="${!empty shopCustomerAccount.restMoney}">
