@@ -53,7 +53,7 @@ public class ShopReportController extends BaseController {
 			shopSaleOrderItem.setSumProduct(accountObj.getSumProduct());
 			shopSaleOrderItem.setSumMoney(accountObj.getSumMoney());
 			shopSaleOrderItem.setSumProfit(accountObj.getSumProfit());
-			shopSaleOrderItem.setPercentage(ShopUtils.divide(accountObj.getSumProfit(), accountObj.getSumMoney())*100);
+			shopSaleOrderItem.setPercentage(ShopUtils.multiply(ShopUtils.divide(accountObj.getSumProfit(), accountObj.getSumMoney()),100));
 		}
 		//查询列表
 		Page<ShopSaleOrderItem> page = shopSaleOrderService.findItemPage(new Page<ShopSaleOrderItem>(request, response), shopSaleOrderItem); 
@@ -81,7 +81,7 @@ public class ShopReportController extends BaseController {
 			shopSaleOrderItem.setSumProduct(accountObj.getSumProduct());
 			shopSaleOrderItem.setSumMoney(accountObj.getSumMoney());
 			shopSaleOrderItem.setSumProfit(accountObj.getSumProfit());
-			shopSaleOrderItem.setPercentage(ShopUtils.divide(accountObj.getSumProfit(), accountObj.getSumMoney())*100);
+			shopSaleOrderItem.setPercentage(ShopUtils.multiply(ShopUtils.divide(accountObj.getSumProfit(), accountObj.getSumMoney()),100));
 		}
 		
 		Page<ShopSaleOrderItem> page = shopSaleOrderService.findGroupByProductPage(new Page<ShopSaleOrderItem>(request, response), shopSaleOrderItem); 
@@ -108,7 +108,7 @@ public class ShopReportController extends BaseController {
 			shopSaleOrderItem.setSumProduct(accountObj.getSumProduct());
 			shopSaleOrderItem.setSumMoney(accountObj.getSumMoney());
 			shopSaleOrderItem.setSumProfit(accountObj.getSumProfit());
-			shopSaleOrderItem.setPercentage(ShopUtils.divide(accountObj.getSumProfit(), accountObj.getSumMoney())*100);
+			shopSaleOrderItem.setPercentage(ShopUtils.multiply(ShopUtils.divide(accountObj.getSumProfit(), accountObj.getSumMoney()),100));
 		}
 		
 		Page<ShopSaleOrderItem> page = shopSaleOrderService.findGroupByCustomerPage(new Page<ShopSaleOrderItem>(request, response), shopSaleOrderItem); 
