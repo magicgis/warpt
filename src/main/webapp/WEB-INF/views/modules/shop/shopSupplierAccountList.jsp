@@ -65,7 +65,9 @@
 	<sys:message content="${message}"/>
 	<div style="margin:10px 0px 10px 20px;font-size: 15px;" >
 		<span>${shopSupplierAccount.supplierName}</span>
+		<c:if test="${!empty shopSupplierAccount.beginBusinData || !empty shopSupplierAccount.endBusinData}">
 		<span style="margin-left: 150px;">日期：${shopSupplierAccount.beginBusinData}至${shopSupplierAccount.endBusinData}</span>
+		</c:if>
 		<span style="margin-left: 150px;color: red;">应付金额：${shopSupplierAccount.sumMeetMoney}</span>
 		<span style="margin-left: 150px;color: red;">实付金额：${shopSupplierAccount.sumFactMoney}</span>
 		<span style="margin-left: 150px;color: red;">欠款金额：${shopSupplierAccount.sumLessMoney}</span>

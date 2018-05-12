@@ -72,6 +72,7 @@ public class ShopCustomerAccountController extends BaseController {
 		List<ShopCustomerAccount> countList = shopCustomerAccountService.findCountPage(shopCustomerAccount);
 		if(!countList.isEmpty() && countList.size() == 1) {
 			ShopCustomerAccount accountObj = countList.get(0);
+			shopCustomerAccount.setRestMoney(accountObj.getRestMoney());
 			shopCustomerAccount.setSumMeetMoney(accountObj.getSumMeetMoney());
 			shopCustomerAccount.setSumFactMoney(accountObj.getSumFactMoney());
 			shopCustomerAccount.setSumLessMoney(accountObj.getSumLessMoney());

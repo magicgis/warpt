@@ -28,6 +28,7 @@ public class ShopCustomerAccount extends DataEntity<ShopCustomerAccount> {
 	
 	private String beginBusinData;		// 开始 业务时间
 	private String endBusinData;		// 结束 业务时间
+	private Double restMoney;		// 充值余额
 	private Double sumMeetMoney;		// 求和应付金额
 	private Double sumFactMoney;		// 求和实付金额
 	private Double sumLessMoney;		// 求和欠款金额
@@ -166,5 +167,13 @@ public class ShopCustomerAccount extends DataEntity<ShopCustomerAccount> {
 	public void setSumLessMoney(Double sumLessMoney) {
 		this.sumLessMoney = sumLessMoney;
 	}
-		
+
+	public Double getRestMoney() {
+		return restMoney;
+	}
+
+	public void setRestMoney(Double restMoney) {
+		this.restMoney = restMoney;
+	}
+	
 }

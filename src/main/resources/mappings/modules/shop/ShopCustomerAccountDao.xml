@@ -86,10 +86,12 @@
 			a.office_id AS "officeId",
 			a.customer_id AS "customerId",
 			a.customer_name AS "customerName",
+			c.rest_moeny AS "restMoney",
 			sum(a.meet_money) as "sumMeetMoney",
 			sum(a.fact_money) as "sumFactMoney",
 			sum(a.less_money) as "sumLessMoney"
-		FROM shop_customer_account a
+		FROM shop_customer_account a inner join SHOP_CUSTOMER_INFO b on(a.customer_id=b.id)
+		left join VIP_USER_WALLET c on(b.vip_id=c.vip_id)
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			<if test="customerId != null and customerId != ''">
@@ -105,7 +107,7 @@
 				AND a.busin_data BETWEEN #{beginBusinData} AND #{endBusinData}
 			</if>
 		</where>
-		group by a.office_id,a.customer_id
+		group by a.office_id,a.customer_id,c.rest_moeny
 	</select>
 	
 	<insert id="insert">

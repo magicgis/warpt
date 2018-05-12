@@ -51,11 +51,11 @@
 			</li>
 			<li><label>业务时间：</label>
 				<input name="beginBusinData" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate"
-					value="<fmt:formatDate value="${shopCustomerAccount.beginBusinData}" pattern="yyyy-MM-dd HH:mm:ss"/>"
-					onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/> - 
+					value="${shopCustomerAccount.beginBusinData}"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/> - 
 				<input name="endBusinData" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate"
-					value="<fmt:formatDate value="${shopCustomerAccount.endBusinData}" pattern="yyyy-MM-dd HH:mm:ss"/>"
-					onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
+					value="${shopCustomerAccount.endBusinData}"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			</li>
 			<li><label>单据编号：</label>
 				<form:input path="accountNo" htmlEscape="false" maxlength="64" class="input-medium"/>
@@ -67,10 +67,15 @@
 	<sys:message content="${message}"/>
 	<div style="margin:10px 0px 10px 20px;font-size: 15px;" >
 		<span>${shopCustomerAccount.customerName}</span>
-		<span style="margin-left: 150px;">日期：${shopCustomerAccount.beginBusinData}至${shopCustomerAccount.endBusinData}</span>
-		<span style="margin-left: 150px;color: red;">应付金额：${shopCustomerAccount.sumMeetMoney}</span>
-		<span style="margin-left: 150px;color: red;">实付金额：${shopCustomerAccount.sumFactMoney}</span>
-		<span style="margin-left: 150px;color: red;">欠款金额：${shopCustomerAccount.sumLessMoney}</span>
+		<c:if test="${!empty shopCustomerAccount.beginBusinData || !empty shopCustomerAccount.endBusinData}">
+		<span style="margin-left: 100px;">日期：${shopCustomerAccount.beginBusinData}至${shopCustomerAccount.endBusinData}</span>
+		</c:if>
+		<c:if test="${!empty shopCustomerAccount.restMoney}">
+		<span style="margin-left: 100px;color: red;">充值余额：${shopCustomerAccount.restMoney}</span>
+		</c:if>
+		<span style="margin-left: 100px;color: red;">应付金额：${shopCustomerAccount.sumMeetMoney}</span>
+		<span style="margin-left: 100px;color: red;">实付金额：${shopCustomerAccount.sumFactMoney}</span>
+		<span style="margin-left: 100px;color: red;">欠款金额：${shopCustomerAccount.sumLessMoney}</span>
 	</div>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead>
