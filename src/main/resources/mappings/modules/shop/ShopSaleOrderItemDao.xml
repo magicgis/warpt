@@ -26,7 +26,7 @@
 	</sql>
 	
 	<sql id="shopSaleOrderItemJoins">
-		LEFT JOIN shop_sale_order b ON b.id = a.sale_id
+		inner JOIN shop_sale_order b ON b.id = a.sale_id
 	</sql>
     
 	<select id="get" resultType="ShopSaleOrderItem">
@@ -46,6 +46,19 @@
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			<if test="shopSaleOrder!= null and shopSaleOrder.id != null and shopSaleOrder.id != ''">
 				AND a.sale_id = #{shopSaleOrder.id}
+			</if>
+			
+			<if test="customerId != null and customerId != ''">
+				AND b.customer_id = #{customerId}
+			</if>
+			<if test="saleNo != null and saleNo != ''">
+				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND b.office_id = #{officeId}
 			</if>
 		</where>
 		<choose>
@@ -156,4 +169,140 @@
 		</choose>
 	</update>
 	
+	<select id="findSumItem" resultType="ShopSaleOrderItem">
+		SELECT 
+			b.office_id AS "officeId",
+			sum(a.sale_num) AS sumProduct,
+			sum(a.count_money) AS sumMoney,
+			sum(a.count_money*a.sale_num-c.buy_price*a.sale_num) AS sumProfit 
+		FROM shop_sale_order_item a 
+		inner join shop_sale_order b ON b.id = a.sale_id 
+		inner join SHOP_PRODUCT c ON a.product_id = c.id 
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="customerId != null and customerId != ''">
+				AND b.customer_id = #{customerId}
+			</if>
+			<if test="saleNo != null and saleNo != ''">
+				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND b.office_id = #{officeId}
+			</if>
+		</where>
+		group by b.office_id 
+	</select>	
+	
+	<select id="findItemPage" resultType="ShopSaleOrderItem">
+		SELECT 
+			a.id AS "id",
+			a.sale_id AS "shopSaleOrder.id",
+			a.product_id AS "productId",
+			concat(a.product_name,'(',c.product_char,')') AS "productName",
+			a.product_no AS "productNo",
+			a.unit AS "unit",
+			a.spec AS "spec",
+			a.sale_num AS "saleNum",
+			a.stock_num AS "stockNum",
+			a.sale_money AS "saleMoney",
+			a.discount AS "discount",
+			a.dis_money AS "disMoney",
+			a.all_money AS "allMoney",
+			a.count_money AS "countMoney",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			b.sale_no AS "shopSaleOrder.saleNo",
+			b.customer_name AS "shopSaleOrder.customerName"
+		FROM shop_sale_order_item a 
+		inner join shop_sale_order b ON b.id = a.sale_id 
+		inner join SHOP_PRODUCT c ON a.product_id = c.id 
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="customerId != null and customerId != ''">
+				AND b.customer_id = #{customerId}
+			</if>
+			<if test="saleNo != null and saleNo != ''">
+				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND b.office_id = #{officeId}
+			</if>
+		</where>
+		order by c.list_no 
+	</select>	
+	
+	<select id="findGroupByProductPage" resultType="ShopSaleOrderItem">
+		SELECT 
+			a.product_id AS "productId",
+			concat(a.product_name,'(',c.product_char,')') AS "productName",
+			a.product_no AS "productNo",
+			a.unit AS "unit",
+			a.spec AS "spec",
+			sum(a.sale_num) AS "saleNum",
+			a.sale_money AS "saleMoney",
+			a.discount AS "discount",
+			a.dis_money AS "disMoney",
+			sum(a.all_money) AS "allMoney",
+			sum(a.count_money) AS "countMoney"
+		FROM shop_sale_order_item a 
+		inner join shop_sale_order b ON b.id = a.sale_id 
+		inner join SHOP_PRODUCT c ON a.product_id = c.id 
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="customerId != null and customerId != ''">
+				AND b.customer_id = #{customerId}
+			</if>
+			<if test="saleNo != null and saleNo != ''">
+				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND b.office_id = #{officeId}
+			</if>
+		</where> 
+		group by a.product_id,a.product_name,c.product_char,a.product_no,a.unit,a.spec,a.sale_money,a.dis_money
+		order by c.list_no 
+	</select>
+	
+	<select id="findGroupByCustomerPage" resultType="ShopSaleOrderItem">
+		SELECT 
+			b.customer_id AS "shopSaleOrder.customerId",
+			b.customer_name AS "shopSaleOrder.customerName",
+			c.buy_price*sum(a.sale_num) AS "sumBuyPrice",
+			sum(a.sale_num) AS "saleNum",
+			sum(a.count_money) AS "countMoney",
+			sum(a.count_money)-c.buy_price*sum(a.sale_num) AS sumProfit,
+			ROUND((sum(a.count_money)-c.buy_price*sum(a.sale_num))/sum(a.count_money)*100,2) AS percentage
+		FROM shop_sale_order_item a 
+		inner join shop_sale_order b ON b.id = a.sale_id 
+		inner join SHOP_PRODUCT c ON a.product_id = c.id 
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="customerId != null and customerId != ''">
+				AND b.customer_id = #{customerId}
+			</if>
+			<if test="saleNo != null and saleNo != ''">
+				AND b.sale_no like concat('%',#{shopSaleOrder.saleNo},'%')
+			</if>
+			<if test="beginBusinData != null and endBusinData != null and beginBusinData != '' and endBusinData != ''">
+				AND b.busin_data BETWEEN #{shopSaleOrder.beginBusinData} AND #{shopSaleOrder.endBusinData}
+			</if>
+			<if test="officeId != null and officeId != ''">
+				AND b.office_id = #{officeId}
+			</if>
+		</where> 
+		group by b.customer_id,b.customer_name
+		order by b.create_date 
+	</select>
 </mapper>
