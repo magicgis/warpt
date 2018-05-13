@@ -112,6 +112,15 @@ public class VipUserBaseService extends CrudService<VipUserBaseDao, VipUserBase>
 	@Transactional(readOnly = false)
 	public void delete(VipUserBase vipUserBase) {
 		super.delete(vipUserBase);
+		ShopCustomerInfo parm = new ShopCustomerInfo();
+		parm.setVipId(vipUserBase.getId());
+		parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+		List<ShopCustomerInfo> customerList = shopCustomerInfoService.findList(parm);
+		if(!customerList.isEmpty()) {
+			for (ShopCustomerInfo shopCustomerInfo : customerList) {
+				shopCustomerInfoService.delete(shopCustomerInfo);
+			}
+		}
 	}
 
 	/**
