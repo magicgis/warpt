@@ -3,7 +3,10 @@
  */
 package com.thinkgem.jeesite.modules.shop.web;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.web.BaseController;
@@ -116,5 +120,33 @@ public class ShopReportController extends BaseController {
 		model.addAttribute("shopSaleOrderItem", shopSaleOrderItem);
 		return "modules/shop/saleCustomerSumReport";
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "exportExcel")
+	public Map<String, Object> exportExcel(HttpServletRequest request) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		try {
+			ShopSaleOrderItem queryParm = new ShopSaleOrderItem();
+			queryParm.setOfficeId(UserUtils.getUser().getOffice().getId());
+			queryParm.setCustomerId(request.getParameter("customerId"));
+			queryParm.setSaleNo(request.getParameter("saleNo"));
+			queryParm.setBeginBusinData(request.getParameter("beginBusinData"));
+			queryParm.setEndBusinData(request.getParameter("endBusinData"));
+			
+			int type = Integer.parseInt(request.getParameter("type"));
+			String strDirPath = request.getSession().getServletContext().getRealPath("/");
+			String exportPath = strDirPath + File.separator + "userfiles" + File.separator + "expExcel_"
+					+ UserUtils.getUser().getOffice().getId() + ".xlsx";
+			shopSaleOrderService.exportExcel(queryParm,exportPath,type);
+			returnMap.put("success", true);
+			returnMap.put("urlPath", File.separator + "userfiles" + File.separator + "expExcel_"
+					+ UserUtils.getUser().getOffice().getId() + ".xlsx");
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnMap.put("success", false);
+			returnMap.put("msg", e.getMessage());
+		}
+		return returnMap;
+	}	
 
 }

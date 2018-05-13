@@ -15,6 +15,21 @@
         	return false;
         }
 
+		function exportExcel(){
+			$.post('${ctx}/shop/shopReport/exportExcel', {
+				customerId : $("#customerId").val(),
+				saleNo : $("#saleNo").val(),
+				beginBusinData : $("#beginBusinData").val(),
+				endBusinData : $("#endBusinData").val(),
+				type : 1
+			}, function(data) {
+				if (data.success) {
+					window.open(data.urlPath,'_blank');
+				} else {
+					alert(data.msg)
+				}
+			});
+		}		
 	</script>
 </head>
 <body>
@@ -43,7 +58,7 @@
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-			<li class="clearfix"></li>
+			<li class="clearfix"><input class="btn btn-primary" type="button" value="导出Excel" onclick="exportExcel()"/></li>
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>
