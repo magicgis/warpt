@@ -5,14 +5,18 @@ package com.thinkgem.jeesite.common.utils.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -31,6 +35,7 @@ import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.utils.Reflections;
 import com.thinkgem.jeesite.common.utils.excel.annotation.ExcelField;
 import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
+import com.war.wechat.base.util.JSONUtil;
 
 /**
  * 导入Excel文件（支持“XLS”和“XLSX”格式）
@@ -352,19 +357,36 @@ public class ImportExcel {
 //	/**
 //	 * 导入测试
 //	 */
-//	public static void main(String[] args) throws Throwable {
-//		
-//		ImportExcel ei = new ImportExcel("target/export.xlsx", 1);
-//		
-//		for (int i = ei.getDataRowNum(); i < ei.getLastDataRowNum(); i++) {
-//			Row row = ei.getRow(i);
+	public static void main(String[] args) throws Throwable {
+		
+		ImportExcel ei = new ImportExcel("F:\\tmp\\aaaa\\专业知识竞赛题库.xlsx", 0);
+		List<Map<String,String>> list = new ArrayList<Map<String,String>>();
+		for (int i = ei.getDataRowNum(); i < ei.getLastDataRowNum(); i++) {
+			Row row = ei.getRow(i);
+			Map<String,String> map = new HashMap<String,String>();
+			map.put("num", String.valueOf(ei.getCellValue(row, 0)));
+			map.put("txt", String.valueOf(ei.getCellValue(row, 1)));
+			map.put("A", String.valueOf(ei.getCellValue(row, 2)));
+			map.put("B", String.valueOf(ei.getCellValue(row, 3)));
+			map.put("C", String.valueOf(ei.getCellValue(row, 4)));
+			map.put("D", String.valueOf(ei.getCellValue(row, 5)));
+			map.put("E", String.valueOf(ei.getCellValue(row, 6)));
+			map.put("F", String.valueOf(ei.getCellValue(row, 7)));
+			map.put("G", String.valueOf(ei.getCellValue(row, 8)));
+			map.put("H", String.valueOf(ei.getCellValue(row, 9)));
+			map.put("val", String.valueOf(ei.getCellValue(row, 10)).replaceAll(" ", ""));
 //			for (int j = 0; j < ei.getLastCellNum(); j++) {
 //				Object val = ei.getCellValue(row, j);
 //				System.out.print(val+", ");
 //			}
 //			System.out.print("\n");
-//		}
-//		
-//	}
+			list.add(map);
+		}
+		String content = JSONUtil.toJson(list);
+		File fileName = new File("F:\\tmp\\aaaa\\a.txt");
+		FileOutputStream o=  new FileOutputStream(fileName);
+		o.write(content.getBytes("UTF-8"));  
+	    o.close(); 
+	}
 
 }
