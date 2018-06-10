@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.SysMessageDao">
+    
+	<sql id="sysMessageColumns">
+		a.id AS "id",
+		a.office_id AS "officeId",
+		a.sn_key AS "snKey",
+		a.accesskey_id AS "accessKeyId",
+		a.accesskey_secret AS "accessKeySecret",
+		a.register_code AS "registerCode",
+		a.pay_code AS "payCode",
+		a.cost_code AS "costCode",
+		a.wallet_code AS "walletCode",
+		a.project_code AS "projectCode",
+		a.wechat_code AS "wechatCode",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="sysMessageJoins">
+	</sql>
+    
+	<select id="get" resultType="SysMessage">
+		SELECT 
+			<include refid="sysMessageColumns"/>
+		FROM sys_message a
+		<include refid="sysMessageJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SysMessage">
+		SELECT 
+			<include refid="sysMessageColumns"/>
+		FROM sys_message a
+		<include refid="sysMessageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="officeId != null and officeId != ''">
+				and a.office_id = #{officeId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysMessage">
+		SELECT 
+			<include refid="sysMessageColumns"/>
+		FROM sys_message a
+		<include refid="sysMessageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_message(
+			id,
+			office_id,
+			sn_key,
+			accesskey_id,
+			accesskey_secret,
+			register_code,
+			pay_code,
+			cost_code,
+			wallet_code,
+			project_code,
+			wechat_code,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{officeId},
+			#{snKey},
+			#{accessKeyId},
+			#{accessKeySecret},
+			#{registerCode},
+			#{payCode},
+			#{costCode},
+			#{walletCode},
+			#{projectCode},
+			#{wechatCode},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_message SET 	
+			office_id = #{officeId},
+			sn_key = #{snKey},
+			accesskey_id = #{accessKeyId},
+			accesskey_secret = #{accessKeySecret},
+			register_code = #{registerCode},
+			pay_code = #{payCode},
+			cost_code = #{costCode},
+			wallet_code = #{walletCode},
+			project_code = #{projectCode},
+			wechat_code = #{wechatCode},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE sys_message SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

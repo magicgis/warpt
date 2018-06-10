@@ -3,6 +3,7 @@ package com.thinkgem.jeesite.common.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.aliyuncs.DefaultAcsClient;
@@ -14,6 +15,8 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.thinkgem.jeesite.modules.sys.entity.SysMessage;
+import com.thinkgem.jeesite.modules.sys.service.SysMessageService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.war.wechat.base.util.JSONUtil;
 
@@ -31,44 +34,95 @@ public class MessageUtil {
 		return factory;
 	}
 
-	private Map<String, Map<String, String>> config = new HashMap<String, Map<String, String>>();
+	// private Map<String, Map<String, String>> config = new HashMap<String,
+	// Map<String, String>>();
 
 	private MessageUtil() {
+		// Map<String, String> valMap = new HashMap<String, String>();
+		// valMap.put("snKey", "英树美容店");
+		// valMap.put("accessKeyId", "LTAIG5F31Ek1FHni");
+		// valMap.put("accessKeySecret", "ky70oLyAa5wchaTEIs6d1dtZviNczX");
+		// // 注册
+		// valMap.put("REGISTER_CODE", "SMS_96705036");
+		// // 充值
+		// valMap.put("PAY_CODE", "SMS_96805039");
+		// // 消费
+		// valMap.put("COST_CODE", "SMS_96855027");
+		// // 余额
+		// valMap.put("WALLET_CODE", "SMS_101045051");
+		// // 项目消费
+		// valMap.put("PROJECT_CODE", "SMS_121911321");
+		// //小程序注册绑定
+		// valMap.put("WECHAT_CODE", "SMS_133979628");
+		// config.put("13543006081", valMap);
+		// //
+		// valMap = new HashMap<String, String>();
+		// valMap.put("snKey", "享瘦美容店");
+		// valMap.put("accessKeyId", "LTAIvvIsBDPjw945");
+		// valMap.put("accessKeySecret", "Sr9RkKEUSGc48wwhc1msiJ6fqYVONX");
+		// // 注册
+		// valMap.put("REGISTER_CODE", "SMS_121907044");
+		// // 充值
+		// valMap.put("PAY_CODE", "SMS_121857023");
+		// // 消费
+		// valMap.put("COST_CODE", "SMS_121852022");
+		// // 余额
+		// valMap.put("WALLET_CODE", "SMS_121852019");
+		// // 项目消费
+		// valMap.put("PROJECT_CODE", "SMS_121912029");
+		// //小程序注册绑定
+		// valMap.put("WECHAT_CODE", "xxxxxxxxxxxxx");
+		// config.put("13726296735", valMap);
+	}
+
+	/****
+	 * 短信模板发送对象获取
+	 * 
+	 * @return
+	 */
+	private Map<String, String> getMessagConfig() {
 		Map<String, String> valMap = new HashMap<String, String>();
-		valMap.put("snKey", "英树美容店");
-		valMap.put("accessKeyId", "LTAIG5F31Ek1FHni");
-		valMap.put("accessKeySecret", "ky70oLyAa5wchaTEIs6d1dtZviNczX");
-		// 注册
-		valMap.put("REGISTER_CODE", "SMS_96705036");
-		// 充值
-		valMap.put("PAY_CODE", "SMS_96805039");
-		// 消费
-		valMap.put("COST_CODE", "SMS_96855027");
-		// 余额
-		valMap.put("WALLET_CODE", "SMS_101045051");
-		// 项目消费
-		valMap.put("PROJECT_CODE", "SMS_121911321");
-		//小程序注册绑定
-		valMap.put("WECHAT_CODE", "SMS_133979628");
-		config.put("13543006081", valMap);
-		//
-		valMap = new HashMap<String, String>();
-		valMap.put("snKey", "享瘦美容店");
-		valMap.put("accessKeyId", "LTAIvvIsBDPjw945");
-		valMap.put("accessKeySecret", "Sr9RkKEUSGc48wwhc1msiJ6fqYVONX");
-		// 注册
-		valMap.put("REGISTER_CODE", "SMS_121907044");
-		// 充值
-		valMap.put("PAY_CODE", "SMS_121857023");
-		// 消费
-		valMap.put("COST_CODE", "SMS_121852022");
-		// 余额
-		valMap.put("WALLET_CODE", "SMS_121852019");
-		// 项目消费
-		valMap.put("PROJECT_CODE", "SMS_121912029");
-		//小程序注册绑定
-		valMap.put("WECHAT_CODE", "xxxxxxxxxxxxx");
-		config.put("13726296735", valMap);
+		SysMessageService sysMessageService = (SysMessageService) SpringContextHolder.getBean("sysMessageService");
+		SysMessage parm = new SysMessage();
+		parm.setOfficeId(UserUtils.getUser().getOffice().getId());
+		List<SysMessage> sysMessageList = sysMessageService.findList(parm);
+		if (sysMessageList.size() > 0) {
+			SysMessage sysMessage = sysMessageList.get(0);
+			valMap.put("snKey", sysMessage.getSnKey());
+			valMap.put("accessKeyId", sysMessage.getAccessKeyId());
+			valMap.put("accessKeySecret", sysMessage.getAccessKeySecret());
+			// 注册
+			valMap.put("REGISTER_CODE", sysMessage.getRegisterCode());
+			// 充值
+			valMap.put("PAY_CODE", sysMessage.getPayCode());
+			// 消费
+			valMap.put("COST_CODE", sysMessage.getCostCode());
+			// 余额
+			valMap.put("WALLET_CODE", sysMessage.getWalletCode());
+			// 项目消费
+			valMap.put("PROJECT_CODE", sysMessage.getProjectCode());
+			// 小程序注册绑定
+			valMap.put("WECHAT_CODE", sysMessage.getWalletCode());
+		} else { // 默认短信
+			valMap.put("snKey", "英树美容店");
+			valMap.put("accessKeyId", "LTAIG5F31Ek1FHni");
+			valMap.put("accessKeySecret", "ky70oLyAa5wchaTEIs6d1dtZviNczX");
+			// 注册
+			valMap.put("REGISTER_CODE", "SMS_96705036");
+			// 充值
+			valMap.put("PAY_CODE", "SMS_96805039");
+			// 消费
+			valMap.put("COST_CODE", "SMS_96855027");
+			// 余额
+			valMap.put("WALLET_CODE", "SMS_101045051");
+			// 项目消费
+			valMap.put("PROJECT_CODE", "SMS_121911321");
+			// 小程序注册绑定
+			valMap.put("WECHAT_CODE", "SMS_133979628");
+			// 小程序注册绑定
+			valMap.put("WECHAT_CODE", "SMS_133979628");
+		}
+		return valMap;
 	}
 
 	// 注册
@@ -99,7 +153,7 @@ public class MessageUtil {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 随机生成6位随机验证码，并且注册进缓存，5分钟有效
 	 * 
@@ -111,13 +165,15 @@ public class MessageUtil {
 		for (int i = 0; i < 6; i++) {
 			vcode = vcode + (int) (Math.random() * 9);
 		}
-		//如果存在缓存则先移除
+		// 如果存在缓存则先移除
 		CacheUtils.remove(phone);
-		CacheUtils.put(phone+"_"+vcode, new Date());
+		CacheUtils.put(phone + "_" + vcode, new Date());
 		return vcode;
 	}
+
 	/**
 	 * 验证用户输入的验证码是否正确
+	 * 
 	 * @param phone
 	 * @return
 	 */
@@ -139,7 +195,7 @@ public class MessageUtil {
 			returnMap.put("msg", "验证码输入错误，请查证后输入.");
 		}
 		return returnMap;
-	}	
+	}
 
 	// 产品名称:云通信短信API产品,开发者无需替换
 	static final String product = "Dysmsapi";
@@ -150,18 +206,19 @@ public class MessageUtil {
 	// static final String accessKeyId = "LTAIG5F31Ek1FHni";
 	// static final String accessKeySecret = "ky70oLyAa5wchaTEIs6d1dtZviNczX";
 
-	public SendSmsResponse send(String templateCode, String phoneNumbers,
-			Map<String, String> paramMap) {
-		// 短信模板key
-		String key = null;
-		if(UserUtils.getUser().getCompany() != null) {
-			key = UserUtils.getUser().getCompany().getZipCode();
-			key = key == null ? "13543006081" : key;
-		}else {
-			key = "13543006081";
-		}
-		Map<String, String> configMap = this.config.get(key);
-		if(configMap == null){
+	public SendSmsResponse send(String templateCode, String phoneNumbers, Map<String, String> paramMap) {
+		// 短信模板发送对象获取
+		UserUtils.getUser().getOffice().getId();
+		// String key = null;
+		// if(UserUtils.getUser().getCompany() != null) {
+		// key = UserUtils.getUser().getCompany().getZipCode();
+		// key = key == null ? "13543006081" : key;
+		// }else {
+		// key = "13543006081";
+		// }
+
+		Map<String, String> configMap = this.getMessagConfig();
+		if (configMap == null) {
 			return null;
 		}
 		templateCode = configMap.get(templateCode);
@@ -172,11 +229,10 @@ public class MessageUtil {
 		System.setProperty("sun.net.client.defaultReadTimeout", "10000");
 
 		// 初始化acsClient,暂不支持region化
-		IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou",
-				configMap.get("accessKeyId"), configMap.get("accessKeySecret"));
+		IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", configMap.get("accessKeyId"),
+				configMap.get("accessKeySecret"));
 		try {
-			DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product,
-					domain);
+			DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
 
 			IAcsClient acsClient = new DefaultAcsClient(profile);
 
@@ -206,21 +262,19 @@ public class MessageUtil {
 		return null;
 	}
 
-	public QuerySendDetailsResponse querySendDetails(String bizId)
-			throws ClientException {
-
+	// 查明细
+	public QuerySendDetailsResponse querySendDetails(String bizId) throws ClientException {
 		// 可自助调整超时时间
 		System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
 		System.setProperty("sun.net.client.defaultReadTimeout", "10000");
 		// 短信模板key
 		String key = UserUtils.getUser().getCompany().getZipCode();
 		key = key == null ? "13543006081" : key;
-		Map<String, String> configMap = this.config.get(key);
+		Map<String, String> configMap = this.getMessagConfig();
 		// 初始化acsClient,暂不支持region化
-		IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou",
-				configMap.get("accessKeyId"), configMap.get("accessKeySecret"));
-		DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product,
-				domain);
+		IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", configMap.get("accessKeyId"),
+				configMap.get("accessKeySecret"));
+		DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
 		IAcsClient acsClient = new DefaultAcsClient(profile);
 
 		// 组装请求对象
@@ -238,22 +292,19 @@ public class MessageUtil {
 		request.setCurrentPage(1L);
 
 		// hint 此处可能会抛出异常，注意catch
-		QuerySendDetailsResponse querySendDetailsResponse = acsClient
-				.getAcsResponse(request);
+		QuerySendDetailsResponse querySendDetailsResponse = acsClient.getAcsResponse(request);
 
 		return querySendDetailsResponse;
 	}
 
-	public static void main(String[] args) throws ClientException,
-			InterruptedException {
+	public static void main(String[] args) throws ClientException, InterruptedException {
 		Map<String, String> contentMap = new HashMap<String, String>();
 		contentMap.put("name", "aaa");
 		contentMap.put("msg", "金额：222 ；积分：111");
 		contentMap.put("msg1", "111");
 		contentMap.put("msg2", "222");
 		// 发短信
-		SendSmsResponse response = MessageUtil.getInterface().send("COST_CODE",
-				"13543006081", contentMap);
+		SendSmsResponse response = MessageUtil.getInterface().send("COST_CODE", "13543006081", contentMap);
 		System.out.println("短信接口返回的数据----------------");
 		System.out.println("Code=" + response.getCode());
 		System.out.println("Message=" + response.getMessage());
@@ -264,12 +315,11 @@ public class MessageUtil {
 
 		// 查明细
 		if (response.getCode() != null && response.getCode().equals("OK")) {
-			QuerySendDetailsResponse querySendDetailsResponse = MessageUtil
-					.getInterface().querySendDetails(response.getBizId());
+			QuerySendDetailsResponse querySendDetailsResponse = MessageUtil.getInterface()
+					.querySendDetails(response.getBizId());
 			System.out.println("短信明细查询接口返回数据----------------");
 			System.out.println("Code=" + querySendDetailsResponse.getCode());
-			System.out.println("Message="
-					+ querySendDetailsResponse.getMessage());
+			System.out.println("Message=" + querySendDetailsResponse.getMessage());
 			int i = 0;
 			for (QuerySendDetailsResponse.SmsSendDetailDTO smsSendDetailDTO : querySendDetailsResponse
 					.getSmsSendDetailDTOs()) {
@@ -277,21 +327,14 @@ public class MessageUtil {
 				System.out.println("Content=" + smsSendDetailDTO.getContent());
 				System.out.println("ErrCode=" + smsSendDetailDTO.getErrCode());
 				System.out.println("OutId=" + smsSendDetailDTO.getOutId());
-				System.out
-						.println("PhoneNum=" + smsSendDetailDTO.getPhoneNum());
-				System.out.println("ReceiveDate="
-						+ smsSendDetailDTO.getReceiveDate());
-				System.out
-						.println("SendDate=" + smsSendDetailDTO.getSendDate());
-				System.out.println("SendStatus="
-						+ smsSendDetailDTO.getSendStatus());
-				System.out.println("Template="
-						+ smsSendDetailDTO.getTemplateCode());
+				System.out.println("PhoneNum=" + smsSendDetailDTO.getPhoneNum());
+				System.out.println("ReceiveDate=" + smsSendDetailDTO.getReceiveDate());
+				System.out.println("SendDate=" + smsSendDetailDTO.getSendDate());
+				System.out.println("SendStatus=" + smsSendDetailDTO.getSendStatus());
+				System.out.println("Template=" + smsSendDetailDTO.getTemplateCode());
 			}
-			System.out.println("TotalCount="
-					+ querySendDetailsResponse.getTotalCount());
-			System.out.println("RequestId="
-					+ querySendDetailsResponse.getRequestId());
+			System.out.println("TotalCount=" + querySendDetailsResponse.getTotalCount());
+			System.out.println("RequestId=" + querySendDetailsResponse.getRequestId());
 		}
 
 	}

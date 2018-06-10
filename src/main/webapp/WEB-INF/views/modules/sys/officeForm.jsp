@@ -29,6 +29,11 @@
 	<ul class="nav nav-tabs">
 		<li><a href="${ctx}/sys/office/list?id=${office.parent.id}&parentIds=${office.parentIds}">机构列表</a></li>
 		<li class="active"><a href="${ctx}/sys/office/form?id=${office.id}&parent.id=${office.parent.id}">机构<shiro:hasPermission name="sys:office:edit">${not empty office.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="sys:office:edit">查看</shiro:lacksPermission></a></li>
+		<shiro:hasPermission name="sys:office:edit">
+		<c:if test="${not empty office.id}">
+			<li><a href="${ctx}/sys/office/messge?id=${office.id}">短信设置</a></li>
+		</c:if>
+		</shiro:hasPermission>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="office" action="${ctx}/sys/office/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>

@@ -37,6 +37,16 @@ public class Office extends TreeEntity<Office> {
 	private User primaryPerson;//主负责人
 	private User deputyPerson;//副负责人
 	private List<String> childDeptList;//快速添加子部门
+	//短信平台属性-写入文件中
+	private String snKey; //短信签名
+	private String accessKeyId; //accessKey
+	private String accessKeySecret; //accessKeySecret
+	private String registerCode; //注册模板
+	private String payCode; //充值模板
+	private String costCode; //消费模板
+	private String walletCode; //余额模板
+	private String projectCode; //项目消费模板
+	private String wechatCode; //小程序注册绑定模板
 	
 	public Office(){
 		super();
@@ -214,4 +224,77 @@ public class Office extends TreeEntity<Office> {
 	public String toString() {
 		return name;
 	}
+
+	public String getSnKey() {
+		return snKey;
+	}
+
+	public void setSnKey(String snKey) {
+		this.snKey = snKey;
+	}
+
+	public String getAccessKeyId() {
+		return accessKeyId;
+	}
+
+	public void setAccessKeyId(String accessKeyId) {
+		this.accessKeyId = accessKeyId;
+	}
+
+	public String getAccessKeySecret() {
+		return accessKeySecret;
+	}
+
+	public void setAccessKeySecret(String accessKeySecret) {
+		this.accessKeySecret = accessKeySecret;
+	}
+
+	public String getRegisterCode() {
+		return registerCode;
+	}
+
+	public void setRegisterCode(String registerCode) {
+		this.registerCode = registerCode;
+	}
+
+	public String getPayCode() {
+		return payCode;
+	}
+
+	public void setPayCode(String payCode) {
+		this.payCode = payCode;
+	}
+
+	public String getCostCode() {
+		return costCode;
+	}
+
+	public void setCostCode(String costCode) {
+		this.costCode = costCode;
+	}
+
+	public String getWalletCode() {
+		return walletCode;
+	}
+
+	public void setWalletCode(String walletCode) {
+		this.walletCode = walletCode;
+	}
+
+	public String getProjectCode() {
+		return projectCode;
+	}
+
+	public void setProjectCode(String projectCode) {
+		this.projectCode = projectCode;
+	}
+
+	public String getWechatCode() {
+		return wechatCode;
+	}
+
+	public void setWechatCode(String wechatCode) {
+		this.wechatCode = wechatCode;
+	}
+	
 }
